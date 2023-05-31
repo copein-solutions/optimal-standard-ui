@@ -1,12 +1,10 @@
 import './App.css';
 import PageWrapper from './components/pageWrapper';
 
-function App() {
+export default function App() {
   return (
     <div className="App">
       <PageWrapper />
-    </div>
+    </div> 
   );
 }
-
-export default App;

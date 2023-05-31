@@ -1,16 +1,10 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import { useEffect } from "react";
+import { Box, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 
 type MenuProps = {
   isOpen: boolean;
+  setOpen: CallableFunction;
 }
 
 //options that will be rendered on menu
@@ -37,12 +31,7 @@ const menuOptions = [
   }
 ];
 
-export const CustomMenu: React.FC<MenuProps> = ({ isOpen }) => {
-  const [open, setOpen] = React.useState(isOpen);
-
-  useEffect(() => {
-    setOpen(isOpen);
-  }, [isOpen]);
+export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
 
   const toggleDrawer = (open: boolean) => (
     event: React.KeyboardEvent | React.MouseEvent
@@ -80,8 +69,7 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen }) => {
 
   return (
     <React.Fragment>
-      {/* <Button onClick={() => setOpen(true)}>Abrir menú</Button> */}
-      <Drawer anchor={"left"} open={open} onClose={toggleDrawer(false)}>
+      <Drawer anchor={"left"} open={isOpen} onClose={toggleDrawer(false)}>
         {getList()}
       </Drawer>
     </React.Fragment>
