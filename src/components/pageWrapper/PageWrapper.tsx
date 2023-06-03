@@ -1,6 +1,8 @@
 import CustomMenu from "../menu";
 import { CustomHeader } from "../header/Header";
 import { useState } from "react";
+import {menuOptions} from "../menu/Menu"
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 
 export default function PageWrapper() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,6 +15,12 @@ export default function PageWrapper() {
     <>
       <CustomHeader onMenuOpen={handleMenuOpen} />
       <CustomMenu isOpen={isMenuOpen} setOpen={setIsMenuOpen}/>
+
+      <Routes>
+        {menuOptions.map((option, index) => (
+          <Route key={index} path={option.path} Component={option.component} />
+        ))}
+      </Routes>
     </>
   );
 }

@@ -13,13 +13,14 @@ export const CustomHeader: React.FC<HeaderProps> = ({ onMenuOpen }) => {
       <AppBar position="static">
         <Toolbar>
           <IconButton
+            onClick={onMenuOpen} 
             size="large"
             edge="start"
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
           >
-            <MenuIcon onClick={onMenuOpen} />
+            <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             CEAOSA
