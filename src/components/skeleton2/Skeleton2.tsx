@@ -1,9 +1,17 @@
-import * as React from 'react';
 import 'bootstrap-css-only'
 import {Stack, Skeleton} from '@mui/material';
-import './Skeleton2.css'
+import './Skeleton2.css';
+import { pong } from '../../services/ApiService';
+import { useEffect } from 'react';
 
 export const CustomSkeleton2: React.FC = () => {
+  // services test
+  useEffect(() => {
+    pong().then(response => {
+      alert(response.data);
+    })
+  })
+
 
   return (
     <div className='card'>
