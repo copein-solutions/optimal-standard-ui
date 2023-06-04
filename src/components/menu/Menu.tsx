@@ -1,17 +1,17 @@
-import * as React from "react";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { Box, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import React from "react";
 import { Link } from "react-router-dom";
 import { CustomSkeleton } from "../skeleton/Skeleton";
-import { CustomSkeleton2 } from "../skeleton2/Skeleton2";
+import { MaterialForm } from "../materialForm/MaterialForm";
 
 type MenuProps = {
   isOpen: boolean;
   setOpen: CallableFunction;
 }
 
+//Opciones que serán renderizadas en el menú
 // TODO: cambiar este objeto para un archivo aparte??
-//options that will be rendered on menu
 export const menuOptions = [
   {
     name: "Opción 1",
@@ -23,7 +23,7 @@ export const menuOptions = [
     name: "Opción 2",
     icon: <ArrowRightIcon />,
     path: "/option2",
-    component: CustomSkeleton2,
+    component: MaterialForm,
   },
   {
     name: "Opción 3",
@@ -31,12 +31,6 @@ export const menuOptions = [
     path: "https://peñarol.org",
     component: CustomSkeleton, // Esta opción va a llevar a --> https://peñarol.org
   },
-  // {
-  //   name: "Opción 4",
-  //   icon: <ArrowRightIcon />,
-  //   path: "https://peñarol.org",
-  //   component: ,
-  // }
 ];
 
 export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
