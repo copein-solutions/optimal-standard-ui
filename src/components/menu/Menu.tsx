@@ -20,7 +20,7 @@ export const menuOptions = [
     component: CustomSkeleton,
   },
   {
-    name: "Opción 2",
+    name: "Alta de material",
     icon: <ArrowRightIcon />,
     path: "/option2",
     component: MaterialForm,

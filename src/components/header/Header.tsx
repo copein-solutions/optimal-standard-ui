@@ -10,7 +10,7 @@ export const CustomHeader: React.FC<HeaderProps> = ({ onMenuOpen }) => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" sx={{ bgcolor: "#00b500" }}>
         <Toolbar>
           <IconButton
             onClick={onMenuOpen} 
@@ -22,7 +22,7 @@ export const CustomHeader: React.FC<HeaderProps> = ({ onMenuOpen }) => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
             CEAOSA
           </Typography>
           <Button color="inherit">Login</Button>

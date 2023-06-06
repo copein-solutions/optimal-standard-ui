@@ -1,2 +1,2 @@
-import { MultiSelect } from './MultiSelect';
-export default MultiSelect;
+import MultiSelectWithSearch from './MultiSelect';
+export default MultiSelectWithSearch;
