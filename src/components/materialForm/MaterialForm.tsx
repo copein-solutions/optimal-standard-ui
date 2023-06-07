@@ -103,13 +103,13 @@ export const MaterialForm = () => {
             <TextField fullWidth label="Nombre" variant="outlined" />
           </div>
           {/* ------------- Clasificación ------------- */}
-          <div className="col-lg-6 col-sm-6">
+          <div className="col-lg-6 col-sm-6 margin-top">
             <SelectField label="Clasificación" options={optionsSelect} />
           </div>
         </div>
         {/* ------------- Campo de aplicación ------------- */}
         <div className="row">
-          <div className="col-lg-8 col-sm-12">
+          <div className="col-lg-12 col-sm-12">
             <MultiSelectWithSearch
               label="Campo de aplicación"
               options={optionsApplicationArea}
@@ -137,7 +137,7 @@ export const MaterialForm = () => {
             />
           </div>
           {/* ------------- Tipo ------------- */}
-          <div className="col-lg-6 col-sm-6">
+          <div className="col-lg-6 col-sm-6 margin-top">
             <SelectField label="Tipo" options={tipe} />
           </div>
           {/* ------------- Precio unitario ($/m2) ------------- */}
@@ -183,7 +183,7 @@ export const MaterialForm = () => {
             />
           </div>
           {/* ------------- Cantidad de manos ------------- */}
-          <div className="col-lg-6 col-sm-6">
+          <div className="col-lg-6 col-sm-6 margin-top">
             <TextField
               type="number"
               fullWidth

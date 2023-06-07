@@ -14,23 +14,23 @@ type MenuProps = {
 // TODO: cambiar este objeto para un archivo aparte??
 export const menuOptions = [
   {
-    name: "Opción 1",
-    icon: <ArrowRightIcon />,
-    path: "/option1",
-    component: CustomSkeleton,
-  },
-  {
     name: "Alta de material",
     icon: <ArrowRightIcon />,
     path: "/option2",
     component: MaterialForm,
   },
   {
-    name: "Opción 3",
+    name: "Campos de aplicación",
     icon: <ArrowRightIcon />,
-    path: "https://peñarol.org",
-    component: CustomSkeleton, // Esta opción va a llevar a --> https://peñarol.org
+    path: "/option1",
+    component: CustomSkeleton,
   },
+  // {
+  //   name: "Opción 3",
+  //   icon: <ArrowRightIcon />,
+  //   path: "https://peñarol.org",
+  //   component: CustomSkeleton, // Esta opción va a llevar a --> https://peñarol.org
+  // },
 ];
 
 export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
