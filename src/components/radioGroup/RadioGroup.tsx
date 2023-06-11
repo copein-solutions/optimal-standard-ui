@@ -40,8 +40,8 @@ export const RadioGroupCustom: React.FC<RadioGroupProps> = ({
     <FormControl>
       <FormLabel id={id}>{formLabel}</FormLabel>
       <RadioGroup row={row} aria-labelledby={id} defaultValue={defaultValue} name={name}>
-        {options.map((item) => (
-          <FormControlLabel value={item.value} control={<Radio />} label={item.label} />
+        {options.map((item, index) => (
+          <FormControlLabel key={index} value={item.value} control={<Radio />} label={item.label} />
         ))}
       </RadioGroup>
     </FormControl>
