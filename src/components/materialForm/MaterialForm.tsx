@@ -1,8 +1,9 @@
 import { MainContainer } from "../mainContainer/MainContainer";
 import SelectField from "../selectField/SelectField";
 import { Divider, Typography, TextField } from "@mui/material";
-import MultiSelectWithSearch from "../multiSelect/MultiSelect";
 import RadioGroupCustom from "../radioGroup/RadioGroup";
+import "./MaterialForm.css";
+import { forwardRef, useRef, useState } from "react";
 
 const optionsSelect = [
   { value: "estandar_optimo", label: "Estándar óptimo" },
@@ -71,14 +72,25 @@ const tipe = [
   },
 ];
 
+const presentation = [
+  {
+    value: "presentation1",
+    label: "Lata",
+  },
+  {
+    value: "presentation2",
+    label: "Bolsa",
+  },
+];
+
 const compositionList = [
   {
     value: "radio1",
-    label: "Monocompuesto",
+    label: "Monocomponente",
   },
   {
     value: "radio2",
-    label: "Bicompuesto",
+    label: "Bicomponente",
   },
 ];
 
@@ -93,65 +105,107 @@ const curadoList = [
   },
 ];
 
+interface FormError {
+  field: string;
+  message: string;
+}
+
 export const MaterialForm = () => {
+  const [formErrors, setFormErrors] = useState<FormError[]>([]);
+  
+  const materialNameRef = useRef<HTMLInputElement>(null);
+  const materialBrandRef = useRef<HTMLInputElement>(null);
+  const materialPriceRef = useRef<HTMLInputElement>(null);
+  const materialPresentationRef = useRef<HTMLInputElement>(null);
+  const materialQuantityRef = useRef<HTMLInputElement>(null);
+  const materialTypeRef = useRef<HTMLInputElement>(null);
+  const materialDataSheet = useRef<HTMLInputElement>(null);
+
+  const handleCancel = () => {
+    console.log("handleCancel");
+  };
+
+  const handleAccept = () => {
+    event.preventDefault();
+  };
+
   return (
-    <MainContainer cardTitle="Alta de material">
+    <MainContainer
+      onCancel={handleCancel}
+      onAccept={handleAccept}
+      hasFooterButons
+      cardTitle="Alta de material"
+    >
       <div className="container">
         {/* ------------- Nombre ------------- */}
         <div className="row mb-3">
           <div className="col-lg-6 col-sm-6">
-            <TextField fullWidth label="Nombre" variant="outlined" />
+            <TextField
+              inputProps={{
+                pattern: "^[0-9]+$", // Expresión regular para solo permitir letras
+              }}
+              inputRef={materialNameRef}
+              fullWidth
+              label="Nombre"
+              variant="outlined"
+              error={!!formErrors.find((error) => error.field === 'username')}
+              helperText={formErrors.find((error) => error.field === 'username')?.message || ''}
+              onChange={handleInputChange}
+            />
           </div>
-          {/* ------------- Clasificación ------------- */}
-          <div className="col-lg-6 col-sm-6 margin-top">
-            <SelectField label="Clasificación" options={optionsSelect} />
-          </div>
-        </div>
-        {/* ------------- Campo de aplicación ------------- */}
-        <div className="row">
-          <div className="col-lg-12 col-sm-12">
-            <MultiSelectWithSearch
-              label="Campo de aplicación"
-              options={optionsApplicationArea}
+          {/* ------------- Marca ------------- */}
+          <div className="col-lg-6 col-sm-6">
+            <TextField
+              inputRef={materialBrandRef}
+              fullWidth
+              label="Marca"
+              variant="outlined"
             />
           </div>
         </div>
-        <Typography
-          align="left"
-          variant="subtitle1"
-          component="div"
-          sx={{ mt: 3 }}
-        >
-          Base
-        </Typography>
-        <Divider />
-        <div className="row mt-3">
-          {/* ------------- Precio unitario ($/kg) ------------- */}
-          <div className="col-lg-6 col-sm-6">
+        {/* ------------- Precio unitario ($/kg) ------------- */}
+        <div className="row">
+          <div className="col-lg-6 col-sm-6 mb-3">
             <TextField
               type="number"
+              inputRef={materialPriceRef}
               fullWidth
               inputProps={{ min: 0 }}
               label="Precio unitario ($/kg)"
               variant="outlined"
             />
           </div>
-          {/* ------------- Tipo ------------- */}
-          <div className="col-lg-6 col-sm-6 margin-top">
-            <SelectField label="Tipo" options={tipe} />
+        </div>
+        {/* ------------- Presentación ------------- */}
+        <div className="row">
+          <div className="col-lg-6 col-sm-6 mb-3">
+            <SelectField
+              refPrueba={materialPresentationRef}
+              label="Presentación"
+              options={presentation}
+            />
           </div>
-          {/* ------------- Precio unitario ($/m2) ------------- */}
-          <div className="col-lg-6 col-sm-6 mt-3">
+          {/* ------------- Cantidad ------------- */}
+          <div className="col-lg-6 col-sm-6">
             <TextField
+              inputRef={materialQuantityRef}
               type="number"
               fullWidth
               inputProps={{ min: 0 }}
-              label="Precio unitario ($/m2)"
+              label="Cantidad"
               variant="outlined"
             />
           </div>
+          <div />
+        </div>
+        {/* ------------- Tipo ------------- */}
+        <div className="row">
+          <div className="col-lg-6 col-sm-6 ">
+            {/* <SelectField ref={materialTypeRef} label="Tipo" options={tipe} /> */}
+          </div>
+          <div />
           {/* ------------- Composición ------------- */}
-          <div className="col-lg-6 col-sm-6 mt-3">
+          <div className="col-lg-6 col-sm-6">
             <RadioGroupCustom
               row
               formLabel="Composición"
@@ -168,43 +222,33 @@ export const MaterialForm = () => {
           component="div"
           sx={{ mt: 3 }}
         >
-          Aplicación
+          Ficha Técnica
         </Typography>
         <Divider />
-        <div className="row mt-3">
-          {/* ------------- Consumo total ------------- */}
-          <div className="col-lg-6 col-sm-6">
+        <div className="row">
+          {/* ------------- File upload ------------- */}
+          <div className="col-lg-6 col-sm-6 mt-3">
             <TextField
+              multiline
+              minRows={5}
               type="number"
               fullWidth
               inputProps={{ min: 0 }}
-              label="Consumo total"
+              label="File upload"
               variant="outlined"
             />
           </div>
-          {/* ------------- Cantidad de manos ------------- */}
-          <div className="col-lg-6 col-sm-6 margin-top">
+          {/* ------------- Ficha técnica ------------- */}
+          <div className="col-lg-10 col-sm-6 mt-3">
             <TextField
+              multiline
+              minRows={5}
+              inputRef={materialDataSheet}
               type="number"
               fullWidth
               inputProps={{ min: 0 }}
-              label="Cantidad de manos"
+              label="Ficha técnica"
               variant="outlined"
-            />
-          </div>
-          {/* ------------- Modo de aplicación ------------- */}
-          <div className="col-lg-6 col-sm-6 mt-3">
-            <SelectField label="Modo de aplicación" options={applicationMode} />
-          </div>
-          {/* ------------- Curado ------------- */}
-          <div className="col-lg-6 col-sm-6 mt-3">
-            <RadioGroupCustom
-              row
-              formLabel="Curado"
-              defaultValue="Curado2"
-              name="radio-group-tipo"
-              id="curado1"
-              options={curadoList}
             />
           </div>
         </div>
