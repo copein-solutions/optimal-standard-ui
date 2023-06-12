@@ -1,9 +1,10 @@
 import { MainContainer } from "../mainContainer/MainContainer";
 import SelectField from "../selectField/SelectField";
-import { Divider, Typography, TextField } from "@mui/material";
+import { Divider, Typography, TextField, BackdropProps } from "@mui/material";
 import RadioGroupCustom from "../radioGroup/RadioGroup";
 import "./MaterialForm.css";
 import { forwardRef, useRef, useState } from "react";
+import { log } from "console";
 
 const optionsSelect = [
   { value: "estandar_optimo", label: "Estándar óptimo" },
@@ -108,11 +109,19 @@ const curadoList = [
 interface FormError {
   field: string;
   message: string;
+  showError: boolean;
+}
+
+interface BackendError {
+  field: string;
+  message: string;
+  showError: boolean;
 }
 
 export const MaterialForm = () => {
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
-  
+  const [backendErrors, setBackendErrors] = useState<BackendError[]>([]);
+
   const materialNameRef = useRef<HTMLInputElement>(null);
   const materialBrandRef = useRef<HTMLInputElement>(null);
   const materialPriceRef = useRef<HTMLInputElement>(null);
@@ -126,8 +135,66 @@ export const MaterialForm = () => {
   };
 
   const handleAccept = () => {
-    event.preventDefault();
+    const formErrors: FormError[] = [];
+    const backendErrors: BackendError[] = [];
+
+    if (formErrors.length === 0) {
+
+      // Ejemplo de respuesta de backend
+      const response = {
+        errors: {
+          materialName: "El material ya esta en uso"
+        },
+      };
+
+      if (response.errors) {
+        // setBackendErrors(response.errors);
+        backendErrors.push({ field: 'materialName', message: "El material ya esta en uso", showError: true });
+        setBackendErrors(backendErrors);
+      } else {
+        // Lógica para manejar una respuesta exitosa desde el backend
+        console.log("Formulario enviado con éxito");
+      }      
+    }
+    // limpia errores del form
+    setFormErrors(formErrors);
   };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const errors: FormError[] = [];
+    const fieldName = event.target?.name; // valor de la propiedad name del input
+    const fieldValue = event.target?.value; // valor ingresado en el input por el usuario
+    const validationMessage = event.target?.validationMessage; // mensaje de error de validaciones que no son de backend, ej: el error del regex
+    console.log("fieldName", fieldName); 
+    console.log("fieldValue", fieldValue); 
+    console.log("validationMessage", validationMessage);
+    
+    if (!event.target?.validity?.valid) {
+      errors.push({ field: fieldName, message: validationMessage, showError: true });
+    }
+    // Aquí puedes realizar validaciones adicionales para el campo si es necesario
+    // ...
+
+    // Limpiar el mensaje de error del campo al realizar cambios
+    // let nose = formErrors.filter((error) => {
+    //   return error.field !== fieldName
+    // });
+    setFormErrors(errors);
+    setBackendErrors(errors);
+  };
+
+  // const showErrorMessageMaterialName = () => {
+  //   let errorMessage = "";
+  //   formErrors.find((error) => {
+  //     if(error.field === "materialName"){
+  //       errorMessage = error.message
+  //     }
+  //   })
+  //   if(errorMessage != ""){
+  //     errorMessage= backendErrors?.errors.materialName;
+  //   }
+  //   return errorMessage;
+  // }
 
   return (
     <MainContainer
@@ -146,12 +213,25 @@ export const MaterialForm = () => {
               }}
               inputRef={materialNameRef}
               fullWidth
+              name="materialName"
               label="Nombre"
               variant="outlined"
-              error={!!formErrors.find((error) => error.field === 'username')}
-              helperText={formErrors.find((error) => error.field === 'username')?.message || ''}
+              error={
+                formErrors.find((error) => error.field === 'materialName')?.showError ||
+                backendErrors.find((error) => error.field === 'materialName')?.showError
+              }
+              helperText={
+                formErrors.find((error) => error.field === 'materialName')?.message ||
+                backendErrors.find((error) => error.field === 'materialName')?.message
+              }
               onChange={handleInputChange}
             />
+            {/* Mensajes de error del backend */}
+            {/* {backendErrors.materialName && (
+              <Typography variant="body2" color="error">
+                {backendErrors.materialName}
+              </Typography>
+            )} */}
           </div>
           {/* ------------- Marca ------------- */}
           <div className="col-lg-6 col-sm-6">
