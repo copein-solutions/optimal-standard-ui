@@ -138,23 +138,45 @@ export const MaterialForm = () => {
     const formErrors: FormError[] = [];
     const backendErrors: BackendError[] = [];
 
-    if (formErrors.length === 0) {
+    if (materialNameRef.current?.value == "" || materialNameRef.current?.value == null)
+      formErrors.push({
+        field: "materialName",
+        message: "El nombre es requerido",
+        showError: true,
+      });
+    if (materialBrandRef.current?.value == "" || materialBrandRef.current?.value == null)
+      formErrors.push({
+        field: "materialBrand",
+        message: "La marca es requerida",
+        showError: true,
+      });
 
+    // materialPriceRef.current?.value != null
+    // materialPresentationRef.current?.value != null
+    // materialQuantityRef.current?.value != null
+    // materialTypeRef.current?.value != null
+    // materialDataSheet.current?.value != null)
+
+    if (formErrors.length === 0) {
       // Ejemplo de respuesta de backend
       const response = {
         errors: {
-          materialName: "El material ya esta en uso"
+          materialName: "El material ya esta en uso",
         },
       };
 
       if (response.errors) {
         // setBackendErrors(response.errors);
-        backendErrors.push({ field: 'materialName', message: "El material ya esta en uso", showError: true });
+        backendErrors.push({
+          field: "materialName",
+          message: "El material ya esta en uso",
+          showError: true,
+        });
         setBackendErrors(backendErrors);
       } else {
         // Lógica para manejar una respuesta exitosa desde el backend
         console.log("Formulario enviado con éxito");
-      }      
+      }
     }
     // limpia errores del form
     setFormErrors(formErrors);
@@ -165,36 +187,21 @@ export const MaterialForm = () => {
     const fieldName = event.target?.name; // valor de la propiedad name del input
     const fieldValue = event.target?.value; // valor ingresado en el input por el usuario
     const validationMessage = event.target?.validationMessage; // mensaje de error de validaciones que no son de backend, ej: el error del regex
-    console.log("fieldName", fieldName); 
-    console.log("fieldValue", fieldValue); 
+    console.log("fieldName", fieldName);
+    console.log("fieldValue", fieldValue);
     console.log("validationMessage", validationMessage);
-    
-    if (!event.target?.validity?.valid) {
-      errors.push({ field: fieldName, message: validationMessage, showError: true });
-    }
-    // Aquí puedes realizar validaciones adicionales para el campo si es necesario
-    // ...
 
-    // Limpiar el mensaje de error del campo al realizar cambios
-    // let nose = formErrors.filter((error) => {
-    //   return error.field !== fieldName
-    // });
+    if (!event.target?.validity?.valid) {
+      errors.push({
+        field: fieldName,
+        message: validationMessage,
+        showError: true,
+      });
+    }
+
     setFormErrors(errors);
     setBackendErrors(errors);
   };
-
-  // const showErrorMessageMaterialName = () => {
-  //   let errorMessage = "";
-  //   formErrors.find((error) => {
-  //     if(error.field === "materialName"){
-  //       errorMessage = error.message
-  //     }
-  //   })
-  //   if(errorMessage != ""){
-  //     errorMessage= backendErrors?.errors.materialName;
-  //   }
-  //   return errorMessage;
-  // }
 
   return (
     <MainContainer
@@ -213,33 +220,47 @@ export const MaterialForm = () => {
               }}
               inputRef={materialNameRef}
               fullWidth
+              required
               name="materialName"
               label="Nombre"
               variant="outlined"
               error={
-                formErrors.find((error) => error.field === 'materialName')?.showError ||
-                backendErrors.find((error) => error.field === 'materialName')?.showError
+                formErrors.find((error) => error.field === "materialName")
+                  ?.showError ||
+                backendErrors.find((error) => error.field === "materialName")
+                  ?.showError
               }
               helperText={
-                formErrors.find((error) => error.field === 'materialName')?.message ||
-                backendErrors.find((error) => error.field === 'materialName')?.message
+                formErrors.find((error) => error.field === "materialName")
+                  ?.message ||
+                backendErrors.find((error) => error.field === "materialName")
+                  ?.message
               }
               onChange={handleInputChange}
             />
-            {/* Mensajes de error del backend */}
-            {/* {backendErrors.materialName && (
-              <Typography variant="body2" color="error">
-                {backendErrors.materialName}
-              </Typography>
-            )} */}
           </div>
           {/* ------------- Marca ------------- */}
           <div className="col-lg-6 col-sm-6">
             <TextField
+              name="materialBrand"
+              required
               inputRef={materialBrandRef}
               fullWidth
               label="Marca"
               variant="outlined"
+              onChange={handleInputChange}
+              error={
+                formErrors.find((error) => error.field === "materialBrand")
+                  ?.showError ||
+                backendErrors.find((error) => error.field === "materialBrand")
+                  ?.showError
+              }
+              helperText={
+                formErrors.find((error) => error.field === "materialBrand")
+                  ?.message ||
+                backendErrors.find((error) => error.field === "materialBrand")
+                  ?.message
+              }
             />
           </div>
         </div>
@@ -271,7 +292,7 @@ export const MaterialForm = () => {
               inputRef={materialQuantityRef}
               type="number"
               fullWidth
-              inputProps={{ min: 0 }}
+              inputProps={{ min: 1 }}
               label="Cantidad"
               variant="outlined"
             />
