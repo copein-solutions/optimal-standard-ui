@@ -6,6 +6,9 @@ import "./MaterialForm.css";
 import { forwardRef, useRef, useState } from "react";
 import { log } from "console";
 
+// Services
+import { createMaterial } from "../../services/ApiService";
+
 const optionsSelect = [
   { value: "estandar_optimo", label: "Estándar óptimo" },
   {
@@ -134,39 +137,49 @@ export const MaterialForm = () => {
     console.log("handleCancel");
   };
 
-  const handleAccept = () => {
-    const formErrors: FormError[] = [];
-    const backendErrors: BackendError[] = [];
-
-    if (materialNameRef.current?.value == "" || materialNameRef.current?.value == null)
+  const verifyFormErrors = (formErrors: FormError[]) => {
+    if (
+      materialNameRef.current?.value === "" ||
+      materialNameRef.current?.value == null
+    ) {
       formErrors.push({
         field: "materialName",
         message: "El nombre es requerido",
         showError: true,
       });
-    if (materialBrandRef.current?.value == "" || materialBrandRef.current?.value == null)
+    }
+
+    if (
+      materialBrandRef.current?.value === "" ||
+      materialBrandRef.current?.value == null
+    ) {
       formErrors.push({
         field: "materialBrand",
         message: "La marca es requerida",
         showError: true,
       });
+    }
 
     // materialPriceRef.current?.value != null
     // materialPresentationRef.current?.value != null
     // materialQuantityRef.current?.value != null
     // materialTypeRef.current?.value != null
     // materialDataSheet.current?.value != null)
+  };
+
+  const handleAccept = async () => {
+    const formErrors: FormError[] = [];
+    const backendErrors: BackendError[] = [];
+    verifyFormErrors(formErrors);
 
     if (formErrors.length === 0) {
-      // Ejemplo de respuesta de backend
-      const response = {
-        errors: {
-          materialName: "El material ya esta en uso",
-        },
-      };
+      const response = await createMaterial({
+        name: materialNameRef.current?.value,
+        brand: materialBrandRef.current?.value,
+      });
+      console.log("respuesta back", response);
 
-      if (response.errors) {
-        // setBackendErrors(response.errors);
+      if (response.status !== 200) {
         backendErrors.push({
           field: "materialName",
           message: "El material ya esta en uso",
@@ -178,7 +191,6 @@ export const MaterialForm = () => {
         console.log("Formulario enviado con éxito");
       }
     }
-    // limpia errores del form
     setFormErrors(formErrors);
   };
 
@@ -187,9 +199,7 @@ export const MaterialForm = () => {
     const fieldName = event.target?.name; // valor de la propiedad name del input
     const fieldValue = event.target?.value; // valor ingresado en el input por el usuario
     const validationMessage = event.target?.validationMessage; // mensaje de error de validaciones que no son de backend, ej: el error del regex
-    console.log("fieldName", fieldName);
     console.log("fieldValue", fieldValue);
-    console.log("validationMessage", validationMessage);
 
     if (!event.target?.validity?.valid) {
       errors.push({
@@ -214,13 +224,10 @@ export const MaterialForm = () => {
         {/* ------------- Nombre ------------- */}
         <div className="row mb-3">
           <div className="col-lg-6 col-sm-6">
-            <TextField
-              inputProps={{
-                pattern: "^[0-9]+$", // Expresión regular para solo permitir letras
-              }}
+            <TextField              
               inputRef={materialNameRef}
               fullWidth
-              required
+              required              
               name="materialName"
               label="Nombre"
               variant="outlined"
@@ -268,12 +275,29 @@ export const MaterialForm = () => {
         <div className="row">
           <div className="col-lg-6 col-sm-6 mb-3">
             <TextField
+              inputProps={{
+                pattern: "^[0-9]+$", // Expresión regular para solo permitir números
+                min: 0
+              }}
               type="number"
               inputRef={materialPriceRef}
               fullWidth
-              inputProps={{ min: 0 }}
               label="Precio unitario ($/kg)"
+              name="materialPrice"
               variant="outlined"
+              onChange={handleInputChange}
+              error={
+                formErrors.find((error) => error.field === "materialPrice")
+                  ?.showError ||
+                backendErrors.find((error) => error.field === "materialPrice")
+                  ?.showError
+              }
+              helperText={
+                formErrors.find((error) => error.field === "materialPrice")
+                  ?.message ||
+                backendErrors.find((error) => error.field === "materialPrice")
+                  ?.message
+              }
             />
           </div>
         </div>
