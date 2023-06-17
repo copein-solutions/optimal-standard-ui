@@ -1,6 +1,10 @@
 import { FC, useState } from "react";
-import { InputLabel, SelectChangeEvent } from "@mui/material";
-import { MenuItem, FormControl, Select } from "@mui/material";
+import {
+  BaseTextFieldProps,
+  InputLabel,
+  SelectChangeEvent,
+} from "@mui/material";
+import { MenuItem, FormControl, Select, FormHelperText } from "@mui/material";
 
 type Option = {
   value: string;
@@ -8,12 +12,20 @@ type Option = {
 };
 
 type CustomSelectProps = {
-  refPrueba?: any;
+  getRef?: any;
   label: string;
   options: Option[];
-};
+  error?: any;
+  helperText?: string;
+} & BaseTextFieldProps;
 
-const CustomSelect: FC<CustomSelectProps> = ({ options, label, refPrueba }) => {
+const CustomSelect: FC<CustomSelectProps> = ({
+  options,
+  label,
+  getRef,
+  error,
+  helperText,
+}) => {
   const [value, setValue] = useState("");
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -24,11 +36,12 @@ const CustomSelect: FC<CustomSelectProps> = ({ options, label, refPrueba }) => {
     <FormControl fullWidth>
       <InputLabel id="custom-select-label">{label}</InputLabel>
       <Select
-        inputRef={refPrueba}
+        inputRef={getRef}
         onChange={handleChange}
         value={value}
         label={label}
         labelId="custom-select-label"
+        error={error}
       >
         {options.map((option, index) => (
           <MenuItem key={index} value={option.value}>
@@ -36,6 +49,7 @@ const CustomSelect: FC<CustomSelectProps> = ({ options, label, refPrueba }) => {
           </MenuItem>
         ))}
       </Select>
+      {helperText && <FormHelperText error>{helperText}</FormHelperText>}
     </FormControl>
   );
 };

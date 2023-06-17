@@ -1,111 +1,118 @@
 import { MainContainer } from "../mainContainer/MainContainer";
 import SelectField from "../selectField/SelectField";
-import { Divider, Typography, TextField, BackdropProps } from "@mui/material";
+import { Divider, Typography, TextField } from "@mui/material";
 import RadioGroupCustom from "../radioGroup/RadioGroup";
 import "./MaterialForm.css";
-import { forwardRef, useRef, useState } from "react";
-import { log } from "console";
+import { ChangeEvent, useRef, useState } from "react";
 
 // Services
 import { createMaterial } from "../../services/ApiService";
 
-const optionsSelect = [
-  { value: "estandar_optimo", label: "Estándar óptimo" },
+const type = [
   {
-    value: "estandar_optimo_alternativo",
-    label: "Estándar óptimo alternativo",
-  },
-  { value: "no_estandar_optimo", label: "No es estándar óptimo" },
-];
-
-const optionsApplicationArea = [
-  {
-    value: "application_area1",
-    label: "Muros de contención - Presión positiva sin napa ",
+    value: "Cementicio",
+    label: "Cementicio",
   },
   {
-    value: "application_area2",
-    label:
-      "Muros de contención - Presión positiva con napa - c/tratamiento de juntas frías",
+    value: "Acrílico",
+    label: "Acrílico",
   },
   {
-    value: "application_area3",
-    label: "Muros de contención - Presión negativa sin napa",
+    value: "Epoxi",
+    label: "Epoxi",
   },
   {
-    value: "application_area4",
-    label: "Terrazas transitables con carpeta de protección",
-  },
-];
-
-const applicationMode = [
-  {
-    value: "application_mode2",
-    label: "Brocha",
+    value: "Poliuretánico",
+    label: "Poliuretánico",
   },
   {
-    value: "application_mode3",
-    label: "Llana",
+    value: "Mantas varias",
+    label: "Mantas varias",
   },
   {
-    value: "application_mode4",
-    label: "Rodillo",
+    value: "Malla",
+    label: "Malla",
   },
   {
-    value: "application_mode5",
-    label: "Aspersor",
-  },
-];
-
-const tipe = [
-  {
-    value: "tipe2",
-    label: "Acrílicos",
+    value: "Pintura",
+    label: "Pintura",
   },
   {
-    value: "tipe3",
-    label: "Siliconados",
+    value: "Sellador",
+    label: "Sellador",
   },
   {
-    value: "tipe4",
-    label: "Sementosos",
+    value: "Siliconado",
+    label: "Siliconado",
   },
   {
-    value: "tipe5",
-    label: "Poliuretánicos",
+    value: "Malla",
+    label: "Malla",
+  },
+  {
+    value: "Junta hidroexpansiva",
+    label: "Junta hidroexpansiva",
+  },
+  {
+    value: "otro",
+    label: "otro",
   },
 ];
 
-const presentation = [
+const currency = [
   {
-    value: "presentation1",
-    label: "Lata",
+    value: "dolares",
+    label: "USD",
   },
   {
-    value: "presentation2",
-    label: "Bolsa",
+    value: "pesos",
+    label: "$",
   },
 ];
 
-const compositionList = [
+const unity = [
   {
-    value: "radio1",
+    value: "kg",
+    label: "Kilogramos",
+  },
+  {
+    value: "l",
+    label: "Litros",
+  },
+  {
+    value: "m2",
+    label: "Metros cuadrados",
+  },
+  {
+    value: "cm3",
+    label: "Centímetros cúbicos",
+  },
+  {
+    value: "ml",
+    label: "Metros lineales",
+  },
+  {
+    value: "u",
+    label: "Unidades",
+  },
+];
+
+const components = [
+  {
     label: "Monocomponente",
+    value: "monocomponente",
   },
   {
-    value: "radio2",
     label: "Bicomponente",
-  },
-];
-
-const curadoList = [
-  {
-    value: "curado1",
-    label: "Si",
+    value: "bicomponente",
   },
   {
-    value: "Curado2",
-    label: "No",
+    label: "Tricomponente",
+    value: "tricomponente",
+  },
+  {
+    label: "No aplica",
+    value: "no_aplica",
   },
 ];
 
@@ -122,16 +129,24 @@ interface BackendError {
 }
 
 export const MaterialForm = () => {
+  const defaultRadioValue = "pesos";
+
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
   const [backendErrors, setBackendErrors] = useState<BackendError[]>([]);
+  const [currencyValue, setCurrencyValue] = useState(defaultRadioValue);
 
   const materialNameRef = useRef<HTMLInputElement>(null);
   const materialBrandRef = useRef<HTMLInputElement>(null);
   const materialPriceRef = useRef<HTMLInputElement>(null);
-  const materialPresentationRef = useRef<HTMLInputElement>(null);
+  const materialUnityRef = useRef<HTMLInputElement>(null);
   const materialQuantityRef = useRef<HTMLInputElement>(null);
   const materialTypeRef = useRef<HTMLInputElement>(null);
-  const materialDataSheet = useRef<HTMLInputElement>(null);
+  const materialComponentRef = useRef<HTMLInputElement>(null);
+
+  // Obtengo el value del Radio seleccionado
+  const handleRadioChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setCurrencyValue(e.target.value);
+  };
 
   const handleCancel = () => {
     console.log("handleCancel");
@@ -144,7 +159,7 @@ export const MaterialForm = () => {
     ) {
       formErrors.push({
         field: "materialName",
-        message: "El nombre es requerido",
+        message: "Nombre requerido",
         showError: true,
       });
     }
@@ -155,22 +170,72 @@ export const MaterialForm = () => {
     ) {
       formErrors.push({
         field: "materialBrand",
-        message: "La marca es requerida",
+        message: "Marca requerida",
         showError: true,
       });
     }
 
-    // materialPriceRef.current?.value != null
-    // materialPresentationRef.current?.value != null
-    // materialQuantityRef.current?.value != null
-    // materialTypeRef.current?.value != null
-    // materialDataSheet.current?.value != null)
+    if (
+      materialQuantityRef.current?.value === "" ||
+      materialQuantityRef.current?.value == null
+    ) {
+      formErrors.push({
+        field: "materialCuantity",
+        message: "Cantidad requerida",
+        showError: true,
+      });
+    }
+
+    if (
+      materialPriceRef.current?.value === "" ||
+      materialPriceRef.current?.value == null
+    ) {
+      formErrors.push({
+        field: "materialPrice",
+        message: "Precio requerido",
+        showError: true,
+      });
+    }
+
+    if (
+      materialTypeRef.current?.value === "" ||
+      materialTypeRef.current?.value == null
+    ) {
+      formErrors.push({
+        field: "materialType",
+        message: "Tipo requerido",
+        showError: true,
+      });
+    }
+
+    if (
+      materialComponentRef.current?.value === "" ||
+      materialComponentRef.current?.value == null
+    ) {
+      formErrors.push({
+        field: "materialComponents",
+        message: "Composición requerida",
+        showError: true,
+      });
+    }
+
+    if (
+      materialUnityRef.current?.value === "" ||
+      materialUnityRef.current?.value == null
+    ) {
+      formErrors.push({
+        field: "materialUnity",
+        message: "Unidad requerida",
+        showError: true,
+      });
+    }
   };
 
   const handleAccept = async () => {
     const formErrors: FormError[] = [];
     const backendErrors: BackendError[] = [];
     verifyFormErrors(formErrors);
+    console.log("materialTypeRef", materialTypeRef.current?.value);
 
     if (formErrors.length === 0) {
       const response = await createMaterial({
@@ -197,9 +262,10 @@ export const MaterialForm = () => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const errors: FormError[] = [];
     const fieldName = event.target?.name; // valor de la propiedad name del input
+    // TODO: si no se usa sacarlo
     const fieldValue = event.target?.value; // valor ingresado en el input por el usuario
     const validationMessage = event.target?.validationMessage; // mensaje de error de validaciones que no son de backend, ej: el error del regex
-    console.log("fieldValue", fieldValue);
+    console.log("validationMessage", validationMessage);
 
     if (!event.target?.validity?.valid) {
       errors.push({
@@ -224,13 +290,14 @@ export const MaterialForm = () => {
         {/* ------------- Nombre ------------- */}
         <div className="row mb-3">
           <div className="col-lg-6 col-sm-6">
-            <TextField              
+            <TextField
               inputRef={materialNameRef}
               fullWidth
-              required              
+              required
               name="materialName"
               label="Nombre"
               variant="outlined"
+              onChange={handleInputChange}
               error={
                 formErrors.find((error) => error.field === "materialName")
                   ?.showError ||
@@ -243,7 +310,6 @@ export const MaterialForm = () => {
                 backendErrors.find((error) => error.field === "materialName")
                   ?.message
               }
-              onChange={handleInputChange}
             />
           </div>
           {/* ------------- Marca ------------- */}
@@ -271,19 +337,67 @@ export const MaterialForm = () => {
             />
           </div>
         </div>
-        {/* ------------- Precio unitario ($/kg) ------------- */}
+        {/* ------------- Precio unitario READONLY ------------- */}
         <div className="row">
           <div className="col-lg-6 col-sm-6 mb-3">
             <TextField
-              inputProps={{
-                pattern: "^[0-9]+$", // Expresión regular para solo permitir números
-                min: 0
-              }}
-              type="number"
-              inputRef={materialPriceRef}
               fullWidth
-              label="Precio unitario ($/kg)"
+              label="Precio unitario"
+              defaultValue="Read only input"
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+          </div>
+        </div>
+        <Typography
+          align="left"
+          variant="subtitle1"
+          component="div"
+          sx={{ mt: 3 }}
+        >
+          Presentación
+        </Typography>
+        <Divider />
+        <div className="row mt-3">
+          {/* ------------- Cantidad ------------- */}
+          <div className="col-lg-4 col-sm-6">
+            <TextField
+              name="materialCuantity"
+              required
+              inputRef={materialQuantityRef}
+              type="number"
+              fullWidth
+              inputProps={{ min: 1 }}
+              label="Cantidad"
+              variant="outlined"
+              onChange={handleInputChange}
+              error={
+                formErrors.find((error) => error.field === "materialCuantity")
+                  ?.showError ||
+                backendErrors.find(
+                  (error) => error.field === "materialCuantity"
+                )?.showError
+              }
+              helperText={
+                formErrors.find((error) => error.field === "materialCuantity")
+                  ?.message ||
+                backendErrors.find(
+                  (error) => error.field === "materialCuantity"
+                )?.message
+              }
+            />
+          </div>
+          {/* ------------- Precio ------------- */}
+          <div className="col-lg-4 col-sm-6">
+            <TextField
+              inputRef={materialPriceRef}
               name="materialPrice"
+              required
+              type="number"
+              fullWidth
+              inputProps={{ min: 0 }}
+              label="Precio"
               variant="outlined"
               onChange={handleInputChange}
               error={
@@ -300,44 +414,83 @@ export const MaterialForm = () => {
               }
             />
           </div>
-        </div>
-        {/* ------------- Presentación ------------- */}
-        <div className="row">
-          <div className="col-lg-6 col-sm-6 mb-3">
-            <SelectField
-              refPrueba={materialPresentationRef}
-              label="Presentación"
-              options={presentation}
+          {/* ------------- Moneda ------------- */}
+          <div className="col-lg-4 col-sm-6">
+            <RadioGroupCustom
+              name="materialCurrency"
+              onChange={handleRadioChange}
+              row
+              formLabel="Moneda"
+              defaultValue={defaultRadioValue}
+              id="radioId"
+              options={currency}
             />
           </div>
-          {/* ------------- Cantidad ------------- */}
-          <div className="col-lg-6 col-sm-6">
-            <TextField
-              inputRef={materialQuantityRef}
-              type="number"
-              fullWidth
-              inputProps={{ min: 1 }}
-              label="Cantidad"
-              variant="outlined"
-            />
-          </div>
-          <div />
         </div>
         {/* ------------- Tipo ------------- */}
-        <div className="row">
-          <div className="col-lg-6 col-sm-6 ">
-            {/* <SelectField ref={materialTypeRef} label="Tipo" options={tipe} /> */}
+        <div className="row mt-3">
+          <div className="col-lg-4 col-sm-6 ">
+            <SelectField
+              getRef={materialTypeRef}
+              label="Tipo *"
+              name="materialType"
+              options={type}
+              error={
+                formErrors.find((error) => error.field === "materialType")
+                  ?.showError ||
+                backendErrors.find((error) => error.field === "materialType")
+                  ?.showError
+              }
+              helperText={
+                formErrors.find((error) => error.field === "materialType")
+                  ?.message ||
+                backendErrors.find((error) => error.field === "materialType")
+                  ?.message
+              }
+            />
           </div>
-          <div />
           {/* ------------- Composición ------------- */}
-          <div className="col-lg-6 col-sm-6">
-            <RadioGroupCustom
-              row
-              formLabel="Composición"
-              defaultValue="radio1"
-              name="radio-group-tipo"
-              id="radioId"
-              options={compositionList}
+          <div className="col-lg-4 col-sm-6">
+            <SelectField
+              name="materialComponents"
+              getRef={materialComponentRef}
+              label="Composición *"
+              options={components}
+              error={
+                formErrors.find((error) => error.field === "materialComponents")
+                  ?.showError ||
+                backendErrors.find(
+                  (error) => error.field === "materialComponents"
+                )?.showError
+              }
+              helperText={
+                formErrors.find((error) => error.field === "materialComponents")
+                  ?.message ||
+                backendErrors.find(
+                  (error) => error.field === "materialComponents"
+                )?.message
+              }
+            />
+          </div>
+          {/* ------------- Unidad ------------- */}
+          <div className="col-lg-4 col-sm-6">
+            <SelectField
+              name="materialUnity"
+              getRef={materialUnityRef}
+              label="Unidad *"
+              options={unity}
+              error={
+                formErrors.find((error) => error.field === "materialUnity")
+                  ?.showError ||
+                backendErrors.find((error) => error.field === "materialUnity")
+                  ?.showError
+              }
+              helperText={
+                formErrors.find((error) => error.field === "materialUnity")
+                  ?.message ||
+                backendErrors.find((error) => error.field === "materialUnity")
+                  ?.message
+              }
             />
           </div>
         </div>
@@ -360,19 +513,6 @@ export const MaterialForm = () => {
               fullWidth
               inputProps={{ min: 0 }}
               label="File upload"
-              variant="outlined"
-            />
-          </div>
-          {/* ------------- Ficha técnica ------------- */}
-          <div className="col-lg-10 col-sm-6 mt-3">
-            <TextField
-              multiline
-              minRows={5}
-              inputRef={materialDataSheet}
-              type="number"
-              fullWidth
-              inputProps={{ min: 0 }}
-              label="Ficha técnica"
               variant="outlined"
             />
           </div>
