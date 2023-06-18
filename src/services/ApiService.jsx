@@ -19,7 +19,7 @@ const post = async (url, data) => {
   }
 };
 
-const get = async (url) => {
+export const get = async (url) => {
   try {
     return await api.get(url);
   } catch (error) {

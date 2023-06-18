@@ -4,6 +4,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { CustomSkeleton } from "../skeleton/Skeleton";
 import { MaterialForm } from "../materialForm/MaterialForm";
+import { MaterialTable } from "../materialTable/MaterialTable";
 
 type MenuProps = {
   isOpen: boolean;
@@ -17,7 +18,7 @@ export const menuOptions = [
     name: "Alta de material",
     icon: <ArrowRightIcon />,
     path: "/option2",
-    component: MaterialForm,
+    component: MaterialTable,
   },
   {
     name: "Campos de aplicación",
