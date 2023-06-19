@@ -7,6 +7,7 @@ import { ChangeEvent, useRef, useState } from "react";
 
 // Services
 import { createMaterial } from "../../services/ApiService";
+import AmountInput from "../amountInput";
 
 const type = [
   {
@@ -229,13 +230,23 @@ export const MaterialForm = () => {
         showError: true,
       });
     }
+    if (
+      materialPriceRef.current?.value === "" ||
+      materialPriceRef.current?.value == null
+    ) {
+      formErrors.push({
+        field: "materialUnity",
+        message: "Precio requerido",
+        showError: true,
+      });
+    }
   };
 
   const handleAccept = async () => {
     const formErrors: FormError[] = [];
     const backendErrors: BackendError[] = [];
     verifyFormErrors(formErrors);
-    console.log("materialTypeRef", materialTypeRef.current?.value);
+    console.log("materialPriceRef", materialPriceRef.current?.value);
 
     if (formErrors.length === 0) {
       const response = await createMaterial({
@@ -260,6 +271,8 @@ export const MaterialForm = () => {
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("entró!!!");
+    
     const errors: FormError[] = [];
     const fieldName = event.target?.name; // valor de la propiedad name del input
     // TODO: si no se usa sacarlo
@@ -390,7 +403,27 @@ export const MaterialForm = () => {
           </div>
           {/* ------------- Precio ------------- */}
           <div className="col-lg-4 col-sm-6">
-            <TextField
+            <AmountInput
+              setBackendErrors={setBackendErrors}
+              setFormErrors={setFormErrors}
+              inputRef={materialPriceRef}
+              required
+              label="Precio"
+              onChange={handleInputChange}
+              error={
+                formErrors.find((error) => error.field === "materialPrice")
+                  ?.showError ||
+                backendErrors.find((error) => error.field === "materialPrice")
+                  ?.showError
+              }
+              helperText={
+                formErrors.find((error) => error.field === "materialPrice")
+                  ?.message ||
+                backendErrors.find((error) => error.field === "materialPrice")
+                  ?.message
+              }
+            />
+            {/* <TextField
               inputRef={materialPriceRef}
               name="materialPrice"
               required
@@ -412,7 +445,7 @@ export const MaterialForm = () => {
                 backendErrors.find((error) => error.field === "materialPrice")
                   ?.message
               }
-            />
+            /> */}
           </div>
           {/* ------------- Moneda ------------- */}
           <div className="col-lg-4 col-sm-6">
