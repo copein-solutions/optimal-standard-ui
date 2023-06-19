@@ -3,8 +3,8 @@ import { Box, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText
 import React from "react";
 import { Link } from "react-router-dom";
 import { CustomSkeleton } from "../skeleton/Skeleton";
-import { MaterialForm } from "../materialForm/MaterialForm";
 import { MaterialTable } from "../materialTable/MaterialTable";
+import { ApplicationAreaTable } from "../applicationAreaTable/ApplicationAreaTable";
 
 type MenuProps = {
   isOpen: boolean;
@@ -15,15 +15,21 @@ type MenuProps = {
 // TODO: cambiar este objeto para un archivo aparte??
 export const menuOptions = [
   {
-    name: "Alta de material",
+    name: "Materiales",
     icon: <ArrowRightIcon />,
-    path: "/option2",
+    path: "/materials",
     component: MaterialTable,
   },
   {
     name: "Campos de aplicación",
     icon: <ArrowRightIcon />,
-    path: "/option1",
+    path: "/application_areas",
+    component: ApplicationAreaTable,
+  },
+  {
+    name: "Skeleton",
+    icon: <ArrowRightIcon />,
+    path: "/skeleton",
     component: CustomSkeleton,
   },
   // {

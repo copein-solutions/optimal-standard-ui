@@ -46,10 +46,10 @@ const MaterialRow = ({
       <td>{materialName}</td>
       <td>{materialBrand}</td>
       <td>{materialPrice}</td>
-      <td>{materialUnity}</td>
-      <td>{materialQuantity}</td>
       <td>{materialType}</td>
-      <td>{materialComponent}</td>
+      <td>{materialQuantity}</td>
+      {/* <td>{materialComponent}</td> */}
+      <td>{materialUnity}</td>
       <td>{priceDate}</td>
       <td>
         <Button

@@ -142,6 +142,7 @@ export const MaterialForm = () => {
   const materialQuantityRef = useRef<HTMLInputElement>(null);
   const materialTypeRef = useRef<HTMLInputElement>(null);
   const materialComponentRef = useRef<HTMLInputElement>(null);
+  const materialCurrencyRef = useRef<HTMLInputElement>(null);
 
   // Obtengo el value del Radio seleccionado
   const handleRadioChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -236,11 +237,19 @@ export const MaterialForm = () => {
     const backendErrors: BackendError[] = [];
     verifyFormErrors(formErrors);
     console.log("materialTypeRef", materialTypeRef.current?.value);
+    console.log("materialCurrencyRef", materialCurrencyRef.current?.value);
 
     if (formErrors.length === 0) {
       const response = await createMaterial({
         name: materialNameRef.current?.value,
         brand: materialBrandRef.current?.value,
+        presentationQuantity: materialQuantityRef.current?.value,
+        presentationUnit: materialUnityRef.current?.value,
+        presentationPrice: materialPriceRef.current?.value,
+        priceDate: new Date(),
+        currency: currencyValue,
+        type: materialTypeRef.current?.value,
+        component: materialComponentRef.current?.value
       });
       console.log("respuesta back", response);
 
@@ -417,6 +426,7 @@ export const MaterialForm = () => {
           {/* ------------- Moneda ------------- */}
           <div className="col-lg-4 col-sm-6">
             <RadioGroupCustom
+            inputRef={materialCurrencyRef}
               name="materialCurrency"
               onChange={handleRadioChange}
               row

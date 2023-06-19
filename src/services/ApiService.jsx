@@ -10,6 +10,10 @@ export const createMaterial = (data) => {
     return post("/material", data);
 }
 
+export const createApplicationArea = (data) => {
+  return post("/application_area", data);
+}
+
 const post = async (url, data) => {
   try {
     return await api.post(url, data);

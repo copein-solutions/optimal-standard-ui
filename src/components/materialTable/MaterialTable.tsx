@@ -5,6 +5,7 @@ import MaterialRow from "./materialRow/MaterialRow";
 import "./MaterialTable.css";
 import { MaterialForm } from "../materialForm/MaterialForm";
 import { get } from "../../services/ApiService";
+import { MainContainer } from "../mainContainer/MainContainer";
 
 export const MaterialTable = () => {
   const [open, setOpen] = useState(false);
@@ -23,8 +24,14 @@ export const MaterialTable = () => {
     setModalType("material");
   };
 
+  const handleClose = () => {
+		setOpen(false);
+	};
+
   return (
-    <>
+    <MainContainer
+      cardTitle="Listado de material"
+    >
       <div>
         <Button variant="contained" onClick={newMaterial}>
           Nuevo Material
@@ -38,7 +45,7 @@ export const MaterialTable = () => {
             <th scope="col">Precio</th>
             <th scope="col">Tipo</th>
             <th scope="col">Cantidad</th>
-            <th scope="col">Composición</th>
+            {/* <th scope="col">Composición</th> */}
             <th scope="col">Unidad</th>
             <th scope="col">Fecha</th>
             <th scope="col"></th>
@@ -74,6 +81,6 @@ export const MaterialTable = () => {
       <Dialog open={open} maxWidth={false}>
         {modalType === "material" && <MaterialForm />}
       </Dialog>
-    </>
+    </MainContainer>
   );
 };
