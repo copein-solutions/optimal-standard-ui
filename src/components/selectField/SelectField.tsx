@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, ReactNode, useState } from "react";
 import {
   BaseTextFieldProps,
   InputLabel,
@@ -12,6 +12,7 @@ type Option = {
 };
 
 type CustomSelectProps = {
+  setPrefix?: (value: string) => void
   getRef?: any;
   label: string;
   options: Option[];
@@ -20,6 +21,7 @@ type CustomSelectProps = {
 } & BaseTextFieldProps;
 
 const CustomSelect: FC<CustomSelectProps> = ({
+  setPrefix = () => {},
   options,
   label,
   getRef,
@@ -29,6 +31,7 @@ const CustomSelect: FC<CustomSelectProps> = ({
   const [value, setValue] = useState("");
 
   const handleChange = (event: SelectChangeEvent) => {
+    setPrefix(`$/${event.target.value}`);
     setValue(event.target.value);
   };
 

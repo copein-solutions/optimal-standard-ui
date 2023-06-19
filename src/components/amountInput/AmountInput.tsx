@@ -1,23 +1,39 @@
-import React, { forwardRef, ReactElement, Ref, useState } from "react";
-import { TextField, TextFieldProps } from "@mui/material";
+import React, {
+  forwardRef,
+  ReactElement,
+  ReactNode,
+  Ref,
+  useState,
+} from "react";
+import { InputAdornment, TextField, TextFieldProps } from "@mui/material";
 import NumberFormat, {
   NumberFormatValues,
   SourceInfo,
   NumberFormatProps,
 } from "react-number-format";
 
-export type AmountFieldProps = {} & TextFieldProps & NumberFormatProps<any>;
+export type AmountFieldProps = {
+  /** Propiedad necesaria para capturar la referencia del input*/
+  inputRef: any;
+  /** Propiedad necesaria para capturar la referencia del input*/
+  prefix: ReactNode;
+  onChange: () => void;
+} & TextFieldProps &
+  NumberFormatProps<any>;
 
 const AmountField = forwardRef<HTMLInputElement, AmountFieldProps>(
   (
     {
+      name,
+      onChange,
+      prefix,
       inputRef,
       required,
       error,
       helperText,
       label,
       decimalScale = 2,
-      thousandSeparator = ".",
+      thousandSeparator,
       decimalSeparator = ",",
       fixedDecimalScale = true,
       value,
@@ -32,16 +48,15 @@ const AmountField = forwardRef<HTMLInputElement, AmountFieldProps>(
       sourceInfo: SourceInfo
     ) {
       const { formattedValue } = values;
-      const { event, source } = sourceInfo;
-      console.log(event);
-      console.log(source);
-      
       setInputValue(formattedValue);
       if (onValueChange) onValueChange(values, sourceInfo);
     }
 
     return (
       <NumberFormat
+        name={name}
+        onChange={onChange}
+        inputRef={inputRef}
         required={required}
         error={error}
         helperText={helperText}
@@ -52,11 +67,15 @@ const AmountField = forwardRef<HTMLInputElement, AmountFieldProps>(
         decimalScale={decimalScale}
         thousandSeparator={thousandSeparator}
         decimalSeparator={decimalSeparator}
-        getInputRef={inputRef}
         inputMode="numeric"
         value={inputValue}
         label={label}
         onValueChange={handleValueChange}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">{prefix}</InputAdornment>
+          )
+        }}
         // {...props}
       />
     );

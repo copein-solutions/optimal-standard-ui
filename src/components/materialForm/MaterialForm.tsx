@@ -1,9 +1,9 @@
 import { MainContainer } from "../mainContainer/MainContainer";
 import SelectField from "../selectField/SelectField";
-import { Divider, Typography, TextField } from "@mui/material";
+import { Divider, Typography, TextField, InputAdornment } from "@mui/material";
 import RadioGroupCustom from "../radioGroup/RadioGroup";
 import "./MaterialForm.css";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 
 // Services
 import { createMaterial } from "../../services/ApiService";
@@ -135,6 +135,7 @@ export const MaterialForm = () => {
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
   const [backendErrors, setBackendErrors] = useState<BackendError[]>([]);
   const [currencyValue, setCurrencyValue] = useState(defaultRadioValue);
+  const [prefix, setPrefix] = useState("");
 
   const materialNameRef = useRef<HTMLInputElement>(null);
   const materialBrandRef = useRef<HTMLInputElement>(null);
@@ -149,11 +150,12 @@ export const MaterialForm = () => {
     setCurrencyValue(e.target.value);
   };
 
+  //función que se ejecuta cuando presiona el botón cancelar
   const handleCancel = () => {
     console.log("handleCancel");
   };
 
-  const verifyFormErrors = (formErrors: FormError[]) => {
+  const verifyFormErrorsOnAccept = (formErrors: FormError[]) => {
     if (
       materialNameRef.current?.value === "" ||
       materialNameRef.current?.value == null
@@ -181,7 +183,7 @@ export const MaterialForm = () => {
       materialQuantityRef.current?.value == null
     ) {
       formErrors.push({
-        field: "materialCuantity",
+        field: "materialQuantity",
         message: "Cantidad requerida",
         showError: true,
       });
@@ -230,23 +232,12 @@ export const MaterialForm = () => {
         showError: true,
       });
     }
-    if (
-      materialPriceRef.current?.value === "" ||
-      materialPriceRef.current?.value == null
-    ) {
-      formErrors.push({
-        field: "materialUnity",
-        message: "Precio requerido",
-        showError: true,
-      });
-    }
   };
 
   const handleAccept = async () => {
     const formErrors: FormError[] = [];
     const backendErrors: BackendError[] = [];
-    verifyFormErrors(formErrors);
-    console.log("materialPriceRef", materialPriceRef.current?.value);
+    verifyFormErrorsOnAccept(formErrors);
 
     if (formErrors.length === 0) {
       const response = await createMaterial({
@@ -270,9 +261,7 @@ export const MaterialForm = () => {
     setFormErrors(formErrors);
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("entró!!!");
-    
+  const verifyFormErrors = (event: React.ChangeEvent<HTMLInputElement>) => {
     const errors: FormError[] = [];
     const fieldName = event.target?.name; // valor de la propiedad name del input
     // TODO: si no se usa sacarlo
@@ -290,6 +279,26 @@ export const MaterialForm = () => {
 
     setFormErrors(errors);
     setBackendErrors(errors);
+  }
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    verifyFormErrors(event);
+  };
+
+  const [inputValue, setInputValue] = useState("");
+
+  const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    verifyFormErrors(event);
+    if (materialPriceRef || materialQuantityRef) {
+      let precio = 0;
+      let precioIngresado = Number(
+        materialPriceRef.current?.value.replaceAll(".", "").replace(",", ".")
+      );
+      let cantidadIngresada = Number(materialQuantityRef.current?.value);
+
+      precio = precioIngresado / cantidadIngresada;
+      setInputValue(String(precio).replace(".", ","));
+    }
   };
 
   return (
@@ -354,11 +363,15 @@ export const MaterialForm = () => {
         <div className="row">
           <div className="col-lg-6 col-sm-6 mb-3">
             <TextField
+              value={inputValue}
               fullWidth
+              required
               label="Precio unitario"
-              defaultValue="Read only input"
               InputProps={{
                 readOnly: true,
+                startAdornment: (
+                  <InputAdornment position="start">{prefix}</InputAdornment>
+                ),
               }}
             />
           </div>
@@ -376,7 +389,7 @@ export const MaterialForm = () => {
           {/* ------------- Cantidad ------------- */}
           <div className="col-lg-4 col-sm-6">
             <TextField
-              name="materialCuantity"
+              name="materialQuantity"
               required
               inputRef={materialQuantityRef}
               type="number"
@@ -384,19 +397,19 @@ export const MaterialForm = () => {
               inputProps={{ min: 1 }}
               label="Cantidad"
               variant="outlined"
-              onChange={handleInputChange}
+              onChange={handleValueChange}
               error={
-                formErrors.find((error) => error.field === "materialCuantity")
+                formErrors.find((error) => error.field === "materialQuantity")
                   ?.showError ||
                 backendErrors.find(
-                  (error) => error.field === "materialCuantity"
+                  (error) => error.field === "materialQuantity"
                 )?.showError
               }
               helperText={
-                formErrors.find((error) => error.field === "materialCuantity")
+                formErrors.find((error) => error.field === "materialQuantity")
                   ?.message ||
                 backendErrors.find(
-                  (error) => error.field === "materialCuantity"
+                  (error) => error.field === "materialQuantity"
                 )?.message
               }
             />
@@ -404,12 +417,12 @@ export const MaterialForm = () => {
           {/* ------------- Precio ------------- */}
           <div className="col-lg-4 col-sm-6">
             <AmountInput
-              setBackendErrors={setBackendErrors}
-              setFormErrors={setFormErrors}
+              // prefix={prefix}
+              name="materialPrice"
               inputRef={materialPriceRef}
               required
               label="Precio"
-              onChange={handleInputChange}
+              onChange={handleValueChange}
               error={
                 formErrors.find((error) => error.field === "materialPrice")
                   ?.showError ||
@@ -423,29 +436,6 @@ export const MaterialForm = () => {
                   ?.message
               }
             />
-            {/* <TextField
-              inputRef={materialPriceRef}
-              name="materialPrice"
-              required
-              type="number"
-              fullWidth
-              inputProps={{ min: 0 }}
-              label="Precio"
-              variant="outlined"
-              onChange={handleInputChange}
-              error={
-                formErrors.find((error) => error.field === "materialPrice")
-                  ?.showError ||
-                backendErrors.find((error) => error.field === "materialPrice")
-                  ?.showError
-              }
-              helperText={
-                formErrors.find((error) => error.field === "materialPrice")
-                  ?.message ||
-                backendErrors.find((error) => error.field === "materialPrice")
-                  ?.message
-              }
-            /> */}
           </div>
           {/* ------------- Moneda ------------- */}
           <div className="col-lg-4 col-sm-6">
@@ -508,10 +498,12 @@ export const MaterialForm = () => {
           {/* ------------- Unidad ------------- */}
           <div className="col-lg-4 col-sm-6">
             <SelectField
+              setPrefix={setPrefix}
               name="materialUnity"
               getRef={materialUnityRef}
               label="Unidad *"
               options={unity}
+              // onClick={onClick}
               error={
                 formErrors.find((error) => error.field === "materialUnity")
                   ?.showError ||
