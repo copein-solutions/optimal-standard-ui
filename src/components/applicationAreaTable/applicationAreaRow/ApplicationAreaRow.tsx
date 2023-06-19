@@ -5,9 +5,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
 const ApplicationAreaRow = ({
-    applicationAreaName
+    applicationAreaName,
+    applicationAreaSpecification
   }: {
     applicationAreaName: string;
+    applicationAreaSpecification: string;
   }) => {
   //   const { apiKey } = useSelector((state) => state.user.loggedUser);
 
@@ -30,15 +32,16 @@ const ApplicationAreaRow = ({
   return (
     <tr>
       <td>{applicationAreaName}</td>
+      <td>{applicationAreaSpecification}</td>
       <td>
         <Button
           sx={{
-            borderRadius: "50%",
+            borderRadius: "20%",
             height: "45px",
             width: "45px",
             minWidth: 0,
           }}
-          color="error"
+          color="success"
           variant="contained"
           onClick={onEdit}
         >
@@ -48,7 +51,7 @@ const ApplicationAreaRow = ({
       <td>
         <Button
           sx={{
-            borderRadius: "50%",
+            borderRadius: "20%",
             height: "45px",
             width: "45px",
             minWidth: 0,

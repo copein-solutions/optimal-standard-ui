@@ -33,7 +33,7 @@ export const ApplicationAreaTable = () => {
       cardTitle="Listado de Campo de Aplicación"
     >
       <div>
-        <Button variant="contained" onClick={newApplicationArea}>
+        <Button variant="contained" color="success" onClick={newApplicationArea}>
           Nuevo Campo de Aplicación
         </Button>
       </div>
@@ -41,6 +41,7 @@ export const ApplicationAreaTable = () => {
         <thead>
           <tr>
             <th scope="col">Nombre</th>
+            <th scope="col">Especificaciones</th>
             <th scope="col"></th>
             <th scope="col"></th>
           </tr>
@@ -48,10 +49,12 @@ export const ApplicationAreaTable = () => {
         <tbody>
           {applicationAreas.map(
             ({
-              name
+              name,
+              specification
             }) => (
               <ApplicationAreaRow
                 applicationAreaName={name}
+                applicationAreaSpecification={specification}
               />
             )
           )}

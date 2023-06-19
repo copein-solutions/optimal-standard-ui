@@ -33,7 +33,7 @@ export const MaterialTable = () => {
       cardTitle="Listado de material"
     >
       <div>
-        <Button variant="contained" onClick={newMaterial}>
+        <Button variant="contained" color="success" onClick={newMaterial}>
           Nuevo Material
         </Button>
       </div>

@@ -54,12 +54,12 @@ const MaterialRow = ({
       <td>
         <Button
           sx={{
-            borderRadius: "50%",
+            borderRadius: "20%",
             height: "45px",
             width: "45px",
             minWidth: 0,
           }}
-          color="error"
+          color="success"
           variant="contained"
           onClick={onEdit}
         >
@@ -69,7 +69,7 @@ const MaterialRow = ({
       <td>
         <Button
           sx={{
-            borderRadius: "50%",
+            borderRadius: "20%",
             height: "45px",
             width: "45px",
             minWidth: 0,
