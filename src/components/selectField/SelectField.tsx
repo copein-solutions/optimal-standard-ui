@@ -6,18 +6,20 @@ import {
 } from "@mui/material";
 import { MenuItem, FormControl, Select, FormHelperText } from "@mui/material";
 
-type Option = {
+export type Option = {
   value: string;
   label: string;
 };
 
 type CustomSelectProps = {
-  setPrefix?: (value: string) => void
+  setPrefix?: (value: string) => void;
   getRef?: any;
   label: string;
   options: Option[];
   error?: any;
   helperText?: string;
+  name: string;
+  onOptionSelect?: (selectedOption: string) => void;
 } & BaseTextFieldProps;
 
 const CustomSelect: FC<CustomSelectProps> = ({
@@ -27,18 +29,28 @@ const CustomSelect: FC<CustomSelectProps> = ({
   getRef,
   error,
   helperText,
+  name,
+  onOptionSelect,
 }) => {
   const [value, setValue] = useState("");
 
   const handleChange = (event: SelectChangeEvent) => {
     setPrefix(`$/${event.target.value}`);
     setValue(event.target.value);
+
+    if (onOptionSelect) {
+      const selectedOption = event.target.name;
+      if (selectedOption) {
+        onOptionSelect(selectedOption);
+      }
+    }
   };
 
   return (
     <FormControl fullWidth>
       <InputLabel id="custom-select-label">{label}</InputLabel>
       <Select
+        name={name}
         inputRef={getRef}
         onChange={handleChange}
         value={value}

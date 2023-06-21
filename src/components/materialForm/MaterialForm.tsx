@@ -1,5 +1,5 @@
 import { MainContainer } from "../mainContainer/MainContainer";
-import SelectField from "../selectField/SelectField";
+import SelectField, { Option } from "../selectField/SelectField";
 import { Divider, Typography, TextField, InputAdornment } from "@mui/material";
 import RadioGroupCustom from "../radioGroup/RadioGroup";
 import "./MaterialForm.css";
@@ -136,6 +136,11 @@ export const MaterialForm = () => {
   const [backendErrors, setBackendErrors] = useState<BackendError[]>([]);
   const [currencyValue, setCurrencyValue] = useState(defaultRadioValue);
   const [prefix, setPrefix] = useState("");
+  const [selectedOption, setSelectedOption] = useState<Option | null>(null);
+
+  const handleOptionSelect = (selectedName: string) => {
+    verifyFormErrors(selectedName, "", true);
+  };
 
   const materialNameRef = useRef<HTMLInputElement>(null);
   const materialBrandRef = useRef<HTMLInputElement>(null);
@@ -261,15 +266,19 @@ export const MaterialForm = () => {
     setFormErrors(formErrors);
   };
 
-  const verifyFormErrors = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const verifyFormErrors = (
+    fieldName: string,
+    validationMessage: string,
+    valid: boolean
+  ) => {
     const errors: FormError[] = [];
-    const fieldName = event.target?.name; // valor de la propiedad name del input
+    // const fieldName = event.target?.name; // valor de la propiedad name del input
     // TODO: si no se usa sacarlo
-    const fieldValue = event.target?.value; // valor ingresado en el input por el usuario
-    const validationMessage = event.target?.validationMessage; // mensaje de error de validaciones que no son de backend, ej: el error del regex
+    // const fieldValue = event.target?.value; // valor ingresado en el input por el usuario
+    // const validationMessage = event.target?.validationMessage; // mensaje de error de validaciones que no son de backend, ej: el error del regex
     console.log("validationMessage", validationMessage);
 
-    if (!event.target?.validity?.valid) {
+    if (!valid) {
       errors.push({
         field: fieldName,
         message: validationMessage,
@@ -279,16 +288,24 @@ export const MaterialForm = () => {
 
     setFormErrors(errors);
     setBackendErrors(errors);
-  }
+  };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    verifyFormErrors(event);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    verifyFormErrors(
+      e.target?.name,
+      e.target?.validationMessage,
+      e.target?.validity?.valid
+    );
   };
 
   const [inputValue, setInputValue] = useState("");
 
-  const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    verifyFormErrors(event);
+  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    verifyFormErrors(
+      e.target?.name,
+      e.target?.validationMessage,
+      e.target?.validity?.valid
+    );
     if (materialPriceRef || materialQuantityRef) {
       let precio = 0;
       let precioIngresado = Number(
@@ -458,6 +475,7 @@ export const MaterialForm = () => {
               label="Tipo *"
               name="materialType"
               options={type}
+              onOptionSelect={handleOptionSelect}
               error={
                 formErrors.find((error) => error.field === "materialType")
                   ?.showError ||
@@ -479,6 +497,7 @@ export const MaterialForm = () => {
               getRef={materialComponentRef}
               label="Composición *"
               options={components}
+              onOptionSelect={handleOptionSelect}
               error={
                 formErrors.find((error) => error.field === "materialComponents")
                   ?.showError ||
@@ -503,7 +522,7 @@ export const MaterialForm = () => {
               getRef={materialUnityRef}
               label="Unidad *"
               options={unity}
-              // onClick={onClick}
+              onOptionSelect={handleOptionSelect}
               error={
                 formErrors.find((error) => error.field === "materialUnity")
                   ?.showError ||
