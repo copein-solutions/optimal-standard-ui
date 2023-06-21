@@ -6,6 +6,7 @@ import { get } from "../../services/ApiService";
 import { MainContainer } from "../mainContainer/MainContainer";
 import { GridCustom } from "../grid/Grid";
 import Skeleton from "../skeleton";
+import { bottom } from "@popperjs/core";
 
 export const MaterialTable = () => {
   const [open, setOpen] = useState(false);
@@ -15,12 +16,13 @@ export const MaterialTable = () => {
 
   const columns = [
     { name: "Nombre", value: "name" },
-    { name: "Marca", value: "brand" },
     { name: "Precio Unitario", value: "unityPrice" },
-    { name: "Precio", value: "presentationPrice" },
+    { name: "Marca", value: "brand" },
+    // { name: "Cantidad", value: "presentationQuantity" },
+    // { name: "Moneda", value: "currency" },
+    // { name: "Precio", value: "presentationPrice" },
     { name: "Tipo", value: "type" },
-    { name: "Cantidad", value: "presentationQuantity" },
-    { name: "Unidad", value: "presentationUnit" },
+    // { name: "Unidad", value: "presentationUnit" },
     { name: "Fecha", value: "priceDate" },
   ];
 
@@ -63,10 +65,14 @@ export const MaterialTable = () => {
     // {fetching && <Skeleton />}
     <MainContainer cardTitle="Listado de material">
       <div>
-        <Button variant="contained" color="success" onClick={newMaterial}>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={newMaterial}
+        >
           Nuevo Material
         </Button>
-
+        
         <GridCustom columns={columns} rows={materials} hasEdit hasDelete />
       </div>
 
