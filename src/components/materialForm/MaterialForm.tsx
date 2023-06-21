@@ -1,118 +1,412 @@
 import { MainContainer } from "../mainContainer/MainContainer";
 import SelectField from "../selectField/SelectField";
-import { Divider, Typography, TextField } from "@mui/material";
-import MultiSelectWithSearch from "../multiSelect/MultiSelect";
+import { Divider, Typography, TextField, InputAdornment } from "@mui/material";
 import RadioGroupCustom from "../radioGroup/RadioGroup";
+import "./MaterialForm.css";
+import { ChangeEvent, useRef, useState } from "react";
 
-const optionsSelect = [
-  { value: "estandar_optimo", label: "Estándar óptimo" },
-  {
-    value: "estandar_optimo_alternativo",
-    label: "Estándar óptimo alternativo",
-  },
-  { value: "no_estandar_optimo", label: "No es estándar óptimo" },
-];
+// Services
+import { createMaterial } from "../../services/ApiService";
+import AmountInput from "../amountInput";
 
-const optionsApplicationArea = [
+const type = [
   {
-    value: "application_area1",
-    label: "Muros de contención - Presión positiva sin napa ",
+    value: "Cementicio",
+    label: "Cementicio",
   },
   {
-    value: "application_area2",
-    label:
-      "Muros de contención - Presión positiva con napa - c/tratamiento de juntas frías",
+    value: "Acrílico",
+    label: "Acrílico",
   },
   {
-    value: "application_area3",
-    label: "Muros de contención - Presión negativa sin napa",
+    value: "Epoxi",
+    label: "Epoxi",
   },
   {
-    value: "application_area4",
-    label: "Terrazas transitables con carpeta de protección",
-  },
-];
-
-const applicationMode = [
-  {
-    value: "application_mode2",
-    label: "Brocha",
+    value: "Poliuretánico",
+    label: "Poliuretánico",
   },
   {
-    value: "application_mode3",
-    label: "Llana",
+    value: "Mantas varias",
+    label: "Mantas varias",
   },
   {
-    value: "application_mode4",
-    label: "Rodillo",
+    value: "Malla",
+    label: "Malla",
   },
   {
-    value: "application_mode5",
-    label: "Aspersor",
-  },
-];
-
-const tipe = [
-  {
-    value: "tipe2",
-    label: "Acrílicos",
+    value: "Pintura",
+    label: "Pintura",
   },
   {
-    value: "tipe3",
-    label: "Siliconados",
+    value: "Sellador",
+    label: "Sellador",
   },
   {
-    value: "tipe4",
-    label: "Sementosos",
+    value: "Siliconado",
+    label: "Siliconado",
   },
   {
-    value: "tipe5",
-    label: "Poliuretánicos",
+    value: "Malla",
+    label: "Malla",
+  },
+  {
+    value: "Junta hidroexpansiva",
+    label: "Junta hidroexpansiva",
+  },
+  {
+    value: "otro",
+    label: "otro",
   },
 ];
 
-const compositionList = [
+const currency = [
   {
-    value: "radio1",
-    label: "Monocompuesto",
+    value: "dolares",
+    label: "USD",
   },
   {
-    value: "radio2",
-    label: "Bicompuesto",
+    value: "pesos",
+    label: "$",
   },
 ];
 
-const curadoList = [
+const unity = [
   {
-    value: "curado1",
-    label: "Si",
+    value: "kg",
+    label: "Kilogramos",
   },
   {
-    value: "Curado2",
-    label: "No",
+    value: "l",
+    label: "Litros",
+  },
+  {
+    value: "m2",
+    label: "Metros cuadrados",
+  },
+  {
+    value: "cm3",
+    label: "Centímetros cúbicos",
+  },
+  {
+    value: "ml",
+    label: "Metros lineales",
+  },
+  {
+    value: "u",
+    label: "Unidades",
   },
 ];
+
+const components = [
+  {
+    label: "Monocomponente",
+    value: "monocomponente",
+  },
+  {
+    label: "Bicomponente",
+    value: "bicomponente",
+  },
+  {
+    label: "Tricomponente",
+    value: "tricomponente",
+  },
+  {
+    label: "No aplica",
+    value: "no_aplica",
+  },
+];
+
+interface FormError {
+  field: string;
+  message: string;
+  showError: boolean;
+}
+
+interface BackendError {
+  field: string;
+  message: string;
+  showError: boolean;
+}
+
+interface ValidationErrors {
+  field: string;
+  message: string;
+}
 
 export const MaterialForm = () => {
+  const defaultRadioValue = "pesos";
+
+  const [formErrors, setFormErrors] = useState<FormError[]>([]);
+  const [backendErrors, setBackendErrors] = useState<BackendError[]>([]);
+  const [currencyValue, setCurrencyValue] = useState(defaultRadioValue);
+  const [prefix, setPrefix] = useState<string | undefined>();
+  const [inputValue, setInputValue] = useState<string | undefined>("0,00");
+
+  const materialNameRef = useRef<HTMLInputElement>(null);
+  const materialBrandRef = useRef<HTMLInputElement>(null);
+  const materialPriceRef = useRef<HTMLInputElement>(null);
+  const materialUnityRef = useRef<HTMLInputElement>(null);
+  const materialQuantityRef = useRef<HTMLInputElement>(null);
+  const materialTypeRef = useRef<HTMLInputElement>(null);
+  const materialComponentRef = useRef<HTMLInputElement>(null);
+
+  // Obtengo el value del Radio seleccionado
+  const handleRadioChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setCurrencyValue(e.target.value);
+  };
+
+  const handleOptionSelect = (selectedName: string) => {
+    verifyFormErrors(selectedName, "", true);
+  };
+
+  //función que se ejecuta cuando presiona el botón cancelar
+  const handleCancel = () => {
+    console.log("handleCancel");
+  };
+
+  const verifyFormErrorsOnAccept = (formErrors: FormError[]) => {
+    if (
+      materialNameRef.current?.value === "" ||
+      materialNameRef.current?.value == null
+    ) {
+      formErrors.push({
+        field: "materialName",
+        message: "Nombre requerido",
+        showError: true,
+      });
+    }
+
+    if (
+      materialBrandRef.current?.value === "" ||
+      materialBrandRef.current?.value == null
+    ) {
+      formErrors.push({
+        field: "materialBrand",
+        message: "Marca requerida",
+        showError: true,
+      });
+    }
+
+    if (
+      materialQuantityRef.current?.value === "" ||
+      materialQuantityRef.current?.value == null
+    ) {
+      formErrors.push({
+        field: "materialQuantity",
+        message: "Cantidad requerida",
+        showError: true,
+      });
+    }
+
+    if (
+      materialPriceRef.current?.value === "" ||
+      materialPriceRef.current?.value == null
+    ) {
+      formErrors.push({
+        field: "materialPrice",
+        message: "Precio requerido",
+        showError: true,
+      });
+    }
+
+    if (
+      materialTypeRef.current?.value === "" ||
+      materialTypeRef.current?.value == null
+    ) {
+      formErrors.push({
+        field: "materialType",
+        message: "Tipo requerido",
+        showError: true,
+      });
+    }
+
+    if (
+      materialComponentRef.current?.value === "" ||
+      materialComponentRef.current?.value == null
+    ) {
+      formErrors.push({
+        field: "materialComponents",
+        message: "Composición requerida",
+        showError: true,
+      });
+    }
+
+    if (
+      materialUnityRef.current?.value === "" ||
+      materialUnityRef.current?.value == null
+    ) {
+      formErrors.push({
+        field: "materialUnity",
+        message: "Unidad requerida",
+        showError: true,
+      });
+    }
+  };
+
+  const handleAccept = async () => {
+    const formErrors: FormError[] = [];
+    const backendErrors: BackendError[] = [];
+
+    verifyFormErrorsOnAccept(formErrors);
+
+    if (formErrors.length === 0) {
+      let backendResponse: any = await createMaterial({
+        name: materialNameRef.current?.value,
+        brand: materialBrandRef.current?.value,
+        presentationQuantity: Number(materialQuantityRef.current?.value),
+        presentationUnit: materialUnityRef.current?.value,
+        presentationPrice: Number(
+          materialPriceRef.current?.value.replaceAll(".", "").replace(",", ".")
+        ),
+        priceDate: new Date(),
+        currency: currencyValue,
+        type: materialTypeRef.current?.value,
+        component: materialComponentRef.current?.value,
+      });
+      console.log("respuesta back", backendResponse);
+      if (backendResponse) {
+        if (backendResponse?.response?.status !== 200) {
+          let data: any = backendResponse?.response;
+          if (data?.validationErrors) {
+            let validationErrors: ValidationErrors = data?.validationErrors;
+            Object.entries(validationErrors).map(([key, value]) =>
+              backendErrors.push({
+                field: key,
+                message: value,
+                showError: true,
+              })
+            );
+          }
+          // backendErrors.push({
+          //   field: "materialName",
+          //   message: "El material ya esta en uso",
+          //   showError: true,
+          // });
+          setBackendErrors(backendErrors);
+        } else {
+          // Lógica para manejar una respuesta exitosa desde el backend
+          console.log("Formulario enviado con éxito");
+        }
+      }
+    }
+    setFormErrors(formErrors);
+  };
+
+  const verifyFormErrors = (
+    fieldName: string,
+    validationMessage: string,
+    valid: boolean
+  ) => {
+    const errors: FormError[] = [];
+    if (!valid) {
+      errors.push({
+        field: fieldName,
+        message: validationMessage,
+        showError: true,
+      });
+    }
+
+    setFormErrors(errors);
+    setBackendErrors(errors);
+  };
+
+  const truncarDecimales = (numero: number, cantidadDecimales: number) => {
+    const multiplicador = Math.pow(10, cantidadDecimales);
+    const numeroTruncado = Math.floor(numero * multiplicador) / multiplicador;
+    return numeroTruncado;
+  };
+
+  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    verifyFormErrors(
+      e.target?.name,
+      e.target?.validationMessage,
+      e.target?.validity?.valid
+    );
+    if (materialPriceRef || materialQuantityRef) {
+      let materialPrice = Number(
+        materialPriceRef.current?.value.replaceAll(".", "").replace(",", ".")
+      );
+      let materialQuantity = Number(materialQuantityRef.current?.value);
+      let price =
+        materialPrice / (materialQuantity === 0 ? 1 : materialQuantity);
+      let formattedPrice = String(truncarDecimales(price, 2)).replace(".", ",");
+      setInputValue(formattedPrice);
+    }
+  };
+
   return (
-    <MainContainer cardTitle="Alta de material">
+    <MainContainer
+      onCancel={handleCancel}
+      onAccept={handleAccept}
+      hasFooterButons
+      cardTitle="Alta de material"
+    >
       <div className="container">
         {/* ------------- Nombre ------------- */}
         <div className="row mb-3">
           <div className="col-lg-6 col-sm-6">
-            <TextField fullWidth label="Nombre" variant="outlined" />
+            <TextField
+              inputRef={materialNameRef}
+              fullWidth
+              required
+              name="materialName"
+              label="Nombre"
+              variant="outlined"
+              onChange={handleValueChange}
+              error={
+                formErrors.find((error) => error.field === "materialName")
+                  ?.showError ||
+                backendErrors.find((error) => error.field === "materialName")
+                  ?.showError
+              }
+              helperText={
+                formErrors.find((error) => error.field === "materialName")
+                  ?.message ||
+                backendErrors.find((error) => error.field === "materialName")
+                  ?.message
+              }
+            />
           </div>
-          {/* ------------- Clasificación ------------- */}
-          <div className="col-lg-6 col-sm-6 margin-top">
-            <SelectField label="Clasificación" options={optionsSelect} />
+          {/* ------------- Marca ------------- */}
+          <div className="col-lg-6 col-sm-6">
+            <TextField
+              name="materialBrand"
+              required
+              inputRef={materialBrandRef}
+              fullWidth
+              label="Marca"
+              variant="outlined"
+              onChange={handleValueChange}
+              error={
+                formErrors.find((error) => error.field === "materialBrand")
+                  ?.showError ||
+                backendErrors.find((error) => error.field === "materialBrand")
+                  ?.showError
+              }
+              helperText={
+                formErrors.find((error) => error.field === "materialBrand")
+                  ?.message ||
+                backendErrors.find((error) => error.field === "materialBrand")
+                  ?.message
+              }
+            />
           </div>
         </div>
-        {/* ------------- Campo de aplicación ------------- */}
+        {/* ------------- Precio unitario READONLY ------------- */}
         <div className="row">
-          <div className="col-lg-12 col-sm-12">
-            <MultiSelectWithSearch
-              label="Campo de aplicación"
-              options={optionsApplicationArea}
+          <div className="col-lg-6 col-sm-6 mb-3">
+            <TextField
+              value={inputValue}
+              fullWidth
+              required
+              label="Precio unitario"
+              InputProps={{
+                readOnly: true,
+                startAdornment: (
+                  <InputAdornment position="start">{prefix}</InputAdornment>
+                ),
+              }}
             />
           </div>
         </div>
@@ -122,43 +416,141 @@ export const MaterialForm = () => {
           component="div"
           sx={{ mt: 3 }}
         >
-          Base
+          Presentación
         </Typography>
         <Divider />
         <div className="row mt-3">
-          {/* ------------- Precio unitario ($/kg) ------------- */}
-          <div className="col-lg-6 col-sm-6">
+          {/* ------------- Cantidad ------------- */}
+          <div className="col-lg-4 col-sm-6">
             <TextField
+              name="materialQuantity"
+              required
+              inputRef={materialQuantityRef}
               type="number"
               fullWidth
-              inputProps={{ min: 0 }}
-              label="Precio unitario ($/kg)"
+              inputProps={{ min: 1 }}
+              label="Cantidad"
               variant="outlined"
+              onChange={handleValueChange}
+              error={
+                formErrors.find((error) => error.field === "materialQuantity")
+                  ?.showError ||
+                backendErrors.find(
+                  (error) => error.field === "materialQuantity"
+                )?.showError
+              }
+              helperText={
+                formErrors.find((error) => error.field === "materialQuantity")
+                  ?.message ||
+                backendErrors.find(
+                  (error) => error.field === "materialQuantity"
+                )?.message
+              }
             />
           </div>
-          {/* ------------- Tipo ------------- */}
-          <div className="col-lg-6 col-sm-6 margin-top">
-            <SelectField label="Tipo" options={tipe} />
+          {/* ------------- Precio ------------- */}
+          <div className="col-lg-4 col-sm-6">
+            <AmountInput
+              name="materialPrice"
+              inputRef={materialPriceRef}
+              required
+              label="Precio"
+              onChange={handleValueChange}
+              error={
+                formErrors.find((error) => error.field === "materialPrice")
+                  ?.showError ||
+                backendErrors.find((error) => error.field === "materialPrice")
+                  ?.showError
+              }
+              helperText={
+                formErrors.find((error) => error.field === "materialPrice")
+                  ?.message ||
+                backendErrors.find((error) => error.field === "materialPrice")
+                  ?.message
+              }
+            />
           </div>
-          {/* ------------- Precio unitario ($/m2) ------------- */}
-          <div className="col-lg-6 col-sm-6 mt-3">
-            <TextField
-              type="number"
-              fullWidth
-              inputProps={{ min: 0 }}
-              label="Precio unitario ($/m2)"
-              variant="outlined"
+          {/* ------------- Moneda ------------- */}
+          <div className="col-lg-4 col-sm-6">
+            <RadioGroupCustom
+              name="materialCurrency"
+              onChange={handleRadioChange}
+              row
+              formLabel="Moneda"
+              defaultValue={defaultRadioValue}
+              id="radioId"
+              options={currency}
+            />
+          </div>
+        </div>
+        {/* ------------- Tipo ------------- */}
+        <div className="row mt-3">
+          <div className="col-lg-4 col-sm-6 ">
+            <SelectField
+              getRef={materialTypeRef}
+              label="Tipo *"
+              name="materialType"
+              options={type}
+              onOptionSelect={handleOptionSelect}
+              error={
+                formErrors.find((error) => error.field === "materialType")
+                  ?.showError ||
+                backendErrors.find((error) => error.field === "materialType")
+                  ?.showError
+              }
+              helperText={
+                formErrors.find((error) => error.field === "materialType")
+                  ?.message ||
+                backendErrors.find((error) => error.field === "materialType")
+                  ?.message
+              }
             />
           </div>
           {/* ------------- Composición ------------- */}
-          <div className="col-lg-6 col-sm-6 mt-3">
-            <RadioGroupCustom
-              row
-              formLabel="Composición"
-              defaultValue="radio1"
-              name="radio-group-tipo"
-              id="radioId"
-              options={compositionList}
+          <div className="col-lg-4 col-sm-6">
+            <SelectField
+              name="materialComponents"
+              getRef={materialComponentRef}
+              label="Composición *"
+              options={components}
+              onOptionSelect={handleOptionSelect}
+              error={
+                formErrors.find((error) => error.field === "materialComponents")
+                  ?.showError ||
+                backendErrors.find(
+                  (error) => error.field === "materialComponents"
+                )?.showError
+              }
+              helperText={
+                formErrors.find((error) => error.field === "materialComponents")
+                  ?.message ||
+                backendErrors.find(
+                  (error) => error.field === "materialComponents"
+                )?.message
+              }
+            />
+          </div>
+          {/* ------------- Unidad ------------- */}
+          <div className="col-lg-4 col-sm-6">
+            <SelectField
+              setPrefix={setPrefix}
+              name="materialUnity"
+              getRef={materialUnityRef}
+              label="Unidad *"
+              options={unity}
+              onOptionSelect={handleOptionSelect}
+              error={
+                formErrors.find((error) => error.field === "materialUnity")
+                  ?.showError ||
+                backendErrors.find((error) => error.field === "materialUnity")
+                  ?.showError
+              }
+              helperText={
+                formErrors.find((error) => error.field === "materialUnity")
+                  ?.message ||
+                backendErrors.find((error) => error.field === "materialUnity")
+                  ?.message
+              }
             />
           </div>
         </div>
@@ -168,43 +560,20 @@ export const MaterialForm = () => {
           component="div"
           sx={{ mt: 3 }}
         >
-          Aplicación
+          Ficha Técnica
         </Typography>
         <Divider />
-        <div className="row mt-3">
-          {/* ------------- Consumo total ------------- */}
-          <div className="col-lg-6 col-sm-6">
+        <div className="row">
+          {/* ------------- File upload ------------- */}
+          <div className="col-lg-6 col-sm-6 mt-3">
             <TextField
+              multiline
+              minRows={5}
               type="number"
               fullWidth
               inputProps={{ min: 0 }}
-              label="Consumo total"
+              label="File upload"
               variant="outlined"
-            />
-          </div>
-          {/* ------------- Cantidad de manos ------------- */}
-          <div className="col-lg-6 col-sm-6 margin-top">
-            <TextField
-              type="number"
-              fullWidth
-              inputProps={{ min: 0 }}
-              label="Cantidad de manos"
-              variant="outlined"
-            />
-          </div>
-          {/* ------------- Modo de aplicación ------------- */}
-          <div className="col-lg-6 col-sm-6 mt-3">
-            <SelectField label="Modo de aplicación" options={applicationMode} />
-          </div>
-          {/* ------------- Curado ------------- */}
-          <div className="col-lg-6 col-sm-6 mt-3">
-            <RadioGroupCustom
-              row
-              formLabel="Curado"
-              defaultValue="Curado2"
-              name="radio-group-tipo"
-              id="curado1"
-              options={curadoList}
             />
           </div>
         </div>

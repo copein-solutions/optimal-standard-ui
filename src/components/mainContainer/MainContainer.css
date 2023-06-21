@@ -16,6 +16,10 @@
   text-align: left;
 }
 
+.align-right {
+  text-align: right;
+}
+
 
 @media only screen and (max-width: 479px) {
   .card {

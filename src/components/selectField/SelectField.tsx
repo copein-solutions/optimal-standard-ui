@@ -1,28 +1,72 @@
-import { FC } from "react";
-import { InputLabel } from "@mui/material";
-import { MenuItem, FormControl, Select } from "@mui/material";
+import { FC, useState } from "react";
+import {
+  BaseTextFieldProps,
+  InputLabel,
+  SelectChangeEvent,
+} from "@mui/material";
+import { MenuItem, FormControl, Select, FormHelperText } from "@mui/material";
 
-type Option = {
+export type Option = {
   value: string;
   label: string;
 };
 
 type CustomSelectProps = {
+  setPrefix?: (value: string) => void;
+  getRef?: any;
   label: string;
   options: Option[];
-};
+  error?: any;
+  helperText?: string;
+  name: string;
+  onOptionSelect?: (selectedOption: string) => void;
+} & BaseTextFieldProps;
 
-const CustomSelect: FC<CustomSelectProps> = ({ options, label }) => {
+const CustomSelect: FC<CustomSelectProps> = ({
+  setPrefix = () => {},
+  options,
+  label,
+  getRef,
+  error,
+  helperText,
+  name,
+  onOptionSelect,
+}) => {
+  const [value, setValue] = useState("");
+
+  const handleChange = (event: SelectChangeEvent) => {
+    console.log("aca");
+    
+    setPrefix(`$/${event.target.value}`);
+    setValue(event.target.value);
+
+    if (onOptionSelect) {
+      const selectedOption = event.target.name;
+      if (selectedOption) {
+        onOptionSelect(selectedOption);
+      }
+    }
+  };
+
   return (
     <FormControl fullWidth>
       <InputLabel id="custom-select-label">{label}</InputLabel>
-      <Select label={label} labelId="custom-select-label">
-        {options.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
+      <Select
+        name={name}
+        inputRef={getRef}
+        onChange={handleChange}
+        value={value}
+        label={label}
+        labelId="custom-select-label"
+        error={error}
+      >
+        {options.map((option, index) => (
+          <MenuItem key={index} value={option.value}>
             {option.label}
           </MenuItem>
         ))}
       </Select>
+      {helperText && <FormHelperText error>{helperText}</FormHelperText>}
     </FormControl>
   );
 };
