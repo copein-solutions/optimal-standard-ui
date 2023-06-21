@@ -5,7 +5,7 @@ import React, {
   Ref,
   useState,
 } from "react";
-import { InputAdornment, TextField, TextFieldProps } from "@mui/material";
+import { TextField, TextFieldProps } from "@mui/material";
 import NumberFormat, {
   NumberFormatValues,
   SourceInfo,
@@ -71,11 +71,6 @@ const AmountField = forwardRef<HTMLInputElement, AmountFieldProps>(
         value={inputValue}
         label={label}
         onValueChange={handleValueChange}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">{prefix}</InputAdornment>
-          )
-        }}
         // {...props}
       />
     );
