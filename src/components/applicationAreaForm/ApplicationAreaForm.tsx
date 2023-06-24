@@ -19,8 +19,6 @@ interface BackendError {
 }
 
 export const ApplicationAreaForm = () => {
-  const defaultRadioValue = "pesos";
-
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
   const [backendErrors, setBackendErrors] = useState<BackendError[]>([]);
   
@@ -40,10 +38,9 @@ export const ApplicationAreaForm = () => {
     const formErrors: FormError[] = [];
     const backendErrors: BackendError[] = [];
     verifyFormErrors(formErrors);
-    // console.log("materialTypeRef", materialTypeRef.current?.value);
 
     if (formErrors.length === 0) {
-      const response = await createApplicationArea({
+      const response: any = await createApplicationArea({
         name: appAreaNameRef.current?.value,
         specification: appAreaSpecificationRef.current?.value,
         considerations: appAreaConsiderationsRef.current?.value

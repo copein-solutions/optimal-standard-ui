@@ -1,12 +1,13 @@
 import { MainContainer } from "../mainContainer/MainContainer";
 import SelectField from "../selectField/SelectField";
-import { Divider, Typography, TextField } from "@mui/material";
+import { Divider, Typography, TextField, InputAdornment } from "@mui/material";
 import RadioGroupCustom from "../radioGroup/RadioGroup";
 import "./MaterialForm.css";
 import { ChangeEvent, useRef, useState } from "react";
 
 // Services
 import { createMaterial } from "../../services/ApiService";
+import AmountInput from "../amountInput";
 
 const type = [
   {
@@ -128,6 +129,11 @@ interface BackendError {
   showError: boolean;
 }
 
+interface ValidationErrors {
+  field: string;
+  message: string;
+}
+
 interface MaterialFormProps {
   onCancel: () => void;
 }
@@ -138,6 +144,8 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
   const [backendErrors, setBackendErrors] = useState<BackendError[]>([]);
   const [currencyValue, setCurrencyValue] = useState(defaultRadioValue);
+  const [prefix, setPrefix] = useState<string | undefined>();
+  const [inputValue, setInputValue] = useState<string | undefined>("0,00");
 
   const materialNameRef = useRef<HTMLInputElement>(null);
   const materialBrandRef = useRef<HTMLInputElement>(null);
@@ -153,11 +161,16 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
     setCurrencyValue(e.target.value);
   };
 
+  const handleOptionSelect = (selectedName: string) => {
+    verifyFormErrors(selectedName, "", true);
+  };
+
+  //función que se ejecuta cuando presiona el botón cancelar
   const handleCancel = () => {
     onCancel();
   };
 
-  const verifyFormErrors = (formErrors: FormError[]) => {
+  const verifyFormErrorsOnAccept = (formErrors: FormError[]) => {
     if (
       materialNameRef.current?.value === "" ||
       materialNameRef.current?.value == null
@@ -185,7 +198,7 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
       materialQuantityRef.current?.value == null
     ) {
       formErrors.push({
-        field: "materialCuantity",
+        field: "materialQuantity",
         message: "Cantidad requerida",
         showError: true,
       });
@@ -239,48 +252,59 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
   const handleAccept = async () => {
     const formErrors: FormError[] = [];
     const backendErrors: BackendError[] = [];
-    verifyFormErrors(formErrors);
-    console.log("materialTypeRef", materialTypeRef.current?.value);
-    console.log("materialCurrencyRef", materialCurrencyRef.current?.value);
+
+    verifyFormErrorsOnAccept(formErrors);
 
     if (formErrors.length === 0) {
-      const response = await createMaterial({
+      let backendResponse: any = await createMaterial({
         name: materialNameRef.current?.value,
         brand: materialBrandRef.current?.value,
-        presentationQuantity: materialQuantityRef.current?.value,
+        presentationQuantity: Number(materialQuantityRef.current?.value),
         presentationUnit: materialUnityRef.current?.value,
-        presentationPrice: materialPriceRef.current?.value,
+        presentationPrice: Number(
+          materialPriceRef.current?.value.replaceAll(".", "").replace(",", ".")
+        ),
         priceDate: new Date(),
         currency: currencyValue,
         type: materialTypeRef.current?.value,
         component: materialComponentRef.current?.value,
       });
-      console.log("respuesta back", response);
-
-      if (response.status !== 200) {
-        backendErrors.push({
-          field: "materialName",
-          message: "El material ya esta en uso",
-          showError: true,
-        });
-        setBackendErrors(backendErrors);
-      } else {
-        // Lógica para manejar una respuesta exitosa desde el backend
-        console.log("Formulario enviado con éxito");
+      console.log("respuesta back", backendResponse);
+      if (backendResponse) {
+        if (backendResponse?.response?.status !== 200) {
+          let data: any = backendResponse?.response;
+          if (data?.validationErrors) {
+            let validationErrors: ValidationErrors = data?.validationErrors;
+            Object.entries(validationErrors).map(([key, value]) =>
+              backendErrors.push({
+                field: key,
+                message: value,
+                showError: true,
+              })
+            );
+          }
+          // backendErrors.push({
+          //   field: "materialName",
+          //   message: "El material ya esta en uso",
+          //   showError: true,
+          // });
+          setBackendErrors(backendErrors);
+        } else {
+          // Lógica para manejar una respuesta exitosa desde el backend
+          console.log("Formulario enviado con éxito");
+        }
       }
     }
     setFormErrors(formErrors);
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const verifyFormErrors = (
+    fieldName: string,
+    validationMessage: string,
+    valid: boolean
+  ) => {
     const errors: FormError[] = [];
-    const fieldName = event.target?.name; // valor de la propiedad name del input
-    // TODO: si no se usa sacarlo
-    const fieldValue = event.target?.value; // valor ingresado en el input por el usuario
-    const validationMessage = event.target?.validationMessage; // mensaje de error de validaciones que no son de backend, ej: el error del regex
-    console.log("validationMessage", validationMessage);
-
-    if (!event.target?.validity?.valid) {
+    if (!valid) {
       errors.push({
         field: fieldName,
         message: validationMessage,
@@ -290,6 +314,30 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
 
     setFormErrors(errors);
     setBackendErrors(errors);
+  };
+
+  const truncarDecimales = (numero: number, cantidadDecimales: number) => {
+    const multiplicador = Math.pow(10, cantidadDecimales);
+    const numeroTruncado = Math.floor(numero * multiplicador) / multiplicador;
+    return numeroTruncado;
+  };
+
+  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    verifyFormErrors(
+      e.target?.name,
+      e.target?.validationMessage,
+      e.target?.validity?.valid
+    );
+    if (materialPriceRef || materialQuantityRef) {
+      let materialPrice = Number(
+        materialPriceRef.current?.value.replaceAll(".", "").replace(",", ".")
+      );
+      let materialQuantity = Number(materialQuantityRef.current?.value);
+      let price =
+        materialPrice / (materialQuantity === 0 ? 1 : materialQuantity);
+      let formattedPrice = String(truncarDecimales(price, 2)).replace(".", ",");
+      setInputValue(formattedPrice);
+    }
   };
 
   return (
@@ -310,7 +358,7 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
               name="materialName"
               label="Nombre"
               variant="outlined"
-              onChange={handleInputChange}
+              onChange={handleValueChange}
               error={
                 formErrors.find((error) => error.field === "materialName")
                   ?.showError ||
@@ -334,7 +382,7 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
               fullWidth
               label="Marca"
               variant="outlined"
-              onChange={handleInputChange}
+              onChange={handleValueChange}
               error={
                 formErrors.find((error) => error.field === "materialBrand")
                   ?.showError ||
@@ -354,11 +402,15 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
         <div className="row">
           <div className="col-lg-6 col-sm-6 mb-3">
             <TextField
+              value={inputValue}
               fullWidth
+              required
               label="Precio unitario"
-              defaultValue="Read only input"
               InputProps={{
                 readOnly: true,
+                startAdornment: (
+                  <InputAdornment position="start">{prefix}</InputAdornment>
+                ),
               }}
             />
           </div>
@@ -376,7 +428,7 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
           {/* ------------- Cantidad ------------- */}
           <div className="col-lg-4 col-sm-6">
             <TextField
-              name="materialCuantity"
+              name="materialQuantity"
               required
               inputRef={materialQuantityRef}
               type="number"
@@ -384,35 +436,31 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
               inputProps={{ min: 1 }}
               label="Cantidad"
               variant="outlined"
-              onChange={handleInputChange}
+              onChange={handleValueChange}
               error={
-                formErrors.find((error) => error.field === "materialCuantity")
+                formErrors.find((error) => error.field === "materialQuantity")
                   ?.showError ||
                 backendErrors.find(
-                  (error) => error.field === "materialCuantity"
+                  (error) => error.field === "materialQuantity"
                 )?.showError
               }
               helperText={
-                formErrors.find((error) => error.field === "materialCuantity")
+                formErrors.find((error) => error.field === "materialQuantity")
                   ?.message ||
                 backendErrors.find(
-                  (error) => error.field === "materialCuantity"
+                  (error) => error.field === "materialQuantity"
                 )?.message
               }
             />
           </div>
           {/* ------------- Precio ------------- */}
           <div className="col-lg-4 col-sm-6">
-            <TextField
-              inputRef={materialPriceRef}
+            <AmountInput
               name="materialPrice"
+              inputRef={materialPriceRef}
               required
-              type="number"
-              fullWidth
-              inputProps={{ min: 0 }}
               label="Precio"
-              variant="outlined"
-              onChange={handleInputChange}
+              onChange={handleValueChange}
               error={
                 formErrors.find((error) => error.field === "materialPrice")
                   ?.showError ||
@@ -449,6 +497,7 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
               label="Tipo *"
               name="materialType"
               options={type}
+              onOptionSelect={handleOptionSelect}
               error={
                 formErrors.find((error) => error.field === "materialType")
                   ?.showError ||
@@ -470,6 +519,7 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
               getRef={materialComponentRef}
               label="Composición *"
               options={components}
+              onOptionSelect={handleOptionSelect}
               error={
                 formErrors.find((error) => error.field === "materialComponents")
                   ?.showError ||
@@ -489,10 +539,12 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
           {/* ------------- Unidad ------------- */}
           <div className="col-lg-4 col-sm-6">
             <SelectField
+              setPrefix={setPrefix}
               name="materialUnity"
               getRef={materialUnityRef}
               label="Unidad *"
               options={unity}
+              onOptionSelect={handleOptionSelect}
               error={
                 formErrors.find((error) => error.field === "materialUnity")
                   ?.showError ||

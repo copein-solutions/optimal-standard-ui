@@ -1,2 +1,2 @@
-import { ApplicationAreaForm } from '../applicationAreaForm/ApplicationMaterialForm';
+import { ApplicationAreaForm } from './ApplicationAreaForm';
 export default ApplicationAreaForm;

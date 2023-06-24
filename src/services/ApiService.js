@@ -18,8 +18,7 @@ const post = async (url, data) => {
   try {
     return await api.post(url, data);
   } catch (error) {
-    handleRequestError(error);
-    throw error;
+    return error;
   }
 };
 

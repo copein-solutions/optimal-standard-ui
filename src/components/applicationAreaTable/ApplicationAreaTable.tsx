@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Button, Dialog } from "@mui/material";
 import ApplicationAreaRow from "./applicationAreaRow/ApplicationAreaRow";
 import "./ApplicationAreaTable.css";
-import { ApplicationAreaForm } from "../applicationAreaForm/ApplicationMaterialForm";
+import { ApplicationAreaForm } from "../applicationAreaForm/ApplicationAreaForm";
 import { get } from "../../services/ApiService";
 import { MainContainer } from "../mainContainer/MainContainer";
 
