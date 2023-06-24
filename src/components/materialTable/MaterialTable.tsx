@@ -74,7 +74,13 @@ export const MaterialTable = () => {
       ) : (
         <MainContainer cardTitle="Listado de material">
           <div>
-            <button onClick={handleOpenForm}>Agregar material</button>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={handleOpenForm}
+            >
+              Agregar material
+            </Button>
             <GridCustom columns={columns} rows={materials} hasEdit hasDelete />
           </div>
         </MainContainer>
