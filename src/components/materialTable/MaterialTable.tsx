@@ -13,6 +13,7 @@ export const MaterialTable = () => {
   const [modalType, setModalType] = useState("");
   const [materials, setMaterials] = useState([]);
   const [fetching, setFetching] = useState(false);
+  const [isFormOpen, setFormOpen] = useState(false);
 
   const columns = [
     { name: "Nombre", value: "name" },
@@ -57,28 +58,27 @@ export const MaterialTable = () => {
     setModalType("material");
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleOpenForm = () => {
+    setFormOpen(true);
+  };
+
+  const handleCloseForm = () => {
+    setFormOpen(false);
   };
 
   return (
     // {fetching && <Skeleton />}
-    <MainContainer cardTitle="Listado de material">
-      <div>
-        <Button
-          variant="contained"
-          color="success"
-          onClick={newMaterial}
-        >
-          Nuevo Material
-        </Button>
-        
-        <GridCustom columns={columns} rows={materials} hasEdit hasDelete />
-      </div>
-
-      <Dialog open={open} maxWidth={false}>
-        {modalType === "material" && <MaterialForm />}
-      </Dialog>
-    </MainContainer>
+    <div>
+      {isFormOpen ? (
+        <MaterialForm onCancel={handleCloseForm} />
+      ) : (
+        <MainContainer cardTitle="Listado de material">
+          <div>
+            <button onClick={handleOpenForm}>Agregar material</button>
+            <GridCustom columns={columns} rows={materials} hasEdit hasDelete />
+          </div>
+        </MainContainer>
+      )}
+    </div>
   );
 };

@@ -128,7 +128,11 @@ interface BackendError {
   showError: boolean;
 }
 
-export const MaterialForm = () => {
+interface MaterialFormProps {
+  onCancel: () => void;
+}
+
+export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
   const defaultRadioValue = "pesos";
 
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
@@ -150,7 +154,7 @@ export const MaterialForm = () => {
   };
 
   const handleCancel = () => {
-    console.log("handleCancel");
+    onCancel();
   };
 
   const verifyFormErrors = (formErrors: FormError[]) => {
@@ -249,7 +253,7 @@ export const MaterialForm = () => {
         priceDate: new Date(),
         currency: currencyValue,
         type: materialTypeRef.current?.value,
-        component: materialComponentRef.current?.value
+        component: materialComponentRef.current?.value,
       });
       console.log("respuesta back", response);
 
@@ -426,7 +430,7 @@ export const MaterialForm = () => {
           {/* ------------- Moneda ------------- */}
           <div className="col-lg-4 col-sm-6">
             <RadioGroupCustom
-            inputRef={materialCurrencyRef}
+              inputRef={materialCurrencyRef}
               name="materialCurrency"
               onChange={handleRadioChange}
               row
