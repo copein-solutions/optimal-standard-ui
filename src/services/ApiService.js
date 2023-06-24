@@ -22,6 +22,7 @@ const post = async (url, data) => {
   }
 };
 
+
 export const get = async (url) => {
   try {
     return await api.get(url);
