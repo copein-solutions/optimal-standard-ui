@@ -18,7 +18,11 @@ interface BackendError {
   showError: boolean;
 }
 
-export const ApplicationAreaForm = () => {
+interface ApplicationAreaProps {
+  onCancel: () => void;
+}
+
+export const ApplicationAreaForm: React.FC<ApplicationAreaProps> = ({ onCancel }) => {
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
   const [backendErrors, setBackendErrors] = useState<BackendError[]>([]);
   
@@ -27,7 +31,7 @@ export const ApplicationAreaForm = () => {
   const appAreaConsiderationsRef = useRef<HTMLInputElement>(null);
 
   const handleCancel = () => {
-    console.log("handleCancel");
+    onCancel();
   };
 
   const verifyFormErrors = (formErrors: FormError[]) => {

@@ -51,12 +51,11 @@ export const MaterialTable = () => {
   };
 
   return (
-    // {fetching && <Skeleton />}
     <div>
       {isFormOpen ? (
         <MaterialForm onCancel={handleCloseForm} />
       ) : (
-        <MainContainer cardTitle="Listado de material">
+        <MainContainer cardTitle="Material">
           <div>
             <Button
               variant="contained"
