@@ -1,13 +1,17 @@
+import { ChangeEvent, useRef, useState } from "react";
 import { MainContainer } from "../mainContainer/MainContainer";
-import SelectField from "../selectField/SelectField";
 import { Divider, Typography, TextField, InputAdornment } from "@mui/material";
 import RadioGroupCustom from "../radioGroup/RadioGroup";
+import SelectField from "../selectField/SelectField";
+import AmountInput from "../amountInput";
 import "./MaterialForm.css";
-import { ChangeEvent, useRef, useState } from "react";
 
 // Services
 import { createMaterial } from "../../services/ApiService";
-import AmountInput from "../amountInput";
+
+// Interfaces
+import { ResponseApi } from "../../interfaces/service/ApiInterfaces";
+import { FormError, BackendError } from "../../interfaces/form/FormInterfaces";
 
 const type = [
   {
@@ -116,23 +120,6 @@ const components = [
     value: "no_aplica",
   },
 ];
-
-interface FormError {
-  field: string;
-  message: string;
-  showError: boolean;
-}
-
-interface BackendError {
-  field: string;
-  message: string;
-  showError: boolean;
-}
-
-interface ValidationErrors {
-  field: string;
-  message: string;
-}
 
 export const MaterialForm = () => {
   const defaultRadioValue = "pesos";
@@ -244,50 +231,44 @@ export const MaterialForm = () => {
     }
   };
 
+  const fommatterForm = () => {
+    return {
+      name: materialNameRef.current?.value,
+      brand: materialBrandRef.current?.value,
+      presentationQuantity: Number(materialQuantityRef.current?.value),
+      presentationUnit: materialUnityRef.current?.value,
+      presentationPrice: Number(
+        materialPriceRef.current?.value.replaceAll(".", "").replace(",", ".")
+      ),
+      priceDate: new Date(),
+      currency: currencyValue,
+      type: materialTypeRef.current?.value,
+      component: materialComponentRef.current?.value,
+    };
+  };
+
   const handleAccept = async () => {
     const formErrors: FormError[] = [];
     const backendErrors: BackendError[] = [];
-
     verifyFormErrorsOnAccept(formErrors);
 
     if (formErrors.length === 0) {
-      let backendResponse: any = await createMaterial({
-        name: materialNameRef.current?.value,
-        brand: materialBrandRef.current?.value,
-        presentationQuantity: Number(materialQuantityRef.current?.value),
-        presentationUnit: materialUnityRef.current?.value,
-        presentationPrice: Number(
-          materialPriceRef.current?.value.replaceAll(".", "").replace(",", ".")
-        ),
-        priceDate: new Date(),
-        currency: currencyValue,
-        type: materialTypeRef.current?.value,
-        component: materialComponentRef.current?.value,
-      });
-      console.log("respuesta back", backendResponse);
-      if (backendResponse) {
-        if (backendResponse?.response?.status !== 200) {
-          let data: any = backendResponse?.response;
-          if (data?.validationErrors) {
-            let validationErrors: ValidationErrors = data?.validationErrors;
-            Object.entries(validationErrors).map(([key, value]) =>
-              backendErrors.push({
-                field: key,
-                message: value,
-                showError: true,
-              })
-            );
+      const responseApi: ResponseApi = await createMaterial(fommatterForm());
+      if (responseApi.error && responseApi.error.validationErrors) {
+        const validationErrors = responseApi.error.validationErrors;
+        Object.entries(validationErrors).forEach(
+          ([key, value]: [any, any]): void => {
+            console.log("key", key);
+            console.log("value", value);
+            backendErrors.push({
+              field: key,
+              message: value,
+              showError: true,
+            });
           }
-          // backendErrors.push({
-          //   field: "materialName",
-          //   message: "El material ya esta en uso",
-          //   showError: true,
-          // });
-          setBackendErrors(backendErrors);
-        } else {
-          // Lógica para manejar una respuesta exitosa desde el backend
-          console.log("Formulario enviado con éxito");
-        }
+        );
+      } else if (responseApi?.statusCode !== 400) {
+        alert("Formulario enviado con éxito");
       }
     }
     setFormErrors(formErrors);
@@ -356,14 +337,10 @@ export const MaterialForm = () => {
               onChange={handleValueChange}
               error={
                 formErrors.find((error) => error.field === "materialName")
-                  ?.showError ||
-                backendErrors.find((error) => error.field === "materialName")
                   ?.showError
               }
               helperText={
                 formErrors.find((error) => error.field === "materialName")
-                  ?.message ||
-                backendErrors.find((error) => error.field === "materialName")
                   ?.message
               }
             />
@@ -380,14 +357,10 @@ export const MaterialForm = () => {
               onChange={handleValueChange}
               error={
                 formErrors.find((error) => error.field === "materialBrand")
-                  ?.showError ||
-                backendErrors.find((error) => error.field === "materialBrand")
                   ?.showError
               }
               helperText={
                 formErrors.find((error) => error.field === "materialBrand")
-                  ?.message ||
-                backendErrors.find((error) => error.field === "materialBrand")
                   ?.message
               }
             />
@@ -434,17 +407,11 @@ export const MaterialForm = () => {
               onChange={handleValueChange}
               error={
                 formErrors.find((error) => error.field === "materialQuantity")
-                  ?.showError ||
-                backendErrors.find(
-                  (error) => error.field === "materialQuantity"
-                )?.showError
+                  ?.showError
               }
               helperText={
                 formErrors.find((error) => error.field === "materialQuantity")
-                  ?.message ||
-                backendErrors.find(
-                  (error) => error.field === "materialQuantity"
-                )?.message
+                  ?.message
               }
             />
           </div>
@@ -458,14 +425,10 @@ export const MaterialForm = () => {
               onChange={handleValueChange}
               error={
                 formErrors.find((error) => error.field === "materialPrice")
-                  ?.showError ||
-                backendErrors.find((error) => error.field === "materialPrice")
                   ?.showError
               }
               helperText={
                 formErrors.find((error) => error.field === "materialPrice")
-                  ?.message ||
-                backendErrors.find((error) => error.field === "materialPrice")
                   ?.message
               }
             />
@@ -494,14 +457,10 @@ export const MaterialForm = () => {
               onOptionSelect={handleOptionSelect}
               error={
                 formErrors.find((error) => error.field === "materialType")
-                  ?.showError ||
-                backendErrors.find((error) => error.field === "materialType")
                   ?.showError
               }
               helperText={
                 formErrors.find((error) => error.field === "materialType")
-                  ?.message ||
-                backendErrors.find((error) => error.field === "materialType")
                   ?.message
               }
             />
@@ -516,17 +475,11 @@ export const MaterialForm = () => {
               onOptionSelect={handleOptionSelect}
               error={
                 formErrors.find((error) => error.field === "materialComponents")
-                  ?.showError ||
-                backendErrors.find(
-                  (error) => error.field === "materialComponents"
-                )?.showError
+                  ?.showError
               }
               helperText={
                 formErrors.find((error) => error.field === "materialComponents")
-                  ?.message ||
-                backendErrors.find(
-                  (error) => error.field === "materialComponents"
-                )?.message
+                  ?.message
               }
             />
           </div>
@@ -541,14 +494,10 @@ export const MaterialForm = () => {
               onOptionSelect={handleOptionSelect}
               error={
                 formErrors.find((error) => error.field === "materialUnity")
-                  ?.showError ||
-                backendErrors.find((error) => error.field === "materialUnity")
                   ?.showError
               }
               helperText={
                 formErrors.find((error) => error.field === "materialUnity")
-                  ?.message ||
-                backendErrors.find((error) => error.field === "materialUnity")
                   ?.message
               }
             />
