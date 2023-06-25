@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import "./ApplicationAreaTable.css";
 import { ApplicationAreaForm } from "../applicationAreaForm/ApplicationAreaForm";
-import { get } from "../../services/ApiService";
+import { getApplicationArea } from "../../services/ApiService";
 import { MainContainer } from "../mainContainer/MainContainer";
 import { GridCustom } from "../grid/Grid";
 
@@ -18,11 +18,12 @@ export const ApplicationAreaTable = () => {
 
   useEffect(() => {
     // Carga los datos del JSON
-    get("/application_areas").then((response) => {
+    async function fetchData() {
+      const response = await getApplicationArea();
       console.log(response.data);
-
       setApplicationAreas(response.data);
-    });
+    }
+    fetchData();
   }, []);
 
   const handleOpenForm = () => {

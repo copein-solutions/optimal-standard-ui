@@ -51,7 +51,7 @@ export const ApplicationAreaForm: React.FC<ApplicationAreaProps> = ({ onCancel }
       });
       console.log("respuesta back", response);
 
-      if (response.status !== 200) {
+      if (response.statusCode !== 200) {
         backendErrors.push({
           field: "appAreaName",
           message: "El material ya esta en uso",
@@ -59,8 +59,7 @@ export const ApplicationAreaForm: React.FC<ApplicationAreaProps> = ({ onCancel }
         });
         setBackendErrors(backendErrors);
       } else {
-        // Lógica para manejar una respuesta exitosa desde el backend
-        console.log("Formulario enviado con éxito");
+        alert("Formulario enviado con éxito");
       }
     }
     setFormErrors(formErrors);
