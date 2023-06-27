@@ -71,7 +71,6 @@ const AmountField = forwardRef<HTMLInputElement, AmountFieldProps>(
         value={inputValue}
         label={label}
         onValueChange={handleValueChange}
-        // {...props}
       />
     );
   }

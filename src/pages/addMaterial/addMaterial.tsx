@@ -1,64 +1,14 @@
-import { MainContainer } from "../mainContainer/MainContainer";
-import SelectField from "../selectField/SelectField";
+import { MainContainer } from "../../components/mainContainer/MainContainer"
+import SelectField from "../../components/selectField/SelectField";
 import { Divider, Typography, TextField, InputAdornment } from "@mui/material";
-import RadioGroupCustom from "../radioGroup/RadioGroup";
-import "./MaterialForm.css";
+import RadioGroupCustom from "../../components/radioGroup/RadioGroup";
+import "./addMaterial.css";
 import { ChangeEvent, useRef, useState } from "react";
+import { MATERIAL_TYPE, MATERIAL_UNITY, MATERIAL_COMPONENTS } from "../../utils/constants"
 
 // Services
 import { createMaterial } from "../../services/ApiService";
-import AmountInput from "../amountInput";
-
-const type = [
-  {
-    value: "Cementicio",
-    label: "Cementicio",
-  },
-  {
-    value: "Acrílico",
-    label: "Acrílico",
-  },
-  {
-    value: "Epoxi",
-    label: "Epoxi",
-  },
-  {
-    value: "Poliuretánico",
-    label: "Poliuretánico",
-  },
-  {
-    value: "Mantas varias",
-    label: "Mantas varias",
-  },
-  {
-    value: "Malla",
-    label: "Malla",
-  },
-  {
-    value: "Pintura",
-    label: "Pintura",
-  },
-  {
-    value: "Sellador",
-    label: "Sellador",
-  },
-  {
-    value: "Siliconado",
-    label: "Siliconado",
-  },
-  {
-    value: "Malla",
-    label: "Malla",
-  },
-  {
-    value: "Junta hidroexpansiva",
-    label: "Junta hidroexpansiva",
-  },
-  {
-    value: "otro",
-    label: "otro",
-  },
-];
+import AmountInput from "../../components/amountInput";
 
 const currency = [
   {
@@ -68,52 +18,6 @@ const currency = [
   {
     value: "pesos",
     label: "$",
-  },
-];
-
-const unity = [
-  {
-    value: "kg",
-    label: "Kilogramos",
-  },
-  {
-    value: "l",
-    label: "Litros",
-  },
-  {
-    value: "m2",
-    label: "Metros cuadrados",
-  },
-  {
-    value: "cm3",
-    label: "Centímetros cúbicos",
-  },
-  {
-    value: "ml",
-    label: "Metros lineales",
-  },
-  {
-    value: "u",
-    label: "Unidades",
-  },
-];
-
-const components = [
-  {
-    label: "Monocomponente",
-    value: "monocomponente",
-  },
-  {
-    label: "Bicomponente",
-    value: "bicomponente",
-  },
-  {
-    label: "Tricomponente",
-    value: "tricomponente",
-  },
-  {
-    label: "No aplica",
-    value: "no_aplica",
   },
 ];
 
@@ -134,7 +38,7 @@ interface ValidationErrors {
   message: string;
 }
 
-export const MaterialForm = () => {
+export const AddMaterial = () => {
   const defaultRadioValue = "pesos";
 
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
@@ -490,7 +394,7 @@ export const MaterialForm = () => {
               getRef={materialTypeRef}
               label="Tipo *"
               name="materialType"
-              options={type}
+              options={MATERIAL_TYPE}
               onOptionSelect={handleOptionSelect}
               error={
                 formErrors.find((error) => error.field === "materialType")
@@ -512,7 +416,7 @@ export const MaterialForm = () => {
               name="materialComponents"
               getRef={materialComponentRef}
               label="Composición *"
-              options={components}
+              options={MATERIAL_COMPONENTS}
               onOptionSelect={handleOptionSelect}
               error={
                 formErrors.find((error) => error.field === "materialComponents")
@@ -537,7 +441,7 @@ export const MaterialForm = () => {
               name="materialUnity"
               getRef={materialUnityRef}
               label="Unidad *"
-              options={unity}
+              options={MATERIAL_UNITY}
               onOptionSelect={handleOptionSelect}
               error={
                 formErrors.find((error) => error.field === "materialUnity")

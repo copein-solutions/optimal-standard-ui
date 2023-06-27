@@ -3,7 +3,8 @@ import { Box, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText
 import React from "react";
 import { Link } from "react-router-dom";
 import { CustomSkeleton } from "../skeleton/Skeleton";
-import { MaterialForm } from "../materialForm/MaterialForm";
+import { AddMaterial } from "../../pages/addMaterial/addMaterial";
+import { EditMaterial } from "../../pages/editMaterial/editMaterial";
 
 type MenuProps = {
   isOpen: boolean;
@@ -17,7 +18,7 @@ export const menuOptions = [
     name: "Alta de material",
     icon: <ArrowRightIcon />,
     path: "/option2",
-    component: MaterialForm,
+    component: AddMaterial,
   },
   {
     name: "Campos de aplicación",
@@ -25,12 +26,12 @@ export const menuOptions = [
     path: "/option1",
     component: CustomSkeleton,
   },
-  // {
-  //   name: "Opción 3",
-  //   icon: <ArrowRightIcon />,
-  //   path: "https://peñarol.org",
-  //   component: CustomSkeleton, // Esta opción va a llevar a --> https://peñarol.org
-  // },
+  {
+    name: "Opción 3",
+    icon: <ArrowRightIcon />,
+    path: "/option3",
+    component: EditMaterial,
+  },
 ];
 
 export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
