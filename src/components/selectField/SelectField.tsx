@@ -35,8 +35,6 @@ const CustomSelect: FC<CustomSelectProps> = ({
   const [value, setValue] = useState("");
 
   const handleChange = (event: SelectChangeEvent) => {
-    console.log("aca");
-    
     setPrefix(`$/${event.target.value}`);
     setValue(event.target.value);
 

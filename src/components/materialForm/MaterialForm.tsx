@@ -5,6 +5,7 @@ import RadioGroupCustom from "../radioGroup/RadioGroup";
 import SelectField from "../selectField/SelectField";
 import AmountInput from "../amountInput";
 import "./MaterialForm.css";
+import { useDispatch } from "react-redux";
 
 // Services
 import { createMaterial } from "../../services/ApiService";
@@ -122,10 +123,10 @@ const components = [
 ];
 
 interface MaterialFormProps {
-  onCancel: () => void;
+  onClose: () => void;
 }
 
-export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
+export const MaterialForm: React.FC<MaterialFormProps> = ({ onClose }) => {
   const defaultRadioValue = "pesos";
 
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
@@ -133,6 +134,8 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
   const [currencyValue, setCurrencyValue] = useState(defaultRadioValue);
   const [prefix, setPrefix] = useState<string | undefined>();
   const [inputValue, setInputValue] = useState<string | undefined>("0,00");
+
+  const dispatch = useDispatch();
 
   const materialNameRef = useRef<HTMLInputElement>(null);
   const materialBrandRef = useRef<HTMLInputElement>(null);
@@ -154,7 +157,7 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
 
   //función que se ejecuta cuando presiona el botón cancelar
   const handleCancel = () => {
-    onCancel();
+    onClose();
   };
 
   const verifyFormErrorsOnAccept = (formErrors: FormError[]) => {
@@ -273,7 +276,9 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
           }
         );
       } else if (responseApi?.statusCode !== 400) {
+        dispatch({ type: "SAVE_MATERIAL", payload: fommatterForm() });
         alert("Formulario enviado con éxito");
+        onClose();
       }
     }
     setFormErrors(formErrors);
