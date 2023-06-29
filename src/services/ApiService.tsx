@@ -7,10 +7,16 @@ const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
-
+// #region MATERIAL
 export const createMaterial = async (data: any): Promise<ResponseApi> => {
   return post("/material", data);
 };
+
+export const getMaterialByID = async (id: number): Promise<ResponseApi> => {
+  return get(`/material/${id}`);
+};
+
+//#endregion
 
 const post = async (url: string, data: any): Promise<ResponseApi> => {
   try {

@@ -34,6 +34,7 @@ import {
 } from "../../utils/constants";
 
 import { Inputs } from "../../interfaces/form/FormInterfaces";
+import { getMaterialByID } from "../../services/ApiService";
 
 export const EditMaterial = () => {
   const {
@@ -45,26 +46,42 @@ export const EditMaterial = () => {
     formState: { errors },
   } = useForm<Inputs>({
     defaultValues: {
-      materialQuantity: "10", // valor que vendrá desde el backend
-      materialPrice: "200", // valor que vendrá desde el backend
+      materialUnity: "", // valor que vendrá desde el backend
     },
   });
 
-  //#region constants sé si voy a usar
   const [inputValue, setInputValue] = useState<string | undefined>("0,00");
   const [inputValueNumberFormat, setInputValueNumberFormat] = useState("");
+
   const materialBrandRef = useRef<HTMLInputElement>(null);
 
-  function handleValueChange(
-    values: NumberFormatValues,
-    sourceInfo: SourceInfo
-  ) {
+  useEffect(() => {
+    // Carga los datos del JSON
+    async function fetchData() {
+      const response = await getMaterialByID(1);
+      loadMaterialValues(response.data);
+    }
+    fetchData();
+  }, [setValue]);
+
+  function loadMaterialValues(material: any) {
+    console.log(material);
+    setValue("materialName", material.name);
+    setValue("materialBrand", material.brand);
+    setValue("materialQuantity", material.presentationQuantity);
+    setValue("materialPrice", String(material.presentationPrice));
+    setValue("materialType", material.type);
+    setValue("materialUnity", material.presentationUnit);
+    setValue("materialType", material.type);
+    setValue("materialComponents", material.component);
+    setValue("materialCurrency", material.currency);
+  }
+
+  function handleValueChange(values: NumberFormatValues) {
     const { formattedValue } = values;
     setInputValueNumberFormat(formattedValue);
   }
-  //#endregion
 
-  //#region quito error cuando escribe sobre el input
   const handleSelectUnityChange = (e: any) => {
     setValue("materialUnity", e.target.value as string, {
       shouldValidate: true,
@@ -83,17 +100,16 @@ export const EditMaterial = () => {
     });
   };
 
+  //función que se ejecuta cuando presiona el botón cancelar
+  const handleCancel = () => {
+    console.log("handleCancel");
+  };
+
   // calculo precio unitario read only
   const handleSelectPriceChange = (e: any) => {
     setValue("materialPrice", e.target.value as string, {
       shouldValidate: true,
     });
-  };
-  //#endregion
-
-  //función que se ejecuta cuando presiona el botón cancelar
-  const handleCancel = () => {
-    console.log("handleCancel");
   };
 
   //   Obtengo el prefijo del precio unitario
@@ -106,8 +122,6 @@ export const EditMaterial = () => {
     const materialQuantityWatch = watchedValues[1];
     let materialPrice: number = 0;
     let materialQuantity: number = 0;
-    console.log("materialPriceWatch", materialPriceWatch);
-    console.log("materialQuantityWatch", materialQuantityWatch);
     setInputValueNumberFormat(materialPriceWatch);
     if (materialPriceWatch) {
       materialPrice = Number(
@@ -141,7 +155,6 @@ export const EditMaterial = () => {
         <div className="row mb-3">
           <div className="col-lg-6 col-sm-6">
             <TextField
-              value="Fausto"
               label="Nombre"
               variant="outlined"
               fullWidth
@@ -155,7 +168,6 @@ export const EditMaterial = () => {
           {/* ------------- Marca ------------- */}
           <div className="col-lg-6 col-sm-6">
             <TextField
-              value="Perillo"
               fullWidth
               label="Marca"
               variant="outlined"
@@ -170,7 +182,7 @@ export const EditMaterial = () => {
         </div>
         {/* ------------- Precio unitario READONLY ------------- */}
         <div className="row">
-          <div className="col-lg-6 col-sm-6 mb-3">
+          <div className="col-lg-3 col-sm-6 mb-3">
             <TextField
               className="read-only-text-field"
               value={inputValue}
@@ -196,7 +208,7 @@ export const EditMaterial = () => {
         <Divider />
         <div className="row mt-3">
           {/* ------------- Cantidad ------------- */}
-          <div className="col-lg-4 col-sm-6">
+          <div className="col-lg-3 col-sm-6">
             <TextField
               type="number"
               fullWidth
@@ -210,34 +222,53 @@ export const EditMaterial = () => {
               helperText={errors.materialQuantity?.message}
             />
           </div>
-          {/* ------------- Precio ------------- */}
-          <div className="col-lg-4 col-sm-6">
-            <NumberFormat
-              label="Precio"
-              {...register("materialPrice", {
-                required: "Precio requerido.",
-              })}
-              error={!!errors.materialPrice}
-              helperText={errors.materialPrice?.message}
-              customInput={TextField}
-              displayType={"input"}
-              fixedDecimalScale={true}
-              decimalScale={2}
-              decimalSeparator={","}
-              inputMode="numeric"
-              value={inputValueNumberFormat}
-              onChange={handleSelectPriceChange}
-              onValueChange={handleValueChange}
-            />
+          {/* ------------- Unidad ------------- */}
+          <div className="col-lg-3 col-sm-6">
+            <FormControl fullWidth error={!!errors.materialUnity}>
+              <InputLabel id="custom-select-label">Unidad</InputLabel>
+              <Controller
+                name="materialUnity"
+                control={control}
+                defaultValue=""
+                rules={{ required: "Composición requerida." }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    label="Unidad"
+                    onChange={(e) => {
+                      const value = e.target.value as string;
+                      field.onChange(value);
+                      // handleSelectTypeChange(e);
+                    }}
+                  >
+                    {MATERIAL_UNITY.map((option, index) => (
+                      <MenuItem key={index} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
+              {errors.materialUnity && (
+                <Typography
+                  variant="caption"
+                  align="left"
+                  sx={{ marginLeft: "14px" }}
+                  color="error"
+                >
+                  {errors.materialUnity.message}
+                </Typography>
+              )}
+            </FormControl>
           </div>
           {/* ------------- Moneda ------------- */}
-          <div className="col-lg-4 col-sm-6">
+          <div className="col-lg-3 col-sm-6">
             <FormControl>
               <FormLabel id="material-currency-label">Moneda</FormLabel>
               <Controller
                 name="materialCurrency"
                 control={control}
-                defaultValue="pesos"
+                defaultValue="$"
                 render={({ field }) => (
                   <RadioGroup
                     row
@@ -257,27 +288,56 @@ export const EditMaterial = () => {
               />
             </FormControl>
           </div>
+          {/* ------------- Precio ------------- */}
+          <div className="col-lg-3 col-sm-6">
+            <NumberFormat
+              label="Precio"
+              {...register("materialPrice", {
+                required: "Precio requerido.",
+              })}
+              error={!!errors.materialPrice}
+              helperText={errors.materialPrice?.message}
+              customInput={TextField}
+              displayType={"input"}
+              fixedDecimalScale={true}
+              decimalScale={2}
+              decimalSeparator={","}
+              inputMode="numeric"
+              value={inputValueNumberFormat}
+              onChange={handleSelectPriceChange}
+              onValueChange={handleValueChange}
+            />
+          </div>
         </div>
         {/* ------------- Tipo ------------- */}
         <div className="row mt-3">
           <div className="col-lg-4 col-sm-6 ">
             <FormControl fullWidth error={!!errors.materialType}>
               <InputLabel id="custom-select-label">Tipo</InputLabel>
-              <Select
-                label="Tipo"
-                {...register("materialType", {
-                  required: "Tipo requerido.",
-                })}
-                error={!!errors.materialType}
-                defaultValue="Epoxi"
-                onChange={handleSelectTypeChange}
-              >
-                {MATERIAL_TYPE.map((option, index) => (
-                  <MenuItem key={index} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </Select>
+              <Controller
+                name="materialType"
+                control={control}
+                defaultValue=""
+                rules={{ required: "Tipo requerido." }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    labelId="custom-select-label"
+                    label="Tipo"
+                    onChange={(e) => {
+                      const value = e.target.value as string;
+                      field.onChange(value);
+                      handleSelectTypeChange(e);
+                    }}
+                  >
+                    {MATERIAL_TYPE.map((option, index) => (
+                      <MenuItem key={index} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
               {errors.materialType && (
                 <Typography
                   variant="caption"
@@ -294,21 +354,29 @@ export const EditMaterial = () => {
           <div className="col-lg-4 col-sm-6">
             <FormControl fullWidth error={!!errors.materialComponents}>
               <InputLabel id="custom-select-label">Composición</InputLabel>
-              <Select
-                label="Composición"
-                {...register("materialComponents", {
-                  required: "Composición requerida.",
-                })}
-                error={!!errors.materialComponents}
-                defaultValue="monocomponente"
-                onChange={handleSelectComponentChange}
-              >
-                {MATERIAL_COMPONENTS.map((option, index) => (
-                  <MenuItem key={index} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </Select>
+              <Controller
+                name="materialComponents"
+                control={control}
+                defaultValue=""
+                rules={{ required: "Composición requerida." }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    label="Composición"
+                    onChange={(e) => {
+                      const value = e.target.value as string;
+                      field.onChange(value);
+                      handleSelectTypeChange(e);
+                    }}
+                  >
+                    {MATERIAL_COMPONENTS.map((option, index) => (
+                      <MenuItem key={index} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
               {errors.materialComponents && (
                 <Typography
                   variant="caption"
@@ -317,37 +385,6 @@ export const EditMaterial = () => {
                   color="error"
                 >
                   {errors.materialComponents.message}
-                </Typography>
-              )}
-            </FormControl>
-          </div>
-          {/* ------------- Unidad ------------- */}
-          <div className="col-lg-4 col-sm-6">
-            <FormControl fullWidth error={!!errors.materialUnity}>
-              <InputLabel id="custom-select-label">Unidad</InputLabel>
-              <Select
-                label="Unidad"
-                {...register("materialUnity", {
-                  required: "Unidad requerida.",
-                })}
-                error={!!errors.materialUnity}
-                defaultValue="kg"
-                onChange={handleSelectUnityChange}
-              >
-                {MATERIAL_UNITY.map((option, index) => (
-                  <MenuItem key={index} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </Select>
-              {errors.materialUnity && (
-                <Typography
-                  variant="caption"
-                  align="left"
-                  sx={{ marginLeft: "14px" }}
-                  color="error"
-                >
-                  {errors.materialUnity.message}
                 </Typography>
               )}
             </FormControl>
@@ -377,7 +414,9 @@ export const EditMaterial = () => {
           </div>
         </div>
         <div className="card-footer text-body-secondary align-right">
-          <Button variant="text">Cancelar</Button>
+          <Button onClick={handleCancel} variant="text">
+            Cancelar
+          </Button>
           <Button
             onClick={handleSubmit(onSubmit)}
             type="submit"

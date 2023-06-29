@@ -1,46 +1,46 @@
 export const MATERIAL_TYPE = [
   {
-    value: "Cementicio",
+    value: "cementicio",
     label: "Cementicio",
   },
   {
-    value: "Acrílico",
+    value: "acrílico",
     label: "Acrílico",
   },
   {
-    value: "Epoxi",
+    value: "epoxi",
     label: "Epoxi",
   },
   {
-    value: "Poliuretánico",
+    value: "poliuretánico",
     label: "Poliuretánico",
   },
   {
-    value: "Mantas varias",
+    value: "mantas varias",
     label: "Mantas varias",
   },
   {
-    value: "Malla",
+    value: "malla",
     label: "Malla",
   },
   {
-    value: "Pintura",
+    value: "pintura",
     label: "Pintura",
   },
   {
-    value: "Sellador",
+    value: "sellador",
     label: "Sellador",
   },
   {
-    value: "Siliconado",
+    value: "siliconado",
     label: "Siliconado",
   },
   {
-    value: "Malla",
+    value: "malla",
     label: "Malla",
   },
   {
-    value: "Junta hidroexpansiva",
+    value: "junta hidroexpansiva",
     label: "Junta hidroexpansiva",
   },
   {
@@ -51,11 +51,11 @@ export const MATERIAL_TYPE = [
 
 export const CURRENCY = [
   {
-    value: "dolares",
+    value: "USD",
     label: "USD",
   },
   {
-    value: "pesos",
+    value: "$",
     label: "$",
   },
 ];
