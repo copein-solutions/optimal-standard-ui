@@ -155,25 +155,17 @@ export const AddMaterial = () => {
 
   const handleAccept = async () => {
     const formErrors: FormError[] = [];
-    const backendErrors: BackendError[] = [];
     verifyFormErrorsOnAccept(formErrors);
 
     if (formErrors.length === 0) {
-      const responseApi: ResponseApi = await createMaterial(fommatterForm());
-      if (responseApi.error && responseApi.error.validationErrors) {
-        const validationErrors = responseApi.error.validationErrors;
-        Object.entries(validationErrors).forEach(
-          ([key, value]: [any, any]): void => {
-            console.log("key", key);
-            console.log("value", value);
-            backendErrors.push({
-              field: key,
-              message: value,
-              showError: true,
-            });
-          }
-        );
-      } else if (responseApi?.statusCode !== 400) {
+      const response: ResponseApi = await createMaterial(fommatterForm());
+      if (response.data.error) {
+        if(response.data.details) {
+          alert("Error: " + response.data.details.join(" "));
+        } else {
+          alert("Error: " + response.data.message);
+        }        
+      } else {
         alert("Formulario enviado con éxito");
       }
     }

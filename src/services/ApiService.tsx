@@ -20,31 +20,17 @@ export const getMaterialByID = async (id: number): Promise<ResponseApi> => {
 
 const post = async (url: string, data: any): Promise<ResponseApi> => {
   try {
-    return handleRequestResponse(await api.post(url, data));
+    return await api.post(url, data);
   } catch (error: any) {
-    return handleRequestError(error);
+    return error.response;
   }
-};
-
-const handleRequestResponse = (response: any): ResponseApi => {
-  let responseApi: ResponseApi = { data: response.data, error: null, statusCode: response.status }; 
-  return responseApi;
-};
-
-const handleRequestError = (error: any): ResponseApi => {
-  let responseApi: ResponseApi = { data: null, error: null, statusCode: 400 }; 
-  if(error?.response?.status && error?.response?.status !== 200) {
-    responseApi.statusCode = error.response.status;
-    responseApi.error = error.response.data;
-  }
-  return responseApi;
 };
 
 const get = async (url: string): Promise<ResponseApi> => {
   try {
     return await api.get(url);
   } catch (error: any) {
-    return error;
+    return error.response;
   }
 };
 
@@ -52,7 +38,7 @@ const put = async (url: string, data: any): Promise<ResponseApi> => {
   try {
     return await api.put(url, data);
   } catch (error: any) {
-    return error;
+    return error.response;
   }
 };
 
@@ -60,6 +46,6 @@ const remove = async (url: string): Promise<ResponseApi> =>  {
   try {
     return await api.delete(url);    
   } catch (error: any) {
-    return error;
+    return error.response;
   }
 };

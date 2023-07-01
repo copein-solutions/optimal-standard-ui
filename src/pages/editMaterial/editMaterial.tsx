@@ -31,7 +31,7 @@ import {
 } from "../../utils/constants";
 
 import { Inputs } from "../../interfaces/form/FormInterfaces";
-import { createMaterial, getMaterialByID } from "../../services/ApiService";
+import { getMaterialByID } from "../../services/ApiService";
 import CustomTextfield from "../../components/TextField";
 
 export const EditMaterial = () => {
@@ -58,7 +58,11 @@ export const EditMaterial = () => {
     async function fetchData() {
       // TODO: quitar id hardcodeado
       const response = await getMaterialByID(1);
-      loadMaterialValues(response.data);
+      if(response.data.error) {
+        alert("Error: " + response.data.message);
+      } else  {
+        loadMaterialValues(response.data);
+      }
     }
     fetchData();
   }, [setValue]);
