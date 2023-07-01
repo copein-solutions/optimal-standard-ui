@@ -58,8 +58,8 @@ export const EditMaterial = () => {
     async function fetchData() {
       // TODO: quitar id hardcodeado
       const response = await getMaterialByID(1);
-      if(response.data.error) {
-        alert("Error: " + response.data.message);
+      if(response?.data.error || response === undefined) {
+        alert("Error: " + (!response?.data.message) ? "Network error" : response.data.message);
       } else  {
         loadMaterialValues(response.data);
       }

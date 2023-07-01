@@ -17,17 +17,17 @@ export const menuOptions = [
   {
     name: "Alta de material",
     icon: <ArrowRightIcon />,
-    path: "/option2",
+    path: "/material",
     component: AddMaterial,
   },
   {
     name: "Campos de aplicación",
     icon: <ArrowRightIcon />,
-    path: "/option1",
+    path: "/application_area",
     component: CustomSkeleton,
   },
   {
-    name: "Opción 3",
+    name: "Editar material",
     icon: <ArrowRightIcon />,
     path: "/option3",
     component: EditMaterial,
