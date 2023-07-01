@@ -26,12 +26,12 @@ import {
 import {
   MATERIAL_TYPE,
   CURRENCY,
-  MATERIAL_UNITY,
+  MATERIAL_UNIT,
   MATERIAL_COMPONENTS,
 } from "../../utils/constants";
 
 import { Inputs } from "../../interfaces/form/FormInterfaces";
-import { getMaterialByID } from "../../services/ApiService";
+import { getMaterialByID, updateMaterial } from "../../services/ApiService";
 import CustomTextfield from "../../components/TextField";
 
 export const EditMaterial = () => {
@@ -44,12 +44,13 @@ export const EditMaterial = () => {
     formState: { errors },
   } = useForm<Inputs>({
     defaultValues: {
-      materialUnity: "", // valor que vendrá desde el backend
+      materialUnit: "", // valor que vendrá desde el backend
     },
   });
 
   const [inputValue, setInputValue] = useState<string | undefined>("0,00");
   const [inputValueNumberFormat, setInputValueNumberFormat] = useState("");
+  const [materialId, setMaterialId] = useState(1);
 
   const materialBrandRef = useRef<HTMLInputElement>(null);
 
@@ -57,9 +58,9 @@ export const EditMaterial = () => {
     // Carga los datos del JSON
     async function fetchData() {
       // TODO: quitar id hardcodeado
-      const response = await getMaterialByID(1);
+      const response = await getMaterialByID(materialId);
       if(response?.data.error || response === undefined) {
-        alert("Error: " + (!response?.data.message) ? "Network error" : response.data.message);
+        alert("Error: " + !response?.data.message ? "Network error" : response.data.message);
       } else  {
         loadMaterialValues(response.data);
       }
@@ -68,13 +69,12 @@ export const EditMaterial = () => {
   }, [setValue]);
 
   function loadMaterialValues(material: any) {
-    console.log(material);
     setValue("materialName", material.name);
     setValue("materialBrand", material.brand);
     setValue("materialQuantity", material.presentationQuantity);
     setValue("materialPrice", String(material.presentationPrice));
     setValue("materialType", material.type);
-    setValue("materialUnity", material.presentationUnit);
+    setValue("materialUnit", material.presentationUnit);
     setValue("materialType", material.type);
     setValue("materialComponents", material.component);
     setValue("materialCurrency", material.currency);
@@ -84,12 +84,6 @@ export const EditMaterial = () => {
     const { formattedValue } = values;
     setInputValueNumberFormat(formattedValue);
   }
-
-  const handleSelectUnityChange = (e: any) => {
-    setValue("materialUnity", e.target.value as string, {
-      shouldValidate: true,
-    });
-  };
 
   const handleSelectTypeChange = (e: any) => {
     setValue("materialType", e.target.value as string, {
@@ -110,7 +104,7 @@ export const EditMaterial = () => {
   };
 
   //   Obtengo el prefijo del precio unitario
-  const unity = watch("materialUnity");
+  const unity = watch("materialUnit");
   const prefix = unity != null ? `$/${unity}` : "";
   const watchedValues = watch(["materialPrice", "materialQuantity"]);
 
@@ -139,10 +133,26 @@ export const EditMaterial = () => {
     return numeroTruncado;
   };
 
-  const onSubmit = (data: Inputs) => {
-    // createMaterial();
-    // Aquí puedes realizar llamadas a la API o acciones adicionales
+  const apiDataMapper = (data: Inputs) => {
+    return {
+      name: data.materialName ,
+      brand: data.materialBrand,
+      presentationQuantity: data.materialQuantity,
+      presentationUnit: data.materialUnit,
+      presentationPrice: data.materialPrice,
+      priceDate: "1891-09-28",
+      currency: data.materialCurrency,
+      type: data.materialType,
+      component: data.materialComponents,
+    };
+  };
+
+  const onSubmit = async (data: Inputs) => {
     console.log("Formulario enviado:", data);
+    
+    const response = await updateMaterial(materialId, apiDataMapper(data));
+    console.log(response);
+    
   };
 
   return (
@@ -217,25 +227,13 @@ export const EditMaterial = () => {
               error={errors.materialQuantity}
               helperText={errors.materialQuantity?.message}
             />
-            {/* <TextField
-              type="number"
-              fullWidth
-              inputProps={{ min: 1 }}
-              label="Cantidad"
-              variant="outlined"
-              {...register("materialQuantity", {
-                required: "Cantidad requerida.",
-              })}
-              error={!!errors.materialQuantity}
-              helperText={errors.materialQuantity?.message}
-            /> */}
           </div>
           {/* ------------- Unidad ------------- */}
           <div className="col-lg-3 col-sm-6">
-            <FormControl fullWidth error={!!errors.materialUnity}>
+            <FormControl fullWidth error={!!errors.materialUnit}>
               <InputLabel id="custom-select-label">Unidad</InputLabel>
               <Controller
-                name="materialUnity"
+                name="materialUnit"
                 control={control}
                 defaultValue=""
                 rules={{ required: "Composición requerida." }}
@@ -246,10 +244,9 @@ export const EditMaterial = () => {
                     onChange={(e) => {
                       const value = e.target.value as string;
                       field.onChange(value);
-                      // handleSelectTypeChange(e);
                     }}
                   >
-                    {MATERIAL_UNITY.map((option, index) => (
+                    {MATERIAL_UNIT.map((option, index) => (
                       <MenuItem key={index} value={option.value}>
                         {option.label}
                       </MenuItem>
@@ -257,14 +254,14 @@ export const EditMaterial = () => {
                   </Select>
                 )}
               />
-              {errors.materialUnity && (
+              {errors.materialUnit && (
                 <Typography
                   variant="caption"
                   align="left"
                   sx={{ marginLeft: "14px" }}
                   color="error"
                 >
-                  {errors.materialUnity.message}
+                  {errors.materialUnit.message}
                 </Typography>
               )}
             </FormControl>

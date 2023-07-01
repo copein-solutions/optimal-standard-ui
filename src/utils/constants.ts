@@ -60,7 +60,7 @@ export const CURRENCY = [
   },
 ];
 
-export const MATERIAL_UNITY = [
+export const MATERIAL_UNIT = [
     {
       value: "kg",
       label: "Kilogramos",

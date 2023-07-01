@@ -12,6 +12,10 @@ export const createMaterial = async (data: any): Promise<ResponseApi> => {
   return post("/material", data);
 };
 
+export const updateMaterial = async (id: number, data: any): Promise<ResponseApi> => {
+  return put(`/material/${id}`, data);
+};
+
 export const getMaterialByID = async (id: number): Promise<ResponseApi> => {
   return get(`/material/${id}`);
 };

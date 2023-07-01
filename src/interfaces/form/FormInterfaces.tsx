@@ -17,7 +17,7 @@ interface Inputs {
   materialPrice: string;
   materialType: string;
   materialComponents: string;
-  materialUnity: string;
+  materialUnit: string;
   materialCurrency: string;
 }
 

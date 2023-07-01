@@ -10,7 +10,7 @@ import "./addMaterial.css";
 import { createMaterial } from "../../services/ApiService";
 
 // Constants
-import { MATERIAL_TYPE, MATERIAL_UNITY, MATERIAL_COMPONENTS } from "../../utils/constants"
+import { MATERIAL_TYPE, MATERIAL_UNIT, MATERIAL_COMPONENTS } from "../../utils/constants"
 
 // Interfaces
 import { ResponseApi } from "../../interfaces/service/ApiInterfaces";
@@ -388,7 +388,7 @@ export const AddMaterial = () => {
               name="materialUnity"
               getRef={materialUnityRef}
               label="Unidad *"
-              options={MATERIAL_UNITY}
+              options={MATERIAL_UNIT}
               onOptionSelect={handleOptionSelect}
               error={
                 formErrors.find((error) => error.field === "materialUnity")
