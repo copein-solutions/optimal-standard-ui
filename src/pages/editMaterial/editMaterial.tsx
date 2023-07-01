@@ -1,9 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import NumberFormat, {
-  NumberFormatValues,
-  SourceInfo,
-} from "react-number-format";
+import NumberFormat, { NumberFormatValues } from "react-number-format";
 
 import { MainContainer } from "../../components/mainContainer/MainContainer";
 import "./editMaterial.css";
@@ -34,7 +31,8 @@ import {
 } from "../../utils/constants";
 
 import { Inputs } from "../../interfaces/form/FormInterfaces";
-import { getMaterialByID } from "../../services/ApiService";
+import { createMaterial, getMaterialByID } from "../../services/ApiService";
+import CustomTextfield from "../../components/TextField";
 
 export const EditMaterial = () => {
   const {
@@ -58,6 +56,7 @@ export const EditMaterial = () => {
   useEffect(() => {
     // Carga los datos del JSON
     async function fetchData() {
+      // TODO: quitar id hardcodeado
       const response = await getMaterialByID(1);
       loadMaterialValues(response.data);
     }
@@ -84,12 +83,6 @@ export const EditMaterial = () => {
 
   const handleSelectUnityChange = (e: any) => {
     setValue("materialUnity", e.target.value as string, {
-      shouldValidate: true,
-    });
-  };
-
-  const handleSelectComponentChange = (e: any) => {
-    setValue("materialComponents", e.target.value as string, {
       shouldValidate: true,
     });
   };
@@ -143,39 +136,38 @@ export const EditMaterial = () => {
   };
 
   const onSubmit = (data: Inputs) => {
-    // Enviar el formulario
+    // createMaterial();
     // Aquí puedes realizar llamadas a la API o acciones adicionales
     console.log("Formulario enviado:", data);
   };
 
   return (
-    <MainContainer cardTitle="Editar de material">
+    <MainContainer cardTitle="Editar material">
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* ------------- Nombre ------------- */}
         <div className="row mb-3">
           <div className="col-lg-6 col-sm-6">
-            <TextField
+            <CustomTextfield
+              name="materialName"
+              control={control}
+              rules={{ required: "Nombre requerido." }}
               label="Nombre"
               variant="outlined"
               fullWidth
-              {...register("materialName", {
-                required: "Nombre requerido.",
-              })}
-              error={!!errors.materialName}
+              error={errors.materialName}
               helperText={errors.materialName?.message}
             />
           </div>
           {/* ------------- Marca ------------- */}
           <div className="col-lg-6 col-sm-6">
-            <TextField
-              fullWidth
+            <CustomTextfield
+              name="materialBrand"
+              control={control}
+              rules={{ required: "Marca requerida." }}
               label="Marca"
               variant="outlined"
-              {...register("materialBrand", {
-                required: "Marca requerida.",
-              })}
-              inputRef={materialBrandRef}
-              error={!!errors.materialBrand}
+              fullWidth
+              error={errors.materialBrand}
               helperText={errors.materialBrand?.message}
             />
           </div>
@@ -209,7 +201,19 @@ export const EditMaterial = () => {
         <div className="row mt-3">
           {/* ------------- Cantidad ------------- */}
           <div className="col-lg-3 col-sm-6">
-            <TextField
+          <CustomTextfield
+              name="materialQuantity"
+              control={control}
+              rules={{ required: "Marca requerida." }}
+              label="Cantidad"
+              variant="outlined"
+              type="number"
+              inputProps={{ min: 1 }}
+              fullWidth
+              error={errors.materialQuantity}
+              helperText={errors.materialQuantity?.message}
+            />
+            {/* <TextField
               type="number"
               fullWidth
               inputProps={{ min: 1 }}
@@ -220,7 +224,7 @@ export const EditMaterial = () => {
               })}
               error={!!errors.materialQuantity}
               helperText={errors.materialQuantity?.message}
-            />
+            /> */}
           </div>
           {/* ------------- Unidad ------------- */}
           <div className="col-lg-3 col-sm-6">
