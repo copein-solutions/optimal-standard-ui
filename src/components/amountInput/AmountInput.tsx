@@ -1,4 +1,4 @@
-import React, {
+import {
   forwardRef,
   ReactElement,
   ReactNode,
@@ -26,7 +26,6 @@ const AmountField = forwardRef<HTMLInputElement, AmountFieldProps>(
     {
       name,
       onChange,
-      prefix,
       inputRef,
       required,
       error,
@@ -67,11 +66,10 @@ const AmountField = forwardRef<HTMLInputElement, AmountFieldProps>(
         decimalScale={decimalScale}
         thousandSeparator={thousandSeparator}
         decimalSeparator={decimalSeparator}
-        inputMode="numeric"
+        inputMode="numeric"        
         value={inputValue}
         label={label}
         onValueChange={handleValueChange}
-        // {...props}
       />
     );
   }
