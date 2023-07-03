@@ -42,11 +42,7 @@ export const EditMaterial = () => {
     setValue,
     control,
     formState: { errors },
-  } = useForm<Inputs>({
-    defaultValues: {
-      materialUnit: "", // valor que vendrá desde el backend
-    },
-  });
+  } = useForm<Inputs>();
 
   const [inputValue, setInputValue] = useState<string | undefined>("0,00");
   const [inputValueNumberFormat, setInputValueNumberFormat] = useState("");
@@ -59,9 +55,13 @@ export const EditMaterial = () => {
     async function fetchData() {
       // TODO: quitar id hardcodeado
       const response = await getMaterialByID(materialId);
-      if(response?.data.error || response === undefined) {
-        alert("Error: " + !response?.data.message ? "Network error" : response.data.message);
-      } else  {
+      if (response?.data.error || response === undefined) {
+        alert(
+          "Error: " + !response?.data.message
+            ? "Network error"
+            : response.data.message
+        );
+      } else {
         loadMaterialValues(response.data);
       }
     }
@@ -135,7 +135,7 @@ export const EditMaterial = () => {
 
   const apiDataMapper = (data: Inputs) => {
     return {
-      name: data.materialName ,
+      name: data.materialName,
       brand: data.materialBrand,
       presentationQuantity: data.materialQuantity,
       presentationUnit: data.materialUnit,
@@ -148,11 +148,19 @@ export const EditMaterial = () => {
   };
 
   const onSubmit = async (data: Inputs) => {
-    console.log("Formulario enviado:", data);
-    
+    console.log(data);
     const response = await updateMaterial(materialId, apiDataMapper(data));
     console.log(response);
-    
+
+    if (response.data.error) {
+      if (response.data.details) {
+        alert("Error: " + response.data.details.join(" "));
+      } else {
+        alert("Error: " + response.data.message);
+      }
+    } else {
+      alert("Formulario enviado con éxito");
+    }
   };
 
   return (
@@ -215,7 +223,7 @@ export const EditMaterial = () => {
         <div className="row mt-3">
           {/* ------------- Cantidad ------------- */}
           <div className="col-lg-3 col-sm-6">
-          <CustomTextfield
+            <CustomTextfield
               name="materialQuantity"
               control={control}
               rules={{ required: "Marca requerida." }}
