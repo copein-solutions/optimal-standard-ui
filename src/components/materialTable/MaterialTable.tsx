@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import "./MaterialTable.css";
-import { MaterialForm } from "../materialForm/MaterialForm";
-import { getMaterial } from "../../services/ApiService";
+import { AddMaterial } from "../../pages/addMaterial/addMaterial";
+import { getMaterials } from "../../services/ApiService";
 import { MainContainer } from "../mainContainer/MainContainer";
 import { GridCustom } from "../grid/Grid";
 
@@ -21,7 +21,7 @@ export const MaterialTable = () => {
   useEffect(() => {
     // Carga los datos del JSON
     async function fetchData() {
-      const response = await getMaterial();
+      const response = await getMaterials();
       const updateMaterials = response.data;
       updateMaterials.map(
         (mat: {
@@ -55,7 +55,7 @@ export const MaterialTable = () => {
   return (
     <div>
       {isFormOpen ? (
-        <MaterialForm onCancel={handleCloseForm} />
+        <AddMaterial onCancel={handleCloseForm} />
       ) : (
         <MainContainer cardTitle="Material">
           <div>

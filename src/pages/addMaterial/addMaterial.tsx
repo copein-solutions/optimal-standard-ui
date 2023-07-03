@@ -1,68 +1,24 @@
 import { ChangeEvent, useRef, useState } from "react";
-import { MainContainer } from "../mainContainer/MainContainer";
+import { MainContainer } from "../../components/mainContainer/MainContainer";
 import { Divider, Typography, TextField, InputAdornment } from "@mui/material";
-import RadioGroupCustom from "../radioGroup/RadioGroup";
-import SelectField from "../selectField/SelectField";
-import AmountInput from "../amountInput";
-import "./MaterialForm.css";
+import RadioGroupCustom from "../../components/radioGroup/RadioGroup";
+import SelectField from "../../components/selectField/SelectField";
+import AmountInput from "../../components/amountInput";
+import "./addMaterial.css";
 
 // Services
 import { createMaterial } from "../../services/ApiService";
 
+// Constants
+import {
+  MATERIAL_TYPE,
+  MATERIAL_UNIT,
+  MATERIAL_COMPONENTS,
+} from "../../utils/constants";
+
 // Interfaces
 import { ResponseApi } from "../../interfaces/service/ApiInterfaces";
 import { FormError, BackendError } from "../../interfaces/form/FormInterfaces";
-
-const type = [
-  {
-    value: "Cementicio",
-    label: "Cementicio",
-  },
-  {
-    value: "Acrílico",
-    label: "Acrílico",
-  },
-  {
-    value: "Epoxi",
-    label: "Epoxi",
-  },
-  {
-    value: "Poliuretánico",
-    label: "Poliuretánico",
-  },
-  {
-    value: "Mantas varias",
-    label: "Mantas varias",
-  },
-  {
-    value: "Malla",
-    label: "Malla",
-  },
-  {
-    value: "Pintura",
-    label: "Pintura",
-  },
-  {
-    value: "Sellador",
-    label: "Sellador",
-  },
-  {
-    value: "Siliconado",
-    label: "Siliconado",
-  },
-  {
-    value: "Malla",
-    label: "Malla",
-  },
-  {
-    value: "Junta hidroexpansiva",
-    label: "Junta hidroexpansiva",
-  },
-  {
-    value: "otro",
-    label: "otro",
-  },
-];
 
 const currency = [
   {
@@ -74,58 +30,11 @@ const currency = [
     label: "$",
   },
 ];
-
-const unity = [
-  {
-    value: "kg",
-    label: "Kilogramos",
-  },
-  {
-    value: "l",
-    label: "Litros",
-  },
-  {
-    value: "m2",
-    label: "Metros cuadrados",
-  },
-  {
-    value: "cm3",
-    label: "Centímetros cúbicos",
-  },
-  {
-    value: "ml",
-    label: "Metros lineales",
-  },
-  {
-    value: "u",
-    label: "Unidades",
-  },
-];
-
-const components = [
-  {
-    label: "Monocomponente",
-    value: "monocomponente",
-  },
-  {
-    label: "Bicomponente",
-    value: "bicomponente",
-  },
-  {
-    label: "Tricomponente",
-    value: "tricomponente",
-  },
-  {
-    label: "No aplica",
-    value: "no_aplica",
-  },
-];
-
 interface MaterialFormProps {
-  onCancel: () => void;
+  onCancel?: () => void;
 }
 
-export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
+export const AddMaterial: React.FC<MaterialFormProps> = ({ onCancel }) => {
   const defaultRadioValue = "pesos";
 
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
@@ -154,7 +63,7 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
 
   //función que se ejecuta cuando presiona el botón cancelar
   const handleCancel = () => {
-    onCancel();
+    // onCancel();
   };
 
   const verifyFormErrorsOnAccept = (formErrors: FormError[]) => {
@@ -254,25 +163,17 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
 
   const handleAccept = async () => {
     const formErrors: FormError[] = [];
-    const backendErrors: BackendError[] = [];
     verifyFormErrorsOnAccept(formErrors);
 
     if (formErrors.length === 0) {
-      const responseApi: ResponseApi = await createMaterial(fommatterForm());
-      if (responseApi.error && responseApi.error.validationErrors) {
-        const validationErrors = responseApi.error.validationErrors;
-        Object.entries(validationErrors).forEach(
-          ([key, value]: [any, any]): void => {
-            console.log("key", key);
-            console.log("value", value);
-            backendErrors.push({
-              field: key,
-              message: value,
-              showError: true,
-            });
-          }
-        );
-      } else if (responseApi?.statusCode !== 400) {
+      const response: ResponseApi = await createMaterial(fommatterForm());
+      if (response.data.error) {
+        if (response.data.details) {
+          alert("Error: " + response.data.details.join(" "));
+        } else {
+          alert("Error: " + response.data.message);
+        }
+      } else {
         alert("Formulario enviado con éxito");
       }
     }
@@ -459,7 +360,7 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
               getRef={materialTypeRef}
               label="Tipo *"
               name="materialType"
-              options={type}
+              options={MATERIAL_TYPE}
               onOptionSelect={handleOptionSelect}
               error={
                 formErrors.find((error) => error.field === "materialType")
@@ -477,7 +378,7 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
               name="materialComponents"
               getRef={materialComponentRef}
               label="Composición *"
-              options={components}
+              options={MATERIAL_COMPONENTS}
               onOptionSelect={handleOptionSelect}
               error={
                 formErrors.find((error) => error.field === "materialComponents")
@@ -496,7 +397,7 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onCancel }) => {
               name="materialUnity"
               getRef={materialUnityRef}
               label="Unidad *"
-              options={unity}
+              options={MATERIAL_UNIT}
               onOptionSelect={handleOptionSelect}
               error={
                 formErrors.find((error) => error.field === "materialUnity")

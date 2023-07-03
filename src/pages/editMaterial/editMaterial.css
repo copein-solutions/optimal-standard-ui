@@ -1,0 +1,9 @@
+.read-only-text-field {
+    pointer-events: none;
+}
+
+.card-footer {
+    background-color: unset;
+    margin-top: 1rem;
+    padding-bottom: 0;
+}

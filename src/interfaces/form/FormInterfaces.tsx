@@ -10,4 +10,15 @@ interface BackendError {
   showError: boolean;
 }
 
-export type { FormError, BackendError };
+interface Inputs {
+  materialName: string;
+  materialBrand: string;
+  materialQuantity: string;
+  materialPrice: string;
+  materialType: string;
+  materialComponents: string;
+  materialUnit: string;
+  materialCurrency: string;
+}
+
+export type { FormError, BackendError, Inputs };
