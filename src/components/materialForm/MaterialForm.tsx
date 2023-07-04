@@ -240,6 +240,12 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onClose }) => {
   };
 
   const formatterForm = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+
     return {
       name: materialNameRef.current?.value,
       brand: materialBrandRef.current?.value,
@@ -248,10 +254,11 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onClose }) => {
       presentationPrice: Number(
         materialPriceRef.current?.value.replaceAll(".", "").replace(",", ".")
       ),
-      priceDate: '2023-05-05',
+      priceDate: formattedDate,
       currency: currencyValue,
       type: materialTypeRef.current?.value,
       component: materialComponentRef.current?.value,
+      unityPrice: String(prefix) + ' ' + String(inputValue),
     };
   };
 
