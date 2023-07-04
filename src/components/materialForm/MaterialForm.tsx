@@ -239,7 +239,7 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onClose }) => {
     }
   };
 
-  const fommatterForm = () => {
+  const formatterForm = () => {
     return {
       name: materialNameRef.current?.value,
       brand: materialBrandRef.current?.value,
@@ -248,7 +248,7 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onClose }) => {
       presentationPrice: Number(
         materialPriceRef.current?.value.replaceAll(".", "").replace(",", ".")
       ),
-      priceDate: new Date(),
+      priceDate: '2023-05-05',
       currency: currencyValue,
       type: materialTypeRef.current?.value,
       component: materialComponentRef.current?.value,
@@ -261,7 +261,7 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onClose }) => {
     verifyFormErrorsOnAccept(formErrors);
 
     if (formErrors.length === 0) {
-      const responseApi: ResponseApi = await createMaterial(fommatterForm());
+      const responseApi: ResponseApi = await createMaterial(formatterForm());
       if (responseApi.error && responseApi.error.validationErrors) {
         const validationErrors = responseApi.error.validationErrors;
         Object.entries(validationErrors).forEach(
@@ -276,7 +276,7 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({ onClose }) => {
           }
         );
       } else if (responseApi?.statusCode !== 400) {
-        dispatch({ type: "SAVE_MATERIAL", payload: fommatterForm() });
+        dispatch({ type: "SAVE_MATERIAL", payload: formatterForm() });
         alert("Formulario enviado con éxito");
         onClose();
       }
