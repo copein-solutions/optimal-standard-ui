@@ -32,7 +32,6 @@ export const ApplicationAreaForm: React.FC<ApplicationAreaProps> = ({ onClose })
   const dispatch = useDispatch();
   
   const appAreaNameRef = useRef<HTMLInputElement>(null);
-  const appAreaSpecificationRef = useRef<HTMLInputElement>(null);
   const appAreaConsiderationsRef = useRef<HTMLInputElement>(null);
 
   const handleCancel = () => {
@@ -40,7 +39,16 @@ export const ApplicationAreaForm: React.FC<ApplicationAreaProps> = ({ onClose })
   };
 
   const verifyFormErrors = (formErrors: FormError[]) => {
-    
+    if (
+      appAreaNameRef.current?.value === "" ||
+      appAreaNameRef.current?.value == null
+    ) {
+      formErrors.push({
+        field: "appAreaName",
+        message: "Nombre requerido",
+        showError: true,
+      });
+    }
   };
 
   const formatterForm = () => {
@@ -62,7 +70,7 @@ export const ApplicationAreaForm: React.FC<ApplicationAreaProps> = ({ onClose })
       if (response.statusCode !== 200) {
         backendErrors.push({
           field: "appAreaName",
-          message: "El material ya esta en uso",
+          message: "",
           showError: true,
         });
         setBackendErrors(backendErrors);
