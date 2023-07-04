@@ -48,6 +48,12 @@ export const menuOptions = [
     path: "/materials",
     component: MaterialTable,
   },
+  {
+    name: "Listado de campo de aplicación",
+    icon: <ArrowRightIcon />,
+    path: "/application_areas",
+    component: ApplicationAreaTable,
+  },
 ];
 
 export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {

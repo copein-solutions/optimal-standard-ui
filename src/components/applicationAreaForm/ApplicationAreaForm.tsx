@@ -67,7 +67,7 @@ export const ApplicationAreaForm: React.FC<ApplicationAreaProps> = ({ onClose })
       const response: any = await createApplicationArea(formatterForm());
       console.log("respuesta back", response);
 
-      if (response.statusCode !== 200) {
+      if (response.status !== 200) {
         backendErrors.push({
           field: "appAreaName",
           message: "",

@@ -34,7 +34,7 @@ const currency = [
   },
 ];
 interface MaterialFormProps {
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 export const AddMaterial: React.FC<MaterialFormProps> = ({ onClose }) => {
@@ -68,7 +68,7 @@ export const AddMaterial: React.FC<MaterialFormProps> = ({ onClose }) => {
 
   //función que se ejecuta cuando presiona el botón cancelar
   const handleCancel = () => {
-    onClose();
+    if (onClose) onClose();
   };
 
   const verifyFormErrorsOnAccept = (formErrors: FormError[]) => {
@@ -188,7 +188,7 @@ export const AddMaterial: React.FC<MaterialFormProps> = ({ onClose }) => {
       } else {
         dispatch({ type: "SAVE_MATERIAL", payload: formatterForm() });
         alert("Formulario enviado con éxito");
-        onClose();
+        if (onClose) onClose();
       }
     }
     setFormErrors(formErrors);
