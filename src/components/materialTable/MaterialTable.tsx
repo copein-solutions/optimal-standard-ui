@@ -13,9 +13,9 @@ export const MaterialTable = () => {
   const materials = useSelector((state: RootState) => state.materials);
   const dispatch = useDispatch();
 
-  const columns = [
+  const header = [
     { name: "Nombre", value: "name" },
-    { name: "Precio Unitario", value: "unityPrice" },
+    { name: "Precio Unitario", value: "unitPrice" },
     { name: "Marca", value: "brand" },
     { name: "Tipo", value: "type" },
     { name: "Fecha", value: "priceDate" },
@@ -68,6 +68,10 @@ export const MaterialTable = () => {
     setFormOpen(false);
   };
 
+  // const onEdit = async () => {
+  //   navigator('/login')
+  // };
+
   return (
     <div>
       {isFormOpen ? (
@@ -82,7 +86,7 @@ export const MaterialTable = () => {
             >
               Agregar material
             </Button>
-            <GridCustom columns={columns} rows={materials} hasEdit hasDelete />
+            <GridCustom header={header} body={materials} hasEdit hasDelete />
           </div>
         </MainContainer>
       )}
