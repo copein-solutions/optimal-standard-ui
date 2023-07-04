@@ -5,14 +5,16 @@ import { ApplicationAreaForm } from "../applicationAreaForm/ApplicationAreaForm"
 import { getApplicationArea } from "../../services/ApiService";
 import { MainContainer } from "../mainContainer/MainContainer";
 import { GridCustom } from "../grid/Grid";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../redux/reducers/reducer";
 
 export const ApplicationAreaTable = () => {
-  const [applicationAreas, setApplicationAreas] = useState([]);
   const [isFormOpen, setFormOpen] = useState(false);
+  const applicationAreas = useSelector((state: RootState) => state.applicationAreas);
+  const dispatch = useDispatch();
 
   const columns = [
     { name: "Nombre", value: "name" },
-    { name: "Especificación", value: "specification" },
     { name: "Consideración", value: "considerations" },
   ];
 
@@ -20,11 +22,12 @@ export const ApplicationAreaTable = () => {
     // Carga los datos del JSON
     async function fetchData() {
       const response = await getApplicationArea();
+
       console.log(response.data);
-      setApplicationAreas(response.data);
+      dispatch({ type: "SET_APPLICATION_AREA", payload: response.data });
     }
     fetchData();
-  }, []);
+  }, [dispatch]);
 
   const handleOpenForm = () => {
     setFormOpen(true);
@@ -37,7 +40,7 @@ export const ApplicationAreaTable = () => {
   return (
     <div>
       {isFormOpen ? (
-        <ApplicationAreaForm onCancel={handleCloseForm} />
+        <ApplicationAreaForm onClose={handleCloseForm} />
       ) : (
         <MainContainer cardTitle="Campo de aplicación">
           <div>

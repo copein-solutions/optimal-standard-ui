@@ -3,6 +3,9 @@ import { TextField } from "@mui/material";
 import { useRef, useState } from "react";
 import "./ApplicationAreaForm.css";
 
+// Redux
+import { useDispatch } from "react-redux";
+
 // Services
 import { createApplicationArea } from "../../services/ApiService";
 
@@ -19,23 +22,32 @@ interface BackendError {
 }
 
 interface ApplicationAreaProps {
-  onCancel: () => void;
+  onClose: () => void;
 }
 
-export const ApplicationAreaForm: React.FC<ApplicationAreaProps> = ({ onCancel }) => {
+export const ApplicationAreaForm: React.FC<ApplicationAreaProps> = ({ onClose }) => {
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
   const [backendErrors, setBackendErrors] = useState<BackendError[]>([]);
+
+  const dispatch = useDispatch();
   
   const appAreaNameRef = useRef<HTMLInputElement>(null);
   const appAreaSpecificationRef = useRef<HTMLInputElement>(null);
   const appAreaConsiderationsRef = useRef<HTMLInputElement>(null);
 
   const handleCancel = () => {
-    onCancel();
+    onClose();
   };
 
   const verifyFormErrors = (formErrors: FormError[]) => {
     
+  };
+
+  const formatterForm = () => {
+    return {
+      name: appAreaNameRef.current?.value,
+      considerations: appAreaConsiderationsRef.current?.value,
+    };
   };
 
   const handleAccept = async () => {
@@ -44,11 +56,7 @@ export const ApplicationAreaForm: React.FC<ApplicationAreaProps> = ({ onCancel }
     verifyFormErrors(formErrors);
 
     if (formErrors.length === 0) {
-      const response: any = await createApplicationArea({
-        name: appAreaNameRef.current?.value,
-        specification: appAreaSpecificationRef.current?.value,
-        considerations: appAreaConsiderationsRef.current?.value
-      });
+      const response: any = await createApplicationArea(formatterForm());
       console.log("respuesta back", response);
 
       if (response.statusCode !== 200) {
@@ -59,7 +67,9 @@ export const ApplicationAreaForm: React.FC<ApplicationAreaProps> = ({ onCancel }
         });
         setBackendErrors(backendErrors);
       } else {
+        dispatch({ type: "SAVE_APPLICATION_AREA", payload: formatterForm()});
         alert("Formulario enviado con éxito");
+        onClose()
       }
     }
     setFormErrors(formErrors);
@@ -88,12 +98,12 @@ export const ApplicationAreaForm: React.FC<ApplicationAreaProps> = ({ onCancel }
       onCancel={handleCancel}
       onAccept={handleAccept}
       hasFooterButons
-      cardTitle="Alta de Campo de Aplicacion"
+      cardTitle="Alta de Campo de Aplicación"
     >
       <div className="container">
         {/* ------------- Nombre ------------- */}
         <div className="row mb-3">
-          <div className="col-lg-6 col-sm-6">
+          <div className="col-lg-6 col-sm-12">
             <TextField
               name="appAreaName"
               required
@@ -116,33 +126,8 @@ export const ApplicationAreaForm: React.FC<ApplicationAreaProps> = ({ onCancel }
               }
             />
           </div>
-          {/* ------------- Especificacion ------------- */}
-          <div className="col-lg-6 col-sm-6">
-            <TextField
-              name="appAreaSpecification"
-              fullWidth
-              inputRef={appAreaSpecificationRef}
-              label="Especificacion"
-              variant="outlined"
-              onChange={handleInputChange}
-              error={
-                formErrors.find((error) => error.field === "appAreaSpecification")
-                  ?.showError ||
-                backendErrors.find((error) => error.field === "appAreaSpecification")
-                  ?.showError
-              }
-              helperText={
-                formErrors.find((error) => error.field === "appAreaSpecification")
-                  ?.message ||
-                backendErrors.find((error) => error.field === "appAreaSpecification")
-                  ?.message
-              }
-            />
-          </div>
-        </div>
-        <div className="row mt-3">
           {/* ------------- Consideraciones ------------- */}
-          <div className="col-lg-4 col-sm-6">
+          <div className="col-lg-6 col-sm-12">
             <TextField
               name="appAreaConsiderations"
               fullWidth
