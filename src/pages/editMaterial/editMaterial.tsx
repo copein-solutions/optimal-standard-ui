@@ -33,6 +33,7 @@ import {
 import { Inputs } from "../../interfaces/form/FormInterfaces";
 import { getMaterialByID, updateMaterial } from "../../services/ApiService";
 import CustomTextfield from "../../components/TextField";
+import { useParams } from "react-router-dom";
 
 export const EditMaterial = () => {
   const {
@@ -50,11 +51,15 @@ export const EditMaterial = () => {
 
   const materialBrandRef = useRef<HTMLInputElement>(null);
 
+  const {id} = useParams();
+
   useEffect(() => {
     // Carga los datos del JSON
     async function fetchData() {
+      console.log("id",id);
+
       // TODO: quitar id hardcodeado
-      const response = await getMaterialByID(materialId);
+      const response = await getMaterialByID(Number(id));
       if (response?.data.error || response === undefined) {
         alert(
           "Error: " + !response?.data.message
@@ -149,7 +154,7 @@ export const EditMaterial = () => {
 
   const onSubmit = async (data: Inputs) => {
     console.log(data);
-    const response = await updateMaterial(materialId, apiDataMapper(data));
+    const response = await updateMaterial(Number(id), apiDataMapper(data));
     console.log(response);
 
     if (response.data.error) {

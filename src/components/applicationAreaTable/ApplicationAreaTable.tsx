@@ -49,8 +49,8 @@ export const ApplicationAreaTable = () => {
               Agregar campo de aplicación
             </Button>
             <GridCustom
-              columns={columns}
-              rows={applicationAreas}
+              header={columns}
+              body={applicationAreas}
               hasEdit
               hasDelete
             />

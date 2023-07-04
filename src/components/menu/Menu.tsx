@@ -36,12 +36,12 @@ export const menuOptions = [
     path: "/application_area",
     component: CustomSkeleton,
   },
-  {
-    name: "Editar material",
-    icon: <ArrowRightIcon />,
-    path: "/option3",
-    component: EditMaterial,
-  },
+  // {
+  //   name: "Editar material",
+  //   icon: <ArrowRightIcon />,
+  //   path: "/editMaterial/:id",
+  //   component: EditMaterial,
+  // },
   {
     name: "Listado de materiales",
     icon: <ArrowRightIcon />,

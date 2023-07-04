@@ -10,9 +10,9 @@ export const MaterialTable = () => {
   const [materials, setMaterials] = useState([]);
   const [isFormOpen, setFormOpen] = useState(false);
 
-  const columns = [
+  const header = [
     { name: "Nombre", value: "name" },
-    { name: "Precio Unitario", value: "unityPrice" },
+    { name: "Precio Unitario", value: "unitPrice" },
     { name: "Marca", value: "brand" },
     { name: "Tipo", value: "type" },
     { name: "Fecha", value: "priceDate" },
@@ -37,9 +37,8 @@ export const MaterialTable = () => {
             mat.presentationPrice / mat.presentationQuantity;
         }
       );
-
-      console.log(updateMaterials);
       setMaterials(updateMaterials);
+      console.log(materials);
     }
     fetchData();
   }, []);
@@ -51,6 +50,10 @@ export const MaterialTable = () => {
   const handleCloseForm = () => {
     setFormOpen(false);
   };
+
+  // const onEdit = async () => {
+  //   navigator('/login')
+  // };
 
   return (
     <div>
@@ -66,7 +69,7 @@ export const MaterialTable = () => {
             >
               Agregar material
             </Button>
-            <GridCustom columns={columns} rows={materials} hasEdit hasDelete />
+            <GridCustom header={header} body={materials} hasEdit hasDelete />
           </div>
         </MainContainer>
       )}

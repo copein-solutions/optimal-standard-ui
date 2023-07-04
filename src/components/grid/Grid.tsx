@@ -1,38 +1,30 @@
 import { Button } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { useNavigate } from "react-router-dom";
+import "./Grid.css";
 
-type Column = {
+type Header = {
   name: string;
   value: string;
 };
 
-// type BodyRow = {
-//   value: string;
-//   name: string;
-// };
-
 type GridProps = {
   /** Titulos de columna.  */
-  columns?: Column[];
+  header?: Header[];
   /** Datos que se desplegaran en la lista. */
-  rows?: any[];
+  body?: { id: number; [key: string]: any }[];
   hasEdit?: boolean;
   hasDelete?: boolean;
 };
 
 export const GridCustom: React.FC<GridProps> = ({
-  columns,
-  rows,
+  header,
+  body,
   hasEdit,
   hasDelete,
 }) => {
-  const onEdit = async () => {
-    try {
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const navigator = useNavigate();
 
   const onDelete = async () => {
     try {
@@ -40,57 +32,62 @@ export const GridCustom: React.FC<GridProps> = ({
       console.log(error);
     }
   };
-  
+
+  const onEdit = (id: number) => {
+    console.log("edit", id);
+    navigator(`/material/${id}/edit`)
+  };
+
+  const editButton = (id: number) => (
+    <Button
+      sx={{
+        borderRadius: "50%",
+        height: "40px",
+        width: "40px",
+        minWidth: 0,
+      }}
+      color="success"
+      variant="contained"
+      onClick={() => onEdit(id)}
+    >
+      <EditIcon />
+    </Button>
+  );
+
+  const deleteButton = (
+    <Button
+      sx={{
+        borderRadius: "50%",
+        height: "40px",
+        width: "40px",
+        minWidth: 0,
+      }}
+      color="error"
+      variant="contained"
+      onClick={onDelete}
+    >
+      <DeleteIcon />
+    </Button>
+  );
+
   return (
     <>
-      <table className="table table-hover">
+      <table className="table">
         <thead>
-          {columns?.map((item, index) => (
+          {header?.map((item) => (
             <th>{item.name}</th>
           ))}
-          {hasEdit && (<th></th>)}
-          {hasDelete && (<th></th>)}
+          {hasEdit && <th></th>}
+          {hasDelete && <th></th>}
         </thead>
         <tbody>
-          {rows?.map((item, index) => (
+          {body?.map((item, index) => (
             <tr key={index}>
-              {columns?.map((col) => (
-                <th>{item[col.value]}</th>
+              {header?.map((col) => (
+                <td>{item[col.value]}</td>
               ))}
-              {hasEdit && (
-                <td>
-                  <Button
-                    sx={{
-                      borderRadius: "20%",
-                      height: "45px",
-                      width: "45px",
-                      minWidth: 0,
-                    }}
-                    color="success"
-                    variant="contained"
-                    onClick={onEdit}
-                  >
-                    <EditIcon />
-                  </Button>
-                </td>
-              )}
-              {hasDelete && (
-                <td>
-                  <Button
-                    sx={{
-                      borderRadius: "20%",
-                      height: "45px",
-                      width: "45px",
-                      minWidth: 0,
-                    }}
-                    color="error"
-                    variant="contained"
-                    onClick={onDelete}
-                  >
-                    <DeleteIcon />
-                  </Button>
-                </td>
-              )}
+              {hasEdit && <td>{editButton(item.id)}</td>}
+              {hasDelete && <td>{deleteButton}</td>}
             </tr>
           ))}
         </tbody>
