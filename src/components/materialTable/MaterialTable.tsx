@@ -1,17 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Button } from "@mui/material";
 import "./MaterialTable.css";
-import { AddMaterial } from "../../pages/addMaterial/addMaterial";
 import { getMaterials } from "../../services/ApiService";
 import { MainContainer } from "../mainContainer/MainContainer";
 import { GridCustom } from "../grid/Grid";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/reducers/reducer";
+import { useNavigate } from "react-router-dom";
 
 export const MaterialTable = () => {
-  const [isFormOpen, setFormOpen] = useState(false);
   const materials = useSelector((state: RootState) => state.materials);
   const dispatch = useDispatch();
+
+  const navigator = useNavigate();
 
   const header = [
     { name: "Nombre", value: "name" },
@@ -35,12 +36,12 @@ export const MaterialTable = () => {
       if (updateMaterials) {
         updateMaterials.map(
           (mat: {
-            unityPrice: string;
+            unitPrice: string;
             presentationPrice: number;
             presentationQuantity: number;
             presentationUnit: string;
           }) => {
-            mat.unityPrice =
+            mat.unitPrice =
               "$/" +
               mat.presentationUnit +
               " " +
@@ -61,35 +62,15 @@ export const MaterialTable = () => {
   }, [dispatch]);
 
   const handleOpenForm = () => {
-    setFormOpen(true);
+    navigator("/material");
   };
-
-  const handleCloseForm = () => {
-    setFormOpen(false);
-  };
-
-  // const onEdit = async () => {
-  //   navigator('/login')
-  // };
 
   return (
-    <div>
-      {isFormOpen ? (
-        <AddMaterial onClose={handleCloseForm} />
-      ) : (
-        <MainContainer cardTitle="Material">
-          <div>
-            <Button
-              variant="contained"
-              color="success"
-              onClick={handleOpenForm}
-            >
-              Agregar material
-            </Button>
-            <GridCustom header={header} body={materials} hasEdit hasDelete />
-          </div>
-        </MainContainer>
-      )}
-    </div>
+    <MainContainer cardTitle="Listado de material">
+      <Button variant="text" color="success" onClick={handleOpenForm}>
+        Agregar material
+      </Button>
+      <GridCustom header={header} body={materials} hasEdit hasDelete />
+    </MainContainer>
   );
 };

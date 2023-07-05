@@ -25,7 +25,7 @@ type MenuProps = {
 // TODO: cambiar este objeto para un archivo aparte??
 export const menuOptions = [
   {
-    name: "Materiales",
+    name: "Agregar material",
     icon: <ArrowRightIcon />,
     path: "/material",
     component: AddMaterial,
@@ -36,12 +36,6 @@ export const menuOptions = [
     path: "/application_area",
     component: CustomSkeleton,
   },
-  // {
-  //   name: "Editar material",
-  //   icon: <ArrowRightIcon />,
-  //   path: "/editMaterial/:id",
-  //   component: EditMaterial,
-  // },
   {
     name: "Listado de materiales",
     icon: <ArrowRightIcon />,
