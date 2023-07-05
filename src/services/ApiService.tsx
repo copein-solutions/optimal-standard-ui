@@ -12,6 +12,10 @@ export const createMaterial = async (data: any): Promise<ResponseApi> => {
   return post("/material", data);
 };
 
+export const getMaterials = async (): Promise<ResponseApi> =>  {
+  return get("/materials");
+}
+
 export const updateMaterial = async (id: number, data: any): Promise<ResponseApi> => {
   return put(`/material/${id}`, data);
 };
@@ -19,6 +23,17 @@ export const updateMaterial = async (id: number, data: any): Promise<ResponseApi
 export const getMaterialByID = async (id: number): Promise<ResponseApi> => {
   return get(`/material/${id}`);
 };
+
+//#endregion
+
+// #region AREA DE APLICACIÓN
+export const createApplicationArea = async (data: any): Promise<ResponseApi> =>  {
+  return post("/application_area", data);
+}
+
+export const getApplicationArea = async (): Promise<ResponseApi> =>  {
+  return get("/application_areas");
+}
 
 //#endregion
 

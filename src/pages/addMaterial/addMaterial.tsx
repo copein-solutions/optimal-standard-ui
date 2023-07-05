@@ -10,11 +10,16 @@ import "./addMaterial.css";
 import { createMaterial } from "../../services/ApiService";
 
 // Constants
-import { MATERIAL_TYPE, MATERIAL_UNIT, MATERIAL_COMPONENTS } from "../../utils/constants"
+import {
+  MATERIAL_TYPE,
+  MATERIAL_UNIT,
+  MATERIAL_COMPONENTS,
+} from "../../utils/constants";
 
 // Interfaces
 import { ResponseApi } from "../../interfaces/service/ApiInterfaces";
 import { FormError, BackendError } from "../../interfaces/form/FormInterfaces";
+import { useNavigate } from "react-router-dom";
 
 const currency = [
   {
@@ -43,6 +48,9 @@ export const AddMaterial = () => {
   const materialQuantityRef = useRef<HTMLInputElement>(null);
   const materialTypeRef = useRef<HTMLInputElement>(null);
   const materialComponentRef = useRef<HTMLInputElement>(null);
+  const materialCurrencyRef = useRef<HTMLInputElement>(null);
+
+  const navigator = useNavigate();
 
   // Obtengo el value del Radio seleccionado
   const handleRadioChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -55,7 +63,7 @@ export const AddMaterial = () => {
 
   //función que se ejecuta cuando presiona el botón cancelar
   const handleCancel = () => {
-    console.log("handleCancel");
+    navigator("/materials");
   };
 
   const verifyFormErrorsOnAccept = (formErrors: FormError[]) => {
@@ -160,16 +168,17 @@ export const AddMaterial = () => {
     if (formErrors.length === 0) {
       const response: ResponseApi = await createMaterial(fommatterForm());
       if (response.data.error) {
-        if(response.data.details) {
+        if (response.data.details) {
           alert("Error: " + response.data.details.join(" "));
         } else {
           alert("Error: " + response.data.message);
-        }        
+        }
       } else {
         alert("Formulario enviado con éxito");
       }
     }
     setFormErrors(formErrors);
+    navigator("/materials");
   };
 
   const verifyFormErrors = (
@@ -334,6 +343,7 @@ export const AddMaterial = () => {
           {/* ------------- Moneda ------------- */}
           <div className="col-lg-4 col-sm-6">
             <RadioGroupCustom
+              inputRef={materialCurrencyRef}
               name="materialCurrency"
               onChange={handleRadioChange}
               row
