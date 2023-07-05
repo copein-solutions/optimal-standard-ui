@@ -19,6 +19,7 @@ import {
 // Interfaces
 import { ResponseApi } from "../../interfaces/service/ApiInterfaces";
 import { FormError, BackendError } from "../../interfaces/form/FormInterfaces";
+import { useNavigate } from "react-router-dom";
 
 const currency = [
   {
@@ -30,11 +31,8 @@ const currency = [
     label: "$",
   },
 ];
-interface MaterialFormProps {
-  onCancel?: () => void;
-}
 
-export const AddMaterial: React.FC<MaterialFormProps> = ({ onCancel }) => {
+export const AddMaterial = () => {
   const defaultRadioValue = "pesos";
 
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
@@ -52,6 +50,8 @@ export const AddMaterial: React.FC<MaterialFormProps> = ({ onCancel }) => {
   const materialComponentRef = useRef<HTMLInputElement>(null);
   const materialCurrencyRef = useRef<HTMLInputElement>(null);
 
+  const navigator = useNavigate();
+
   // Obtengo el value del Radio seleccionado
   const handleRadioChange = (e: ChangeEvent<HTMLInputElement>) => {
     setCurrencyValue(e.target.value);
@@ -63,7 +63,7 @@ export const AddMaterial: React.FC<MaterialFormProps> = ({ onCancel }) => {
 
   //función que se ejecuta cuando presiona el botón cancelar
   const handleCancel = () => {
-    // onCancel();
+    navigator("/materials");
   };
 
   const verifyFormErrorsOnAccept = (formErrors: FormError[]) => {
@@ -178,6 +178,7 @@ export const AddMaterial: React.FC<MaterialFormProps> = ({ onCancel }) => {
       }
     }
     setFormErrors(formErrors);
+    navigator("/materials");
   };
 
   const verifyFormErrors = (

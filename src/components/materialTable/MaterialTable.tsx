@@ -5,10 +5,14 @@ import { AddMaterial } from "../../pages/addMaterial/addMaterial";
 import { getMaterials } from "../../services/ApiService";
 import { MainContainer } from "../mainContainer/MainContainer";
 import { GridCustom } from "../grid/Grid";
+import { Navigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 export const MaterialTable = () => {
   const [materials, setMaterials] = useState([]);
   const [isFormOpen, setFormOpen] = useState(false);
+
+  const navigator = useNavigate();
 
   const header = [
     { name: "Nombre", value: "name" },
@@ -25,12 +29,12 @@ export const MaterialTable = () => {
       const updateMaterials = response.data;
       updateMaterials.map(
         (mat: {
-          unityPrice: string;
+          unitPrice: string;
           presentationPrice: number;
           presentationQuantity: number;
           presentationUnit: string;
         }) => {
-          mat.unityPrice =
+          mat.unitPrice =
             "$/" +
             mat.presentationUnit +
             " " +
@@ -44,35 +48,15 @@ export const MaterialTable = () => {
   }, []);
 
   const handleOpenForm = () => {
-    setFormOpen(true);
+    navigator("/material");
   };
-
-  const handleCloseForm = () => {
-    setFormOpen(false);
-  };
-
-  // const onEdit = async () => {
-  //   navigator('/login')
-  // };
 
   return (
-    <div>
-      {isFormOpen ? (
-        <AddMaterial onCancel={handleCloseForm} />
-      ) : (
-        <MainContainer cardTitle="Material">
-          <div>
-            <Button
-              variant="contained"
-              color="success"
-              onClick={handleOpenForm}
-            >
-              Agregar material
-            </Button>
-            <GridCustom header={header} body={materials} hasEdit hasDelete />
-          </div>
-        </MainContainer>
-      )}
-    </div>
+    <MainContainer cardTitle="Listado de material">
+      <Button variant="text" color="success" onClick={handleOpenForm}>
+        Agregar material
+      </Button>
+      <GridCustom header={header} body={materials} hasEdit hasDelete />
+    </MainContainer>
   );
 };

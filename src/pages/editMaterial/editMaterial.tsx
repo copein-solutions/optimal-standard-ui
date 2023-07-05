@@ -33,7 +33,7 @@ import {
 import { Inputs } from "../../interfaces/form/FormInterfaces";
 import { getMaterialByID, updateMaterial } from "../../services/ApiService";
 import CustomTextfield from "../../components/TextField";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const EditMaterial = () => {
   const {
@@ -49,14 +49,14 @@ export const EditMaterial = () => {
   const [inputValueNumberFormat, setInputValueNumberFormat] = useState("");
   const [materialId, setMaterialId] = useState(1);
 
-  const materialBrandRef = useRef<HTMLInputElement>(null);
+  const navigator = useNavigate();
 
-  const {id} = useParams();
+  const { id } = useParams();
 
   useEffect(() => {
     // Carga los datos del JSON
     async function fetchData() {
-      console.log("id",id);
+      console.log("id", id);
 
       // TODO: quitar id hardcodeado
       const response = await getMaterialByID(Number(id));
@@ -80,7 +80,6 @@ export const EditMaterial = () => {
     setValue("materialPrice", String(material.presentationPrice));
     setValue("materialType", material.type);
     setValue("materialUnit", material.presentationUnit);
-    setValue("materialType", material.type);
     setValue("materialComponents", material.component);
     setValue("materialCurrency", material.currency);
   }
@@ -90,22 +89,25 @@ export const EditMaterial = () => {
     setInputValueNumberFormat(formattedValue);
   }
 
-  const handleSelectTypeChange = (e: any) => {
-    setValue("materialType", e.target.value as string, {
-      shouldValidate: true,
-    });
+  const handleSelectChange = (e: any) => {
+    if (e.target.name === "materialType") {
+      setValue("materialType", e.target.value as string, {
+        shouldValidate: true,
+      });
+    } else if (e.target.name === "materialComponents") {
+      setValue("materialComponents", e.target.value as string, {
+        shouldValidate: true,
+      });
+    } else if (e.target.name === "materialPrice") {
+      setValue("materialPrice", e.target.value as string, {
+        shouldValidate: true,
+      });
+    }
   };
 
   //función que se ejecuta cuando presiona el botón cancelar
   const handleCancel = () => {
-    console.log("handleCancel");
-  };
-
-  // calculo precio unitario read only
-  const handleSelectPriceChange = (e: any) => {
-    setValue("materialPrice", e.target.value as string, {
-      shouldValidate: true,
-    });
+    navigator("/materials")
   };
 
   //   Obtengo el prefijo del precio unitario
@@ -322,7 +324,7 @@ export const EditMaterial = () => {
               decimalSeparator={","}
               inputMode="numeric"
               value={inputValueNumberFormat}
-              onChange={handleSelectPriceChange}
+              onChange={handleSelectChange}
               onValueChange={handleValueChange}
             />
           </div>
@@ -345,7 +347,7 @@ export const EditMaterial = () => {
                     onChange={(e) => {
                       const value = e.target.value as string;
                       field.onChange(value);
-                      handleSelectTypeChange(e);
+                      handleSelectChange(e);
                     }}
                   >
                     {MATERIAL_TYPE.map((option, index) => (
@@ -384,7 +386,7 @@ export const EditMaterial = () => {
                     onChange={(e) => {
                       const value = e.target.value as string;
                       field.onChange(value);
-                      handleSelectTypeChange(e);
+                      handleSelectChange(e);
                     }}
                   >
                     {MATERIAL_COMPONENTS.map((option, index) => (
