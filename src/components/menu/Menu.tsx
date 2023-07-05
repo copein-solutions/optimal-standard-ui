@@ -11,10 +11,10 @@ import {
 import React from "react";
 import { Link } from "react-router-dom";
 import { CustomSkeleton } from "../skeleton/Skeleton";
-import { MaterialTable } from "../materialTable/MaterialTable";
-import { ApplicationAreaTable } from "../applicationAreaTable/ApplicationAreaTable";
+import { ListMaterial } from "../../pages/listMaterial/listMaterial";
 import { AddMaterial } from "../../pages/addMaterial/addMaterial";
-import { EditMaterial } from "../../pages/editMaterial/editMaterial";
+import { ListApplicationArea } from "../../pages/listApplicationArea/listApplicationArea";
+import { AddApplicationArea } from "../../pages/addApplicationArea/addApplicationArea";
 
 type MenuProps = {
   isOpen: boolean;
@@ -31,22 +31,22 @@ export const menuOptions = [
     component: AddMaterial,
   },
   {
-    name: "Campos de aplicación",
+    name: "Agregar campo de aplicación",
     icon: <ArrowRightIcon />,
     path: "/application_area",
-    component: CustomSkeleton,
+    component: AddApplicationArea,
   },
   {
     name: "Listado de materiales",
     icon: <ArrowRightIcon />,
     path: "/materials",
-    component: MaterialTable,
+    component: ListMaterial,
   },
   {
     name: "Listado de campo de aplicación",
     icon: <ArrowRightIcon />,
     path: "/application_areas",
-    component: ApplicationAreaTable,
+    component: ListApplicationArea,
   },
 ];
 

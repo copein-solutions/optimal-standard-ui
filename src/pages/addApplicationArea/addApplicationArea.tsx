@@ -1,7 +1,8 @@
-import { MainContainer } from "../mainContainer/MainContainer";
+import { MainContainer } from "../../components/mainContainer/MainContainer";
 import { TextField } from "@mui/material";
 import { useRef, useState } from "react";
-import "./ApplicationAreaForm.css";
+import { useNavigate } from "react-router-dom";
+import "./addApplicationArea.css";
 
 // Redux
 import { useDispatch } from "react-redux";
@@ -21,21 +22,18 @@ interface BackendError {
   showError: boolean;
 }
 
-interface ApplicationAreaProps {
-  onClose: () => void;
-}
-
-export const ApplicationAreaForm: React.FC<ApplicationAreaProps> = ({ onClose }) => {
+export const AddApplicationArea = () => {
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
   const [backendErrors, setBackendErrors] = useState<BackendError[]>([]);
 
   const dispatch = useDispatch();
+  const navigator = useNavigate();
   
   const appAreaNameRef = useRef<HTMLInputElement>(null);
   const appAreaConsiderationsRef = useRef<HTMLInputElement>(null);
 
   const handleCancel = () => {
-    onClose();
+    navigator("/application_areas");
   };
 
   const verifyFormErrors = (formErrors: FormError[]) => {
@@ -77,7 +75,7 @@ export const ApplicationAreaForm: React.FC<ApplicationAreaProps> = ({ onClose })
       } else {
         dispatch({ type: "SAVE_APPLICATION_AREA", payload: formatterForm()});
         alert("Formulario enviado con éxito");
-        onClose()
+        navigator("/application_areas");
       }
     }
     setFormErrors(formErrors);

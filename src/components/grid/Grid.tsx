@@ -16,6 +16,7 @@ type GridProps = {
   body?: { id: number; [key: string]: any }[];
   hasEdit?: boolean;
   hasDelete?: boolean;
+  editNav?: string;
 };
 
 export const GridCustom: React.FC<GridProps> = ({
@@ -23,6 +24,7 @@ export const GridCustom: React.FC<GridProps> = ({
   body,
   hasEdit,
   hasDelete,
+  editNav,
 }) => {
   const navigator = useNavigate();
 
@@ -35,7 +37,7 @@ export const GridCustom: React.FC<GridProps> = ({
 
   const onEdit = (id: number) => {
     console.log("edit", id);
-    navigator(`/material/${id}/edit`)
+    navigator(`/${editNav}/${id}/edit`)
   };
 
   const editButton = (id: number) => (

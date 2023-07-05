@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 import { Button } from "@mui/material";
-import "./MaterialTable.css";
+import "./listMaterial.css";
 import { getMaterials } from "../../services/ApiService";
-import { MainContainer } from "../mainContainer/MainContainer";
-import { GridCustom } from "../grid/Grid";
+import { MainContainer } from "../../components/mainContainer/MainContainer";
+import { GridCustom } from "../../components/grid/Grid";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/reducers/reducer";
 import { useNavigate } from "react-router-dom";
 
-export const MaterialTable = () => {
+export const ListMaterial = () => {
   const materials = useSelector((state: RootState) => state.materials);
   const dispatch = useDispatch();
 
@@ -70,7 +70,13 @@ export const MaterialTable = () => {
       <Button variant="text" color="success" onClick={handleOpenForm}>
         Agregar material
       </Button>
-      <GridCustom header={header} body={materials} hasEdit hasDelete />
+      <GridCustom
+        header={header}
+        body={materials}
+        hasEdit
+        hasDelete
+        editNav="material"
+      />
     </MainContainer>
   );
 };
