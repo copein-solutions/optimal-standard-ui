@@ -15,6 +15,7 @@ import { MaterialTable } from "../materialTable/MaterialTable";
 import { ApplicationAreaTable } from "../applicationAreaTable/ApplicationAreaTable";
 import { AddMaterial } from "../../pages/addMaterial/addMaterial";
 import { EditMaterial } from "../../pages/editMaterial/editMaterial";
+import SystemForm from "../../pages/system";
 
 type MenuProps = {
   isOpen: boolean;
@@ -41,6 +42,12 @@ export const menuOptions = [
     icon: <ArrowRightIcon />,
     path: "/materials",
     component: MaterialTable,
+  },
+  {
+    name: "Agregar sistema",
+    icon: <ArrowRightIcon />,
+    path: "/system",
+    component: SystemForm,
   },
 ];
 

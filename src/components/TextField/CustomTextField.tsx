@@ -8,7 +8,7 @@ type CustomTextFieldProps = {
   rules?: any;
   error?: any;
   helperText?: string;
-  defaultValue?: ReactNode,
+  defaultValue?: ReactNode;
 } & TextFieldProps;
 
 const CustomTextField: React.FC<CustomTextFieldProps> = ({
@@ -17,7 +17,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
   rules,
   error,
   helperText,
-  defaultValue="",
+  defaultValue = "",
   ...textFieldProps
 }) => {
   return (

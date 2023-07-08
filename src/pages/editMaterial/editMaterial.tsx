@@ -10,9 +10,6 @@ import {
   FormLabel,
   Radio,
   RadioGroup,
-} from "@mui/material";
-
-import {
   Divider,
   Typography,
   TextField,
@@ -30,9 +27,9 @@ import {
   MATERIAL_COMPONENTS,
 } from "../../utils/constants";
 
-import { Inputs } from "../../interfaces/form/FormInterfaces";
+import { EditMaterialInputs } from "../../interfaces/form/FormInterfaces";
 import { getMaterialByID, updateMaterial } from "../../services/ApiService";
-import CustomTextfield from "../../components/TextField";
+import CustomTextField from "../../components/TextField";
 import { useNavigate, useParams } from "react-router-dom";
 
 export const EditMaterial = () => {
@@ -43,7 +40,7 @@ export const EditMaterial = () => {
     setValue,
     control,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<EditMaterialInputs>();
 
   const [inputValue, setInputValue] = useState<string | undefined>("0,00");
   const [inputValueNumberFormat, setInputValueNumberFormat] = useState("");
@@ -107,7 +104,7 @@ export const EditMaterial = () => {
 
   //función que se ejecuta cuando presiona el botón cancelar
   const handleCancel = () => {
-    navigator("/materials")
+    navigator("/materials");
   };
 
   //   Obtengo el prefijo del precio unitario
@@ -140,7 +137,7 @@ export const EditMaterial = () => {
     return numeroTruncado;
   };
 
-  const apiDataMapper = (data: Inputs) => {
+  const apiDataMapper = (data: EditMaterialInputs) => {
     return {
       name: data.materialName,
       brand: data.materialBrand,
@@ -154,7 +151,7 @@ export const EditMaterial = () => {
     };
   };
 
-  const onSubmit = async (data: Inputs) => {
+  const onSubmit = async (data: EditMaterialInputs) => {
     console.log(data);
     const response = await updateMaterial(Number(id), apiDataMapper(data));
     console.log(response);
@@ -176,7 +173,7 @@ export const EditMaterial = () => {
         {/* ------------- Nombre ------------- */}
         <div className="row mb-3">
           <div className="col-lg-6 col-sm-6">
-            <CustomTextfield
+            <CustomTextField
               name="materialName"
               control={control}
               rules={{ required: "Nombre requerido." }}
@@ -189,7 +186,7 @@ export const EditMaterial = () => {
           </div>
           {/* ------------- Marca ------------- */}
           <div className="col-lg-6 col-sm-6">
-            <CustomTextfield
+            <CustomTextField
               name="materialBrand"
               control={control}
               rules={{ required: "Marca requerida." }}
@@ -230,7 +227,7 @@ export const EditMaterial = () => {
         <div className="row mt-3">
           {/* ------------- Cantidad ------------- */}
           <div className="col-lg-3 col-sm-6">
-            <CustomTextfield
+            <CustomTextField
               name="materialQuantity"
               control={control}
               rules={{ required: "Marca requerida." }}
