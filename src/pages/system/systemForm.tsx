@@ -1,27 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { MainContainer } from "../../components/mainContainer/MainContainer";
-import {
-  Divider,
-  Typography,
-  TextField,
-  InputAdornment,
-  FormControlLabel,
-  FormLabel,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Button,
-} from "@mui/material";
+import { Divider, Button } from "@mui/material";
 import CustomTextField from "../../components/TextField";
 import CustomSelectField from "../../components/customSelectField";
-import { Controller, useForm } from "react-hook-form";
+import CustomDivider from "../../components/divider";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useForm } from "react-hook-form";
 
 // Services
-import { getMaterials } from "../../services/ApiService";
+import { getApplicationArea, getMaterials } from "../../services/ApiService";
 
 // Constants
-import { APPLICATION_MODE, MATERIAL_UNIT, SI_NO } from "../../utils/constants";
+import { APPLICATION_MODE, MATERIAL_TYPE, SI_NO } from "../../utils/constants";
 
 // Interfaces
 import { ResponseApi } from "../../interfaces/service/ApiInterfaces";
@@ -39,9 +29,11 @@ export const SystemForm = () => {
   } = useForm<systemFormInputs>();
 
   const [materials, setMaterials] = useState([]);
+  const [applicationAreas, setApplicationAreas] = useState([]);
   const [showMeshHhundredPercentInput, setShowMeshHhundredPercentInput] =
     useState(false);
   const [showParcialMeshHInputs, setShowParcialMeshHInputs] = useState(false);
+  const [materialCount, setMaterialCount] = useState(0);
 
   const navigator = useNavigate();
 
@@ -51,6 +43,8 @@ export const SystemForm = () => {
   const handleAccept = async () => {};
 
   const onSubmit = async (data: systemFormInputs) => {
+    console.log("onSubmit");
+
     console.log(data);
     // const response = await updateMaterial(Number(id), apiDataMapper(data));
     // console.log(response);
@@ -71,7 +65,6 @@ export const SystemForm = () => {
       const response = await getMaterials();
       if (response && response.data) {
         const backendMaterials = response.data;
-
         const formattedMaterials = backendMaterials.map(
           (material: { id: any; name: any; brand: any }) => ({
             value: material.id,
@@ -79,6 +72,28 @@ export const SystemForm = () => {
           })
         );
         setMaterials(formattedMaterials);
+      } else {
+        alert("No se pueden recuperar materiales del back");
+      }
+    }
+    fetchData();
+  }, []);
+
+  // Obtengo campos de aplicación del back
+  useEffect(() => {
+    async function fetchData() {
+      const response = await getApplicationArea();
+      if (response && response.data) {
+        const backendApplicationAreas = response.data;
+        const formattedApplicationAreas = backendApplicationAreas.map(
+          (item: { id: any; name: any }) => ({
+            value: item.id,
+            label: item.name,
+          })
+        );
+        setApplicationAreas(formattedApplicationAreas);
+      } else {
+        alert("No se pueden recuperar campos de aplicación del back");
       }
     }
     fetchData();
@@ -99,49 +114,35 @@ export const SystemForm = () => {
     setShowParcialMeshHInputs(showParcialMeshInputs);
   }, [watchedParcialMesh]);
 
+  // Evento de botón agregar - otros complementos
+  const handleAddMaterial = () => {
+    setMaterialCount((prevCount) => prevCount + 1);
+    console.log("agregar inputs");
+  };
+
+  // Evento de botón eliminar - otros complementos
+  const handleDeleteMaterial = () => {
+    if (materialCount === 0) {
+      alert("No hay materiales para eliminar");
+    } else {
+      setMaterialCount((prevCount) => Math.max(prevCount - 1, 0));
+    }
+  };
+
   return (
     <MainContainer cardTitle="Agregar sistema">
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* ------------- Campo de aplicación ------------- */}
         <div className="row mb-3">
           <div className="col-lg-8 col-sm-6">
-            <FormControl fullWidth error={!!errors.systemApplicacionArea}>
-              <InputLabel id="custom-select-label">
-                Campo de aplicación
-              </InputLabel>
-              <Controller
-                name="systemApplicacionArea"
-                control={control}
-                defaultValue=""
-                rules={{ required: "Campo de aplicación requerido" }}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    label="Campo de aplicación"
-                    onChange={(e) => {
-                      const value = e.target.value as string;
-                      field.onChange(value);
-                    }}
-                  >
-                    {MATERIAL_UNIT.map((option, index) => (
-                      <MenuItem key={index} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                )}
-              />
-              {errors.systemApplicacionArea && (
-                <Typography
-                  variant="caption"
-                  align="left"
-                  sx={{ marginLeft: "14px" }}
-                  color="error"
-                >
-                  {errors.systemApplicacionArea.message}
-                </Typography>
-              )}
-            </FormControl>
+            <CustomSelectField
+              name="systemApplicacionArea"
+              control={control}
+              rules={{ required: "Campo de aplicación requerido" }}
+              label="Campo de aplicación"
+              error={errors.systemApplicacionArea}
+              options={applicationAreas}
+            />
           </div>
           {/* ------------- Materiales ------------- */}
         </div>
@@ -157,18 +158,10 @@ export const SystemForm = () => {
             />
           </div>
         </div>
-        <Typography
-          align="left"
-          variant="subtitle1"
-          component="div"
-          sx={{ mt: 3 }}
-        >
-          Aplicación
-        </Typography>
-        <Divider />
+        <CustomDivider text="Aplicación" />
         {/* ------------- Consumo total ------------- */}
         <div className="row mt-3">
-          <div className="col-lg-6 col-sm-6">
+          <div className="col-lg-3 col-sm-6">
             <CustomTextField
               name="systemTotalConsumption"
               control={control}
@@ -181,7 +174,7 @@ export const SystemForm = () => {
             />
           </div>
           {/* ------------- Cantidad de manos ------------- */}
-          <div className="col-lg-6 col-sm-6">
+          <div className="col-lg-3 col-sm-6">
             <CustomTextField
               name="systemMaterialLayers"
               control={control}
@@ -194,11 +187,8 @@ export const SystemForm = () => {
               helperText={errors.systemMaterialLayers?.message}
             />
           </div>
-        </div>
-
-        <div className="row mt-3">
           {/* ------------- Modo de aplicación ------------- */}
-          <div className="col-lg-6 col-sm-6">
+          <div className="col-lg-3 col-sm-6">
             <CustomSelectField
               name="systemApplicationMode"
               control={control}
@@ -209,7 +199,7 @@ export const SystemForm = () => {
             />
           </div>
           {/* ------------- Curado ------------- */}
-          <div className="col-lg-6 col-sm-6">
+          <div className="col-lg-3 col-sm-6">
             <CustomSelectField
               name="systemCured"
               control={control}
@@ -220,22 +210,14 @@ export const SystemForm = () => {
             />
           </div>
         </div>
-        <Typography
-          align="left"
-          variant="subtitle1"
-          component="div"
-          sx={{ mt: 3 }}
-        >
-          Mallas 100%
-        </Typography>
-        <Divider />
+        <CustomDivider text="Mallas 100%" />
         {/* ------------- Si / No ------------- */}
         <div className="row mt-3">
           <div className="col-lg-2 col-sm-6">
             <CustomSelectField
               name="systemMeshHhundredPercent"
               control={control}
-              rules={{ required: "Material complementario requerido." }}
+              rules={{ required: "Seleccione una opción." }}
               label="Si / No"
               error={errors.systemMeshHhundredPercent}
               options={SI_NO}
@@ -247,7 +229,7 @@ export const SystemForm = () => {
               <CustomSelectField
                 name="systemMeshHhundredPercentName"
                 control={control}
-                rules={{ required: "Malla requerida." }}
+                rules={{ required: "Nombre malla requerido." }}
                 label="Malla"
                 error={errors.systemMeshHhundredPercentName}
                 //TODO: filtrar materiales por tipo: malla
@@ -256,22 +238,14 @@ export const SystemForm = () => {
             </div>
           )}
         </div>
-        <Typography
-          align="left"
-          variant="subtitle1"
-          component="div"
-          sx={{ mt: 3 }}
-        >
-          Malla parcial
-        </Typography>
-        <Divider />
+        <CustomDivider text="Malla parcial" />
         <div className="row mt-3">
           {/* ------------- Malla parcial si / no ------------- */}
           <div className="col-lg-2 col-sm-6">
             <CustomSelectField
               name="systemParcialMesh"
               control={control}
-              rules={{ required: "Malla requerida." }}
+              rules={{ required: "Seleccione una opción." }}
               label="Si / No"
               error={errors.systemParcialMesh}
               options={SI_NO}
@@ -314,25 +288,94 @@ export const SystemForm = () => {
               <CustomTextField
                 name="systemParcialMeshComents"
                 control={control}
-                // rules={{ required: "Consumo total requerido." }}
                 label="Comentarios"
                 variant="outlined"
                 fullWidth
-                // error={errors.systemParcialMeshComents}
-                // helperText={errors.systemParcialMeshComents?.message}
               />
             </div>
           </div>
         )}
-        <Typography
-          align="left"
-          variant="subtitle1"
-          component="div"
-          sx={{ mt: 3 }}
-        >
-          Otros complementos
-        </Typography>
-        <Divider />
+        <CustomDivider
+          hasButtons
+          addButtonText="Agregar"
+          deleteButtonText="Eliminar"
+          addButtonHandleEvent={handleAddMaterial}
+          deleteButtonHandleEvent={handleDeleteMaterial}
+          text="Otros complementos"
+        />
+        {Array.from({ length: materialCount }).map((_, index) => (
+          <div key={index}>
+            <div className="row mt-3">
+              <div className="col-lg-6 col-sm-6">
+                {/* ------------- Materiales (otros complementos) ------------- */}
+                <CustomSelectField
+                  name={`systemOthersPluginsMaterials${index}`}
+                  control={control}
+                  rules={{ required: "Material requerido." }}
+                  label={`Material ${index + 1}`}
+                  error={errors[`systemOthersPluginsMaterials${index}`]}
+                  options={materials}
+                />
+              </div>
+              {/* ------------- Coeficiente por m2 (otros complementos) ------------- */}
+              <div className="col-lg-3 col-sm-6">
+                <CustomTextField
+                  name={`systemOthersPluginsMaterialCoefficient${index}`}
+                  control={control}
+                  label="Coeficiente por m2"
+                  variant="outlined"
+                  fullWidth
+                  rules={{ required: "Coeficiente requerido." }}
+                  error={
+                    errors[`systemOthersPluginsMaterialCoefficient${index}`]
+                  }
+                  helperText={
+                    errors[`systemOthersPluginsMaterialCoefficient${index}`]
+                      ?.message
+                  }
+                />
+              </div>
+              {/* ------------- Comentarios (otros complementos) ------------- */}
+              <div className="col-lg-12 col-sm-6 my-3">
+                <CustomTextField
+                  name={`systemOthersPluginsMaterialComments${index}`}
+                  control={control}
+                  label="Comentarios"
+                  variant="outlined"
+                  fullWidth
+                />
+              </div>
+            </div>
+            {index < materialCount - 1 && <Divider />}
+          </div>
+        ))}
+        <CustomDivider text="Sistema de capas" />
+        <div className="row mt-3">
+          <div className="col-lg-12 col-sm-6">
+            <CustomTextField
+              name="systemBasicConditions"
+              control={control}
+              rules={{ required: "Condiciones de base requeridas." }}
+              label="Condiciones de base"
+              variant="outlined"
+              fullWidth
+              error={errors.systemBasicConditions}
+              helperText={errors.systemBasicConditions?.message}
+            />
+          </div>
+          <div className="col-lg-12 col-sm-6 mt-3">
+            <CustomTextField
+              name="systemSupportConditions"
+              control={control}
+              rules={{ required: "Condiciones como soporte requeridas." }}
+              label="Condiciones como soporte"
+              variant="outlined"
+              fullWidth
+              error={errors.systemSupportConditions}
+              helperText={errors.systemSupportConditions?.message}
+            />
+          </div>
+        </div>
         {/* ------------- Botones formulario ------------- */}
         <div className="card-footer text-body-secondary align-right">
           <Button onClick={handleCancel} variant="text">

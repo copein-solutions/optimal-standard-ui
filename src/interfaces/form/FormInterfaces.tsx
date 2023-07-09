@@ -35,6 +35,9 @@ interface systemFormInputs {
   systemParcialMeshName: string;
   systemParcialMeshCoefficient: string;
   systemParcialMeshComents: string;
+  [key: string]: string; //otros complementos - inputs dinámicos
+  systemBasicConditions: string;
+  systemSupportConditions: string;
 }
 
 export type { FormError, BackendError, EditMaterialInputs, systemFormInputs };

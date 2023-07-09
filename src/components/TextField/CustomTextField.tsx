@@ -28,6 +28,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
       defaultValue={defaultValue}
       render={({ field }) => (
         <TextField
+          size="small"
           {...field}
           {...textFieldProps}
           error={!!error}

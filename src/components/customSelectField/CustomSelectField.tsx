@@ -20,7 +20,7 @@ type CustomSelectFieldProps = {
   control: any;
   rules?: any;
   error?: any;
-  defaultValue?: ReactNode,
+  defaultValue?: ReactNode;
 };
 
 const CustomSelectField: React.FC<CustomSelectFieldProps> = ({
@@ -30,10 +30,10 @@ const CustomSelectField: React.FC<CustomSelectFieldProps> = ({
   control,
   rules,
   error,
-  defaultValue="",
+  defaultValue = "",
 }) => {
   return (
-    <FormControl fullWidth error={!!error}>
+    <FormControl fullWidth error={!!error} size="small">
       <InputLabel id={`${name}-label`}>{label}</InputLabel>
       <Controller
         name={name}

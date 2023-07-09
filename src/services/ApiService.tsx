@@ -26,7 +26,7 @@ export const getMaterialByID = async (id: number): Promise<ResponseApi> => {
 
 //#endregion
 
-// #region AREA DE APLICACIÓN
+// #region CAMPO DE APLICACIÓN
 export const createApplicationArea = async (data: any): Promise<ResponseApi> =>  {
   return post("/application_area", data);
 }
