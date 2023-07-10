@@ -35,6 +35,14 @@ export const getApplicationArea = async (): Promise<ResponseApi> =>  {
   return get("/application_areas");
 }
 
+export const updateApplicationArea = async(id: number, data: any): Promise<ResponseApi> => {
+  return put(`/application-area/${id}`, data);
+}
+
+export const getApplicationAreaByID = async (id:number): Promise<ResponseApi> =>  {
+  return get(`/application_area/${id}`);
+}
+
 //#endregion
 
 const post = async (url: string, data: any): Promise<ResponseApi> => {

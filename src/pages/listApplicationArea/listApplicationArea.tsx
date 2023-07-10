@@ -16,7 +16,7 @@ export const ListApplicationArea = () => {
   const dispatch = useDispatch();
   const navigator = useNavigate();
 
-  const columns = [
+  const header = [
     { name: "Nombre", value: "name" },
     { name: "Consideración", value: "considerations" },
   ];
@@ -24,8 +24,6 @@ export const ListApplicationArea = () => {
   useEffect(() => {
     async function fetchData() {
       const response = await getApplicationArea();
-
-      console.log(response.data);
       dispatch({ type: "SET_APPLICATION_AREA", payload: response.data });
     }
     fetchData();
@@ -42,7 +40,7 @@ export const ListApplicationArea = () => {
           Agregar campo de aplicación
         </Button>
         <GridCustom
-          header={columns}
+          header={header}
           body={applicationAreas}
           hasEdit
           hasDelete

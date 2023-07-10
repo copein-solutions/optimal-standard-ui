@@ -1,14 +1,14 @@
 import { MainContainer } from "../../components/mainContainer/MainContainer";
 import { ApplicationAreaForm } from "../../components/applicationAreaForm/applicationAreaForm";
-import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "./addApplicationArea.css";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import "./editApplicationArea.css";
 
 // Redux
 import { useDispatch } from "react-redux";
 
 // Services
-import { createApplicationArea } from "../../services/ApiService";
+import { createApplicationArea, getApplicationAreaByID } from "../../services/ApiService";
 
 interface FormError {
   field: string;
@@ -22,15 +22,41 @@ interface BackendError {
   showError: boolean;
 }
 
-export const AddApplicationArea = () => {
+export const EditApplicationArea = () => {
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
   const [backendErrors, setBackendErrors] = useState<BackendError[]>([]);
 
   const dispatch = useDispatch();
   const navigator = useNavigate();
-
+  
   const appAreaNameRef = useRef<HTMLInputElement>(null);
   const appAreaConsiderationsRef = useRef<HTMLInputElement>(null);
+  
+  const { id } = useParams();
+  
+  useEffect(() => {
+    // Carga los datos del JSON
+    async function fetchData() {
+      console.log("id", id);
+
+      const response = await getApplicationAreaByID(Number(id));
+      if (response?.data.error || response === undefined) {
+        alert(
+          "Error: " + !response?.data.message
+            ? "Network error"
+            : response.data.message
+        );
+      } else {
+        loadApplicationAreaValues(response.data);
+      }
+    }
+    fetchData();
+  }, []);
+
+  const loadApplicationAreaValues = (appArea: any) => {
+    console.log(appArea);
+    
+  }
 
   const handleCancel = () => {
     navigator("/application_areas");
@@ -90,7 +116,7 @@ export const AddApplicationArea = () => {
       hasFooterButons
       cardTitle="Alta de campo de aplicación"
     >
-      <div className='col-12'>
+      <div className="col-12">
         <ApplicationAreaForm
           appAreaNameRef={appAreaNameRef}
           appAreaConsiderationsRef={appAreaConsiderationsRef}
