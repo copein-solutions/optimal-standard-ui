@@ -1,5 +1,4 @@
 import { MainContainer } from "../../components/mainContainer/MainContainer";
-import { ApplicationAreaForm } from "../../components/applicationAreaForm/applicationAreaForm";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./addApplicationArea.css";
