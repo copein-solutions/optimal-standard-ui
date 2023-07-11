@@ -16,6 +16,7 @@ import { ApplicationAreaTable } from "../applicationAreaTable/ApplicationAreaTab
 import { AddMaterial } from "../../pages/addMaterial/addMaterial";
 import { EditMaterial } from "../../pages/editMaterial/editMaterial";
 import SystemForm from "../../pages/system";
+import Login from "../../pages/login";
 
 type MenuProps = {
   isOpen: boolean;
@@ -48,6 +49,12 @@ export const menuOptions = [
     icon: <ArrowRightIcon />,
     path: "/system",
     component: SystemForm,
+  },
+  {
+    name: "Login",
+    icon: <ArrowRightIcon />,
+    path: "/login",
+    component: Login,
   },
 ];
 
