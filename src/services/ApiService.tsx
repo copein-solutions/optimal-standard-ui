@@ -18,7 +18,6 @@ export const getMaterials = async (): Promise<ResponseApi> =>  {
 
 export const getMaterialsByType = async (type: string): Promise<ResponseApi> =>  {
   return get(`/material/search?type=${type}`);
-  // localhost:8080/material/search?type=malla'
 }
 
 export const updateMaterial = async (id: number, data: any): Promise<ResponseApi> => {

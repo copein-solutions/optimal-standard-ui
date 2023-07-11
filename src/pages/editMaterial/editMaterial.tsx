@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import NumberFormat, { NumberFormatValues } from "react-number-format";
 
@@ -44,7 +44,6 @@ export const EditMaterial = () => {
 
   const [inputValue, setInputValue] = useState<string | undefined>("0,00");
   const [inputValueNumberFormat, setInputValueNumberFormat] = useState("");
-  const [materialId, setMaterialId] = useState(1);
 
   const navigator = useNavigate();
 

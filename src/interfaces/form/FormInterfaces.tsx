@@ -30,8 +30,8 @@ interface systemFormInputs {
   systemApplicationMode: string;
   systemCured: string;
   systemComplementaryMaterial: string;
-  systemMeshHhundredPercent: string; // Si / No 
-  systemMeshHhundredPercentName: string;
+  systemMeshHundredPercent: string; // Si / No 
+  systemMeshHundredPercentName: string;
   systemParcialMesh: string; // Si / No
   systemParcialMeshName: string;
   systemParcialMeshCoefficient: string;

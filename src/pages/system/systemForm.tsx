@@ -31,9 +31,9 @@ export const SystemForm = () => {
   const [materials, setMaterials] = useState([]);
   const [applicationAreas, setApplicationAreas] = useState([]);
   const [materialsTypeMesh, setMaterialsTypeMesh] = useState([]);
-  const [showMeshHhundredPercentInput, setShowMeshHhundredPercentInput] =
+  const [showMeshHundredPercentInput, setShowMeshHundredPercentInput] =
     useState(false);
-  const [showParcialMeshHInputs, setShowParcialMeshHInputs] = useState(false);
+  const [showParcialMeshInputs, setShowParcialMeshInputs] = useState(false);
   const [materialCount, setMaterialCount] = useState(0);
 
   const navigator = useNavigate();
@@ -113,14 +113,14 @@ export const SystemForm = () => {
   useEffect(() => {
     const showMeshHhundredPercentInput =
       watchedMeshHhundredPercent === "si" ? true : false;
-    setShowMeshHhundredPercentInput(showMeshHhundredPercentInput);
+    setShowMeshHundredPercentInput(showMeshHhundredPercentInput);
   }, [watchedMeshHhundredPercent]);
 
   // Muestro inputs de malla parcial si corresponde
   const watchedParcialMesh = watch("systemParcialMesh");
   useEffect(() => {
     const showParcialMeshInputs = watchedParcialMesh === "si" ? true : false;
-    setShowParcialMeshHInputs(showParcialMeshInputs);
+    setShowParcialMeshInputs(showParcialMeshInputs);
   }, [watchedParcialMesh]);
 
   // Evento de botón agregar - otros complementos
@@ -224,23 +224,23 @@ export const SystemForm = () => {
         <div className="row mt-3">
           <div className="col-lg-2 col-sm-6">
             <CustomSelectField
-              name="systemMeshHhundredPercent"
+              name="systemMeshHundredPercent"
               control={control}
               rules={{ required: "Seleccione una opción." }}
               label="Si / No"
-              error={errors.systemMeshHhundredPercent}
+              error={errors.systemMeshHundredPercent}
               options={SI_NO}
             />
           </div>
           {/* ------------- Nombre malla 100% ------------- */}
-          {showMeshHhundredPercentInput && (
+          {showMeshHundredPercentInput && (
             <div className="col-lg-6 col-sm-6">
               <CustomSelectField
-                name="systemMeshHhundredPercentName"
+                name="systemMeshHundredPercentName"
                 control={control}
                 rules={{ required: "Nombre malla requerido." }}
                 label="Malla"
-                error={errors.systemMeshHhundredPercentName}
+                error={errors.systemMeshHundredPercentName}
                 options={materialsTypeMesh}
               />
             </div>
@@ -261,7 +261,7 @@ export const SystemForm = () => {
             />
           </div>
           {/* ------------- Nombre malla parcial ------------- */}
-          {showParcialMeshHInputs && (
+          {showParcialMeshInputs && (
             <>
               <div className="col-lg-6 col-sm-6">
                 <CustomSelectField
@@ -290,7 +290,7 @@ export const SystemForm = () => {
             </>
           )}
         </div>
-        {showParcialMeshHInputs && (
+        {showParcialMeshInputs && (
           <div className="row mt-3">
             <div className="col-lg-12 col-sm-6">
               <CustomTextField
