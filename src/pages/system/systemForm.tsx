@@ -1,35 +1,36 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { MainContainer } from "../../components/mainContainer/MainContainer";
 import { Divider, Button } from "@mui/material";
 import CustomTextField from "../../components/TextField";
 import CustomSelectField from "../../components/customSelectField";
 import CustomDivider from "../../components/divider";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { useForm } from "react-hook-form";
 
 // Services
-import { getApplicationArea, getMaterials } from "../../services/ApiService";
+import {
+  getApplicationArea,
+  getMaterials,
+  getMaterialsByType,
+} from "../../services/ApiService";
 
 // Constants
-import { APPLICATION_MODE, MATERIAL_TYPE, SI_NO } from "../../utils/constants";
+import { APPLICATION_MODE, SI_NO } from "../../utils/constants";
 
 // Interfaces
-import { ResponseApi } from "../../interfaces/service/ApiInterfaces";
 import { useNavigate } from "react-router-dom";
 import { systemFormInputs } from "../../interfaces/form/FormInterfaces";
 
 export const SystemForm = () => {
   const {
-    register,
     handleSubmit,
     watch,
-    setValue,
     control,
     formState: { errors },
   } = useForm<systemFormInputs>();
 
   const [materials, setMaterials] = useState([]);
   const [applicationAreas, setApplicationAreas] = useState([]);
+  const [materialsTypeMesh, setMaterialsTypeMesh] = useState([]);
   const [showMeshHhundredPercentInput, setShowMeshHhundredPercentInput] =
     useState(false);
   const [showParcialMeshHInputs, setShowParcialMeshHInputs] = useState(false);
@@ -40,44 +41,10 @@ export const SystemForm = () => {
   //función que se ejecuta cuando presiona el botón cancelar
   const handleCancel = () => {};
 
-  const handleAccept = async () => {};
-
   const onSubmit = async (data: systemFormInputs) => {
-    console.log("onSubmit");
-
+    // TODO: agregar metodo post en backend e insertar data en front
     console.log(data);
-    // const response = await updateMaterial(Number(id), apiDataMapper(data));
-    // console.log(response);
-    // if (response.data.error) {
-    //   if (response.data.details) {
-    //     alert("Error: " + response.data.details.join(" "));
-    //   } else {
-    //     alert("Error: " + response.data.message);
-    //   }
-    // } else {
-    //   alert("Formulario enviado con éxito");
-    // }
   };
-
-  // Obtengo materiales del back
-  useEffect(() => {
-    async function fetchData() {
-      const response = await getMaterials();
-      if (response && response.data) {
-        const backendMaterials = response.data;
-        const formattedMaterials = backendMaterials.map(
-          (material: { id: any; name: any; brand: any }) => ({
-            value: material.id,
-            label: `${material.name} ${material.brand}`,
-          })
-        );
-        setMaterials(formattedMaterials);
-      } else {
-        alert("No se pueden recuperar materiales del back");
-      }
-    }
-    fetchData();
-  }, []);
 
   // Obtengo campos de aplicación del back
   useEffect(() => {
@@ -99,7 +66,49 @@ export const SystemForm = () => {
     fetchData();
   }, []);
 
-  // Muestro campos de malla 100% si corresponde
+  // Obtengo materiales del back
+  useEffect(() => {
+    async function fetchData() {
+      const response = await getMaterials();
+      if (response && response.data) {
+        const backendMaterials = response.data;
+        const formattedMaterials = backendMaterials.map(
+          (material: { id: any; name: any; brand: any }) => ({
+            value: material.id,
+            label: `${material.name} ${material.brand}`,
+          })
+        );
+        setMaterials(formattedMaterials);
+      } else {
+        alert("No se pueden recuperar materiales del back");
+      }
+    }
+    fetchData();
+  }, []);
+
+  // Obtengo materiales type=malla del back
+  useEffect(() => {
+    async function fetchData() {
+      const response = await getMaterialsByType("malla");
+      if (response && response.data) {
+        const backendMaterialsByType = response.data;
+        console.log("backendMaterialsByType", backendMaterialsByType);
+        const formattedMaterialsByType = backendMaterialsByType.map(
+          (material: { id: any; name: any; brand: any }) => ({
+            value: material.id,
+            label: `${material.name} ${material.brand}`,
+          })
+        );
+        console.log(formattedMaterialsByType);
+        setMaterialsTypeMesh(formattedMaterialsByType);
+      } else {
+        alert("No se pueden recuperar materiales de tipo malla del back");
+      }
+    }
+    fetchData();
+  }, []);
+
+  // Muestro inputs de malla 100% si corresponde
   const watchedMeshHhundredPercent = watch("systemMeshHhundredPercent");
   useEffect(() => {
     const showMeshHhundredPercentInput =
@@ -107,7 +116,7 @@ export const SystemForm = () => {
     setShowMeshHhundredPercentInput(showMeshHhundredPercentInput);
   }, [watchedMeshHhundredPercent]);
 
-  // Muestro campos de malla parcial si corresponde
+  // Muestro inputs de malla parcial si corresponde
   const watchedParcialMesh = watch("systemParcialMesh");
   useEffect(() => {
     const showParcialMeshInputs = watchedParcialMesh === "si" ? true : false;
@@ -117,7 +126,6 @@ export const SystemForm = () => {
   // Evento de botón agregar - otros complementos
   const handleAddMaterial = () => {
     setMaterialCount((prevCount) => prevCount + 1);
-    console.log("agregar inputs");
   };
 
   // Evento de botón eliminar - otros complementos
@@ -210,6 +218,7 @@ export const SystemForm = () => {
             />
           </div>
         </div>
+        {/* ------------- Mallas 100% ------------- */}
         <CustomDivider text="Mallas 100%" />
         {/* ------------- Si / No ------------- */}
         <div className="row mt-3">
@@ -232,12 +241,12 @@ export const SystemForm = () => {
                 rules={{ required: "Nombre malla requerido." }}
                 label="Malla"
                 error={errors.systemMeshHhundredPercentName}
-                //TODO: filtrar materiales por tipo: malla
-                options={materials}
+                options={materialsTypeMesh}
               />
             </div>
           )}
         </div>
+        {/* ------------- Malla parcial ------------- */}
         <CustomDivider text="Malla parcial" />
         <div className="row mt-3">
           {/* ------------- Malla parcial si / no ------------- */}
@@ -261,8 +270,7 @@ export const SystemForm = () => {
                   rules={{ required: "Nombre de malla requerido." }}
                   label="Malla"
                   error={errors.systemParcialMeshName}
-                  //TODO: filtrar materiales por tipo: malla
-                  options={materials}
+                  options={materialsTypeMesh}
                 />
               </div>
               {/* ------------- Consumo total k/m2 ------------- */}

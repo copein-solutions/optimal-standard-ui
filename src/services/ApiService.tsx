@@ -13,7 +13,12 @@ export const createMaterial = async (data: any): Promise<ResponseApi> => {
 };
 
 export const getMaterials = async (): Promise<ResponseApi> =>  {
-  return get("/materials");
+  return get("/material");
+}
+
+export const getMaterialsByType = async (type: string): Promise<ResponseApi> =>  {
+  return get(`/material/search?type=${type}`);
+  // localhost:8080/material/search?type=malla'
 }
 
 export const updateMaterial = async (id: number, data: any): Promise<ResponseApi> => {

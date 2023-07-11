@@ -21,6 +21,7 @@ interface EditMaterialInputs {
   materialCurrency: string;
 }
 
+// systemForm
 interface systemFormInputs {
   systemApplicacionArea: string;
   systemMaterial: string;

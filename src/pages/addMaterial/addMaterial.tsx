@@ -167,6 +167,7 @@ export const AddMaterial = () => {
 
     if (formErrors.length === 0) {
       const response: ResponseApi = await createMaterial(fommatterForm());
+      console.log("response", response);
       if (response.data.error) {
         if (response.data.details) {
           alert("Error: " + response.data.details.join(" "));
