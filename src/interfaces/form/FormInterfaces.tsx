@@ -30,7 +30,7 @@ interface systemFormInputs {
   systemApplicationMode: string;
   systemCured: string;
   systemComplementaryMaterial: string;
-  systemMeshHhundredPercent: string; // Si / No 
+  systemMeshHhundredPercent: string; // Si / No
   systemMeshHhundredPercentName: string;
   systemParcialMesh: string; // Si / No
   systemParcialMeshName: string;
@@ -41,4 +41,16 @@ interface systemFormInputs {
   systemSupportConditions: string;
 }
 
-export type { FormError, BackendError, EditMaterialInputs, systemFormInputs };
+// Login
+interface loginInputs {
+  loginName: string;
+  loginPassword: string;
+}
+
+export type {
+  FormError,
+  BackendError,
+  EditMaterialInputs,
+  systemFormInputs,
+  loginInputs,
+};

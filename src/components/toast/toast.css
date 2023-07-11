@@ -1,0 +1,12 @@
+.toast-container {
+    position: fixed;
+    top: 5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+  }
+  
+  .toast-content {
+    width: 300px;
+    margin: 0 auto;
+  }

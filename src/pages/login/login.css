@@ -1,0 +1,20 @@
+.login-box {
+    box-sizing: border-box;
+    box-shadow: 0 0px 14px rgb(0 0 0 / 50%);
+    border-radius: 10px;
+    margin: 0 auto;
+    min-width: 20rem;
+    overflow: hidden;
+    padding: 1.5rem;
+    transform: translate(0%, 25%);
+    width: 40%;
+  }
+
+  .title {
+    /* color: #00b500; */
+  }
+
+  .text-buttons {
+    display: flex;
+    justify-content: space-evenly;
+  }
