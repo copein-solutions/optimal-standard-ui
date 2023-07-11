@@ -9,6 +9,9 @@ import { useDispatch } from "react-redux";
 
 // Services
 import { createApplicationArea } from "../../services/ApiService";
+import { Button, TextField } from "@mui/material";
+import { ApplicationAreaInputs } from "../../interfaces/form/FormInterfaces";
+import { useForm } from "react-hook-form";
 
 interface FormError {
   field: string;
@@ -25,6 +28,7 @@ interface BackendError {
 export const AddApplicationArea = () => {
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
   const [backendErrors, setBackendErrors] = useState<BackendError[]>([]);
+  const { handleSubmit } = useForm<ApplicationAreaInputs>();
 
   const dispatch = useDispatch();
   const navigator = useNavigate();
@@ -49,22 +53,15 @@ export const AddApplicationArea = () => {
     }
   };
 
-  const formatterForm = () => {
-    return {
-      name: appAreaNameRef.current?.value,
-      considerations: appAreaConsiderationsRef.current?.value,
-    };
-  };
-
-  const handleAccept = async () => {
+  const onSubmit = async (data: ApplicationAreaInputs) => {
     const formErrors: FormError[] = [];
     const backendErrors: BackendError[] = [];
     verifyFormErrors(formErrors);
 
     console.log("formerrores length", formErrors);
-
+    
     if (formErrors.length === 0) {
-      const response: any = await createApplicationArea(formatterForm());
+      const response: any = await createApplicationArea(data);
       console.log("respuesta back", response);
 
       if (response.status !== 200) {
@@ -75,7 +72,7 @@ export const AddApplicationArea = () => {
         });
         setBackendErrors(backendErrors);
       } else {
-        dispatch({ type: "SAVE_APPLICATION_AREA", payload: formatterForm() });
+        dispatch({ type: "SAVE_APPLICATION_AREA", payload: data });
         alert("Formulario enviado con éxito");
         navigator("/application_areas");
       }
@@ -84,20 +81,69 @@ export const AddApplicationArea = () => {
   };
 
   return (
-    <MainContainer
-      onCancel={handleCancel}
-      onAccept={handleAccept}
-      hasFooterButons
-      cardTitle="Alta de campo de aplicación"
-    >
-      <div className='col-12'>
-        <ApplicationAreaForm
-          appAreaNameRef={appAreaNameRef}
-          appAreaConsiderationsRef={appAreaConsiderationsRef}
-          formErrors={formErrors}
-          backendErrors={backendErrors}
-        />
-      </div>
+    <MainContainer cardTitle="Alta de campo de aplicación">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="col-lg-6 col-sm-12">
+          <TextField
+            name="appAreaName"
+            required
+            fullWidth
+            inputRef={appAreaNameRef}
+            label="Nombre"
+            variant="outlined"
+            error={
+              formErrors.find((error) => error.field === "appAreaName")
+                ?.showError ||
+              backendErrors.find((error) => error.field === "appAreaName")
+                ?.showError
+            }
+            helperText={
+              formErrors.find((error) => error.field === "appAreaName")
+                ?.message ||
+              backendErrors.find((error) => error.field === "appAreaName")
+                ?.message
+            }
+          />
+        </div>
+        <div className="col-lg-6 col-sm-12">
+          <TextField
+            name="appAreaConsiderations"
+            fullWidth
+            multiline
+            inputRef={appAreaConsiderationsRef}
+            label="Consideraciones"
+            variant="outlined"
+            error={
+              formErrors.find(
+                (error) => error.field === "appAreaConsiderations"
+              )?.showError ||
+              backendErrors.find(
+                (error) => error.field === "appAreaConsiderations"
+              )?.showError
+            }
+            helperText={
+              formErrors.find(
+                (error) => error.field === "appAreaConsiderations"
+              )?.message ||
+              backendErrors.find(
+                (error) => error.field === "appAreaConsiderations"
+              )?.message
+            }
+          />
+        </div>
+        <div className="card-footer text-body-secondary align-right">
+          <Button onClick={handleCancel} variant="text">
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleSubmit(onSubmit)}
+            type="submit"
+            variant="contained"
+          >
+            Aceptar
+          </Button>
+        </div>
+      </form>
     </MainContainer>
   );
 };

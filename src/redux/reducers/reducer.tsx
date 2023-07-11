@@ -12,14 +12,19 @@ const rootReducer = (state = initialState, action: any) => {
         materials: state.materials.filter((t: any) => t.id !== action.payload),
       };
     case "SET_APPLICATION_AREA":
-        return { ...state, applicationAreas: action.payload };
-      case "SAVE_APPLICATION_AREA":
-        return { ...state, applicationAreas: [...state.applicationAreas, action.payload] };
-      case "DELETE_APPLICATION_AREA":
-        return {
-          ...state,
-          materials: state.applicationAreas.filter((t: any) => t.id !== action.payload),
-        };
+      return { ...state, applicationAreas: action.payload };
+    case "SAVE_APPLICATION_AREA":
+      return {
+        ...state,
+        applicationAreas: [...state.applicationAreas, action.payload],
+      };
+    case "DELETE_APPLICATION_AREA":
+      return {
+        ...state,
+        materials: state.applicationAreas.filter(
+          (t: any) => t.id !== action.payload
+        ),
+      };
     default:
       return state;
   }
