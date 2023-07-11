@@ -30,7 +30,7 @@ import {
   MATERIAL_COMPONENTS,
 } from "../../utils/constants";
 
-import { Inputs } from "../../interfaces/form/FormInterfaces";
+import { MaterialInputs } from "../../interfaces/form/FormInterfaces";
 import { getMaterialByID, updateMaterial } from "../../services/ApiService";
 import CustomTextfield from "../../components/TextField";
 import { useNavigate, useParams } from "react-router-dom";
@@ -43,7 +43,7 @@ export const EditMaterial = () => {
     setValue,
     control,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<MaterialInputs>();
 
   const [inputValue, setInputValue] = useState<string | undefined>("0,00");
   const [inputValueNumberFormat, setInputValueNumberFormat] = useState("");
@@ -58,7 +58,6 @@ export const EditMaterial = () => {
     async function fetchData() {
       console.log("id", id);
 
-      // TODO: quitar id hardcodeado
       const response = await getMaterialByID(Number(id));
       if (response?.data.error || response === undefined) {
         alert(
@@ -140,7 +139,7 @@ export const EditMaterial = () => {
     return numeroTruncado;
   };
 
-  const apiDataMapper = (data: Inputs) => {
+  const apiDataMapper = (data: MaterialInputs) => {
     return {
       name: data.materialName,
       brand: data.materialBrand,
@@ -154,7 +153,7 @@ export const EditMaterial = () => {
     };
   };
 
-  const onSubmit = async (data: Inputs) => {
+  const onSubmit = async (data: MaterialInputs) => {
     console.log(data);
     const response = await updateMaterial(Number(id), apiDataMapper(data));
     console.log(response);

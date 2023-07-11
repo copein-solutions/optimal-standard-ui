@@ -10,7 +10,7 @@ interface BackendError {
   showError: boolean;
 }
 
-interface Inputs {
+interface MaterialInputs {
   materialName: string;
   materialBrand: string;
   materialQuantity: string;
@@ -21,4 +21,9 @@ interface Inputs {
   materialCurrency: string;
 }
 
-export type { FormError, BackendError, Inputs };
+interface ApplicationAreaInputs {
+  appAreaName: string;
+  appAreaConsiderations: string;
+}
+
+export type { FormError, BackendError, MaterialInputs, ApplicationAreaInputs };
