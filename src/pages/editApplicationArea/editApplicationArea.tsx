@@ -1,7 +1,11 @@
 import { MainContainer } from "../../components/mainContainer/MainContainer";
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./editApplicationArea.css";
+import CustomTextfield from "../../components/TextField";
+import { Button } from "@mui/material";
+import { ApplicationAreaInputs } from "../../interfaces/form/FormInterfaces";
+import { useForm } from "react-hook-form";
 
 // Redux
 import { useDispatch } from "react-redux";
@@ -11,32 +15,17 @@ import {
   getApplicationAreaByID,
   updateApplicationArea,
 } from "../../services/ApiService";
-import { Button, TextField } from "@mui/material";
-import { ApplicationAreaInputs } from "../../interfaces/form/FormInterfaces";
-import { useForm } from "react-hook-form";
-
-interface FormError {
-  field: string;
-  message: string;
-  showError: boolean;
-}
-
-interface BackendError {
-  field: string;
-  message: string;
-  showError: boolean;
-}
 
 export const EditApplicationArea = () => {
-  const [formErrors, setFormErrors] = useState<FormError[]>([]);
-  const [backendErrors, setBackendErrors] = useState<BackendError[]>([]);
-  const { handleSubmit, setValue } = useForm<ApplicationAreaInputs>();
+  const {
+    handleSubmit,
+    setValue,
+    control,
+    formState: { errors },
+  } = useForm<ApplicationAreaInputs>();
 
   const dispatch = useDispatch();
   const navigator = useNavigate();
-
-  const appAreaNameRef = useRef<HTMLInputElement>(null);
-  const appAreaConsiderationsRef = useRef<HTMLInputElement>(null);
 
   const { id } = useParams();
 
@@ -71,92 +60,50 @@ export const EditApplicationArea = () => {
     navigator("/application_areas");
   };
 
-  const verifyFormErrors = (formErrors: FormError[]) => {
-    if (
-      appAreaNameRef.current?.value === "" ||
-      appAreaNameRef.current?.value == null
-    ) {
-      formErrors.push({
-        field: "appAreaName",
-        message: "Nombre requerido",
-        showError: true,
-      });
-    }
+  const apiDataMapper = (data: ApplicationAreaInputs) => {
+    return {
+      name: data.appAreaName,
+      considerations: data.appAreaConsiderations,
+    };
   };
 
   const onSubmit = async (data: ApplicationAreaInputs) => {
-    const formErrors: FormError[] = [];
-    const backendErrors: BackendError[] = [];
-    verifyFormErrors(formErrors);
-
-    if (formErrors.length === 0) {
-      const response: any = await updateApplicationArea(Number(id), data);
-
-      if (response.status !== 200) {
-        backendErrors.push({
-          field: "appAreaName",
-          message: "",
-          showError: true,
-        });
-        setBackendErrors(backendErrors);
-      } else {
-        dispatch({ type: "SAVE_APPLICATION_AREA", payload: data });
-        alert("Formulario enviado con éxito");
-        navigator("/application_areas");
-      }
+    console.log(data);
+    
+    const response: any = await updateApplicationArea(Number(id), apiDataMapper(data));
+    console.log(response);
+    
+    if (response.status !== 200) {
+      alert("Error: " + response.data.details.join(" "));
+    } else {
+      dispatch({ type: "SAVE_APPLICATION_AREA", payload: data });
+      alert("Formulario enviado con éxito");
+      navigator("/application_areas");
     }
-    setFormErrors(formErrors);
   };
 
   return (
     <MainContainer cardTitle="Alta de campo de aplicación">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="col-lg-6 col-sm-12">
-          <TextField
+        <div className="col-lg-6 col-sm-6 mb-3">
+          <CustomTextfield
             name="appAreaName"
-            required
-            fullWidth
-            inputRef={appAreaNameRef}
+            control={control}
+            rules={{ required: "Nombre requerido." }}
             label="Nombre"
             variant="outlined"
-            error={
-              formErrors.find((error) => error.field === "appAreaName")
-                ?.showError ||
-              backendErrors.find((error) => error.field === "appAreaName")
-                ?.showError
-            }
-            helperText={
-              formErrors.find((error) => error.field === "appAreaName")
-                ?.message ||
-              backendErrors.find((error) => error.field === "appAreaName")
-                ?.message
-            }
+            fullWidth
+            error={errors.appAreaName}
+            helperText={errors.appAreaName?.message}
           />
         </div>
-        <div className="col-lg-6 col-sm-12">
-          <TextField
+        <div className="col-lg-12 col-sm-12">
+          <CustomTextfield
             name="appAreaConsiderations"
-            fullWidth
-            multiline
-            inputRef={appAreaConsiderationsRef}
+            control={control}
             label="Consideraciones"
             variant="outlined"
-            error={
-              formErrors.find(
-                (error) => error.field === "appAreaConsiderations"
-              )?.showError ||
-              backendErrors.find(
-                (error) => error.field === "appAreaConsiderations"
-              )?.showError
-            }
-            helperText={
-              formErrors.find(
-                (error) => error.field === "appAreaConsiderations"
-              )?.message ||
-              backendErrors.find(
-                (error) => error.field === "appAreaConsiderations"
-              )?.message
-            }
+            fullWidth
           />
         </div>
         <div className="card-footer text-body-secondary align-right">
