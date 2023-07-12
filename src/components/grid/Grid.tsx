@@ -14,8 +14,11 @@ type GridProps = {
   header?: Header[];
   /** Datos que se desplegaran en la lista. */
   body?: { id: number; [key: string]: any }[];
+  /** Si es true, se renderizará el botón de editar elemento. */
   hasEdit?: boolean;
+  /** Si es false, se renderizará el botón de eliminar elemento. */
   hasDelete?: boolean;
+  /** String que indica la url a la cual redireccionará el botón de edit. */
   editNav?: string;
 };
 
@@ -37,7 +40,7 @@ export const GridCustom: React.FC<GridProps> = ({
 
   const onEdit = (id: number) => {
     console.log("edit", id);
-    navigator(`/${editNav}/${id}/edit`)
+    navigator(`/${editNav}/${id}/edit`);
   };
 
   const editButton = (id: number) => (
