@@ -1,4 +1,4 @@
-import { Controller, FieldError } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { TextField, TextFieldProps } from "@mui/material";
 import { ReactNode } from "react";
 
@@ -8,7 +8,7 @@ type CustomTextFieldProps = {
   rules?: any;
   error?: any;
   helperText?: string;
-  defaultValue?: ReactNode,
+  defaultValue?: ReactNode;
 } & TextFieldProps;
 
 const CustomTextField: React.FC<CustomTextFieldProps> = ({
@@ -17,7 +17,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
   rules,
   error,
   helperText,
-  defaultValue="",
+  defaultValue = "",
   ...textFieldProps
 }) => {
   return (
@@ -28,6 +28,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
       defaultValue={defaultValue}
       render={({ field }) => (
         <TextField
+          size="small"
           {...field}
           {...textFieldProps}
           error={!!error}

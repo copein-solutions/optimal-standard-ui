@@ -15,6 +15,7 @@ import { ListMaterial } from "../../pages/listMaterial/listMaterial";
 import { AddMaterial } from "../../pages/addMaterial/addMaterial";
 import { ListApplicationArea } from "../../pages/applicationArea/listApplicationArea/listApplicationArea";
 import { AddApplicationArea } from "../../pages/applicationArea/addApplicationArea/addApplicationArea";
+import SystemForm from "../../pages/system";
 
 type MenuProps = {
   isOpen: boolean;
@@ -37,10 +38,16 @@ export const menuOptions = [
     component: AddApplicationArea,
   },
   {
+    name: "Agregar sistema",
+    icon: <ArrowRightIcon />,
+    path: "/system",
+    component: SystemForm,
+  },
+  {
     name: "Listado de materiales",
     icon: <ArrowRightIcon />,
-    path: "/materials",
-    component: ListMaterial,
+    path: "/material",
+    component: MaterialTable,
   },
   {
     name: "Listado de campo de aplicación",

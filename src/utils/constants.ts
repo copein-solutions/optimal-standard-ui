@@ -61,47 +61,77 @@ export const CURRENCY = [
 ];
 
 export const MATERIAL_UNIT = [
-    {
-      value: "kg",
-      label: "Kilogramos",
-    },
-    {
-      value: "l",
-      label: "Litros",
-    },
-    {
-      value: "m2",
-      label: "Metros cuadrados",
-    },
-    {
-      value: "cm3",
-      label: "Centímetros cúbicos",
-    },
-    {
-      value: "ml",
-      label: "Metros lineales",
-    },
-    {
-      value: "u",
-      label: "Unidades",
-    },
-  ];
-  
-  export const MATERIAL_COMPONENTS = [
-    {
-      label: "Monocomponente",
-      value: "monocomponente",
-    },
-    {
-      label: "Bicomponente",
-      value: "bicomponente",
-    },
-    {
-      label: "Tricomponente",
-      value: "tricomponente",
-    },
-    {
-      label: "No aplica",
-      value: "no_aplica",
-    },
-  ];
+  {
+    value: "kg",
+    label: "Kilogramos",
+  },
+  {
+    value: "l",
+    label: "Litros",
+  },
+  {
+    value: "m2",
+    label: "Metros cuadrados",
+  },
+  {
+    value: "cm3",
+    label: "Centímetros cúbicos",
+  },
+  {
+    value: "ml",
+    label: "Metros lineales",
+  },
+  {
+    value: "u",
+    label: "Unidades",
+  },
+];
+
+export const MATERIAL_COMPONENTS = [
+  {
+    label: "Monocomponente",
+    value: "monocomponente",
+  },
+  {
+    label: "Bicomponente",
+    value: "bicomponente",
+  },
+  {
+    label: "Tricomponente",
+    value: "tricomponente",
+  },
+  {
+    label: "No aplica",
+    value: "no_aplica",
+  },
+];
+
+export const APPLICATION_MODE = [
+  {
+    label: "Brocha",
+    value: "brocha",
+  },
+  {
+    label: "Llana",
+    value: "llana",
+  },
+  {
+    label: "Rodillo",
+    value: "rodillo",
+  },
+  {
+    label: "Aspersor",
+    value: "aspersor",
+  },
+];
+
+export const SI_NO = [
+  {
+    label: "Si",
+    value: "si",
+  },
+  {
+    label: "No",
+    value: "no",
+  },
+];
