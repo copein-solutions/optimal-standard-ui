@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { Button } from "@mui/material";
 import "./listApplicationArea.css";
-import { getApplicationArea } from "../../services/ApiService";
-import { MainContainer } from "../../components/mainContainer/MainContainer";
-import { GridCustom } from "../../components/grid/Grid";
+import { getApplicationArea } from "../../../services/ApiService";
+import { MainContainer } from "../../../components/mainContainer/MainContainer";
+import { GridCustom } from "../../../components/grid/Grid";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../../redux/reducers/reducer";
+import { RootState } from "../../../redux/reducers/reducer";
 import { useNavigate } from "react-router-dom";
 
 export const ListApplicationArea = () => {

@@ -13,8 +13,8 @@ import { Link } from "react-router-dom";
 import { CustomSkeleton } from "../skeleton/Skeleton";
 import { ListMaterial } from "../../pages/listMaterial/listMaterial";
 import { AddMaterial } from "../../pages/addMaterial/addMaterial";
-import { ListApplicationArea } from "../../pages/listApplicationArea/listApplicationArea";
-import { AddApplicationArea } from "../../pages/addApplicationArea/addApplicationArea";
+import { ListApplicationArea } from "../../pages/applicationArea/listApplicationArea/listApplicationArea";
+import { AddApplicationArea } from "../../pages/applicationArea/addApplicationArea/addApplicationArea";
 
 type MenuProps = {
   isOpen: boolean;

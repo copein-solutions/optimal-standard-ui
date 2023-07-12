@@ -22,8 +22,9 @@ interface MaterialInputs {
 }
 
 interface ApplicationAreaInputs {
-  appAreaName: string;
-  appAreaConsiderations: string;
+  id?: string;
+  name: string;
+  considerations: string;
 }
 
 export type { FormError, BackendError, MaterialInputs, ApplicationAreaInputs };

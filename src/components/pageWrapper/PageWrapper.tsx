@@ -6,9 +6,9 @@ import { Route, Routes } from "react-router-dom";
 import EditMaterial from "../../pages/editMaterial";
 import ListMaterial from "../../pages/listMaterial";
 import AddMaterial from "../../pages/addMaterial";
-import AddApplicationArea from "../../pages/addApplicationArea";
-import ListApplicationArea from "../../pages/listApplicationArea";
-import EditApplicationArea from "../../pages/editApplicationArea";
+import AddApplicationArea from "../../pages/applicationArea/addApplicationArea";
+import ListApplicationArea from "../../pages/applicationArea/listApplicationArea";
+import EditApplicationArea from "../../pages/applicationArea/editApplicationArea";
 
 export default function PageWrapper() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

@@ -13,7 +13,7 @@ export const createMaterial = async (data: any): Promise<ResponseApi> => {
 };
 
 export const getMaterials = async (): Promise<ResponseApi> =>  {
-  return get("/materials");
+  return get("/material");
 }
 
 export const updateMaterial = async (id: number, data: any): Promise<ResponseApi> => {

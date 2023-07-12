@@ -1,4 +1,4 @@
-import { MainContainer } from "../../components/mainContainer/MainContainer";
+import { MainContainer } from "../../../components/mainContainer/MainContainer";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./addApplicationArea.css";
@@ -7,9 +7,9 @@ import "./addApplicationArea.css";
 import { useDispatch } from "react-redux";
 
 // Services
-import { createApplicationArea } from "../../services/ApiService";
+import { createApplicationArea } from "../../../services/ApiService";
 import { Button, TextField } from "@mui/material";
-import { ApplicationAreaInputs } from "../../interfaces/form/FormInterfaces";
+import { ApplicationAreaInputs } from "../../../interfaces/form/FormInterfaces";
 import { useForm } from "react-hook-form";
 
 interface FormError {
