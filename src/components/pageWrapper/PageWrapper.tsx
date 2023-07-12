@@ -4,8 +4,11 @@ import { useState } from "react";
 import { menuOptions } from "../menu/Menu";
 import { Route, Routes } from "react-router-dom";
 import EditMaterial from "../../pages/editMaterial";
-import MaterialTable from "../materialTable";
+import ListMaterial from "../../pages/listMaterial";
 import AddMaterial from "../../pages/addMaterial";
+import AddApplicationArea from "../../pages/applicationArea/addApplicationArea";
+import ListApplicationArea from "../../pages/applicationArea/listApplicationArea";
+import EditApplicationArea from "../../pages/applicationArea/editApplicationArea";
 
 export default function PageWrapper() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,9 +23,12 @@ export default function PageWrapper() {
       <CustomMenu isOpen={isMenuOpen} setOpen={setIsMenuOpen} />
 
       <Routes>
-        <Route path="/material/:id/edit" element={<EditMaterial />} />
-        <Route path="/materials" element={<MaterialTable />} />
         <Route path="/material" element={<AddMaterial />} />
+        <Route path="/materials" element={<ListMaterial />} />
+        <Route path="/material/:id/edit" element={<EditMaterial />} />
+        <Route path="/application_area" element={<AddApplicationArea />} />
+        <Route path="/application_areas" element={<ListApplicationArea />} />
+        <Route path="/application_area/:id/edit" element={<EditApplicationArea />} />
         {menuOptions.map((option, index) => (
           <Route key={index} path={option.path} Component={option.component} />
         ))}

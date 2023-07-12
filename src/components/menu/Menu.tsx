@@ -11,10 +11,10 @@ import {
 import React from "react";
 import { Link } from "react-router-dom";
 import { CustomSkeleton } from "../skeleton/Skeleton";
-import { MaterialTable } from "../materialTable/MaterialTable";
-import { ApplicationAreaTable } from "../applicationAreaTable/ApplicationAreaTable";
+import { ListMaterial } from "../../pages/listMaterial/listMaterial";
 import { AddMaterial } from "../../pages/addMaterial/addMaterial";
-import { EditMaterial } from "../../pages/editMaterial/editMaterial";
+import { ListApplicationArea } from "../../pages/applicationArea/listApplicationArea/listApplicationArea";
+import { AddApplicationArea } from "../../pages/applicationArea/addApplicationArea/addApplicationArea";
 import SystemForm from "../../pages/system";
 
 type MenuProps = {
@@ -32,22 +32,28 @@ export const menuOptions = [
     component: AddMaterial,
   },
   {
-    name: "Campos de aplicación",
+    name: "Agregar campo de aplicación",
     icon: <ArrowRightIcon />,
     path: "/application_area",
-    component: CustomSkeleton,
-  },
-  {
-    name: "Listado de materiales",
-    icon: <ArrowRightIcon />,
-    path: "/materials",
-    component: MaterialTable,
+    component: AddApplicationArea,
   },
   {
     name: "Agregar sistema",
     icon: <ArrowRightIcon />,
     path: "/system",
     component: SystemForm,
+  },
+  {
+    name: "Listado de materiales",
+    icon: <ArrowRightIcon />,
+    path: "/materials",
+    component: ListMaterial,
+  },
+  {
+    name: "Listado de campo de aplicación",
+    icon: <ArrowRightIcon />,
+    path: "/application_areas",
+    component: ListApplicationArea,
   },
 ];
 

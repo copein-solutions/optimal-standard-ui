@@ -54,7 +54,6 @@ export const EditMaterial = () => {
     async function fetchData() {
       console.log("id", id);
 
-      // TODO: quitar id hardcodeado
       const response = await getMaterialByID(Number(id));
       if (response?.data.error || response === undefined) {
         alert(
