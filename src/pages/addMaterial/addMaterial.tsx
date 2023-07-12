@@ -178,7 +178,7 @@ export const AddMaterial = () => {
     verifyFormErrorsOnAccept(formErrors);
 
     if (formErrors.length === 0) {
-      const response: ResponseApi = await createMaterial(fommatterForm());
+      const response: ResponseApi = await createMaterial(formatterForm());
       console.log("response", response);
       if (response.data.error) {
         if (response.data.details) {

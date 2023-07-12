@@ -46,8 +46,8 @@ export const menuOptions = [
   {
     name: "Listado de materiales",
     icon: <ArrowRightIcon />,
-    path: "/material",
-    component: MaterialTable,
+    path: "/materials",
+    component: ListMaterial,
   },
   {
     name: "Listado de campo de aplicación",
