@@ -6,13 +6,13 @@ import { Button } from "@mui/material";
 import { ApplicationAreaInputs } from "../../../interfaces/form/FormInterfaces";
 
 // Services
-import { updateApplicationArea } from "../../../services/ApiService";
+import { updateApplicationArea, createApplicationArea } from "../../../services/ApiService";
 
 // Redux
 import { useDispatch } from "react-redux";
 
 type ApplicationAreaFormProps = {
-    data: ApplicationAreaInputs | undefined;
+    data?: ApplicationAreaInputs | undefined;
     isUpdateForm: boolean;
   }
 
@@ -41,13 +41,16 @@ const ApplicationAreaForm: React.FC<ApplicationAreaFormProps> = ({ data, isUpdat
       console.log(response);
     } else {
       //TODO: addApplicationArea
+      response = await createApplicationArea(formData);
     }
 
 
     if (response.status !== 200) {
       alert("Error: " + response.data.details.join(" "));
     } else {
-      dispatch({ type: "SAVE_APPLICATION_AREA", payload: data });
+      if(!isUpdateForm) { 
+        dispatch({ type: "SAVE_APPLICATION_AREA", payload: response.data });
+      }      
       alert("Formulario enviado con éxito");
       navigator("/application_areas");
     }
