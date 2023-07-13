@@ -40,7 +40,7 @@ export const GridCustom: React.FC<GridProps> = ({
 
   const onEdit = (id: number) => {
     console.log("edit", id);
-    navigator(`/${editNav}/${id}/edit`);
+    navigator(`/${editNav}/${id}/update`);
   };
 
   const editButton = (id: number) => (

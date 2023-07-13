@@ -162,6 +162,7 @@ export const EditMaterial = () => {
       }
     } else {
       alert("Formulario enviado con éxito");
+      navigator("/material/list");
     }
   };
 
