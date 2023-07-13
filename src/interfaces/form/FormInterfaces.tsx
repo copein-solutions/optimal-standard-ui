@@ -30,8 +30,8 @@ interface systemFormInputs {
   systemApplicationMode: string;
   systemCured: string;
   systemComplementaryMaterial: string;
-  systemMeshHhundredPercent: string; // Si / No
-  systemMeshHhundredPercentName: string;
+  systemMeshHundredPercent: string; // Si / No 
+  systemMeshHundredPercentName: string;
   systemParcialMesh: string; // Si / No
   systemParcialMeshName: string;
   systemParcialMeshCoefficient: string;
@@ -42,9 +42,15 @@ interface systemFormInputs {
 }
 
 // Login
-interface loginInputs {
-  loginName: string;
-  loginPassword: string;
+interface LoginInputs {
+  username: string;
+  password: string;
+}
+
+interface ApplicationAreaInputs {
+  id?: string;
+  name: string;
+  considerations: string;
 }
 
 export type {
@@ -52,5 +58,6 @@ export type {
   BackendError,
   EditMaterialInputs,
   systemFormInputs,
-  loginInputs,
+  ApplicationAreaInputs,
+  LoginInputs,
 };

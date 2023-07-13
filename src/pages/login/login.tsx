@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 
@@ -8,21 +9,23 @@ import Button from "@mui/material/Button";
 import CustomTextField from "../../components/TextField";
 import Toast from "../../components/toast/toast";
 import { useForm } from "react-hook-form";
-import { loginInputs } from "../../interfaces/form/FormInterfaces";
+import { LoginInputs } from "../../interfaces/form/FormInterfaces";
 import CustomPasswordField from "../../components/passwordField";
 import { Typography } from "@mui/material";
 
+// Services
+import { login }  from "../../services/ApiService";
+
 const Login = () => {
   const {
-    register,
     handleSubmit,
-    watch,
-    setValue,
     control,
     formState: { errors },
-  } = useForm<loginInputs>();
+  } = useForm<LoginInputs>();
 
   const [showToast, setShowToast] = useState(false);
+  const dispatch = useDispatch();
+  const navigator = useNavigate();
 
   const handleOpenToast = () => {
     setShowToast(true);
@@ -32,9 +35,16 @@ const Login = () => {
     setShowToast(false);
   };
 
-  const onSubmit = async (data: loginInputs) => {
+  const onSubmit = async (data: LoginInputs) => {
+    localStorage.clear();
+    let response = await login(data);
+    
+    if(response.data.token) {
+      localStorage.setItem('credentials', JSON.stringify(response.data.token));
+      dispatch({ type: "LOGIN", payload: true });
+      navigator("/material/list");
+    }
     setShowToast(true);
-    console.log(data);
   };
 
   return (
@@ -46,26 +56,26 @@ const Login = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="col-lg-12 col-sm-6 mt-5">
             <CustomTextField
-              name="loginName"
+              name="username"
               control={control}
-              rules={{ required: "Nombre requerido." }}
-              label="Nombre"
+              rules={{ required: "Nombre de usuario requerido." }}
+              label="Nombre de usuario"
               variant="outlined"
               fullWidth
-              error={errors.loginName}
-              helperText={errors.loginName?.message}
+              error={errors.username}
+              helperText={errors.username?.message}
             />
           </div>
           <div className="col-lg-12 col-sm-6 mt-4">
             <CustomPasswordField
-              name="loginPassword"
+              name="password"
               control={control}
               rules={{ required: "Contraseña requerida." }}
               label="Contraseña"
               variant="outlined"
               fullWidth
-              error={errors.loginPassword}
-              helperText={errors.loginPassword?.message}
+              error={errors.password}
+              helperText={errors.password?.message}
             />
           </div>
           <div className="col-lg-12 col-sm-6 mt-5">

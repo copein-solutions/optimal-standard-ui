@@ -6,6 +6,9 @@ import SelectField from "../../components/selectField/SelectField";
 import AmountInput from "../../components/amountInput";
 import "./addMaterial.css";
 
+// Redux
+import { useDispatch } from "react-redux";
+
 // Services
 import { createMaterial } from "../../services/ApiService";
 
@@ -41,6 +44,8 @@ export const AddMaterial = () => {
   const [prefix, setPrefix] = useState<string | undefined>();
   const [inputValue, setInputValue] = useState<string | undefined>("0,00");
 
+  const dispatch = useDispatch();
+
   const materialNameRef = useRef<HTMLInputElement>(null);
   const materialBrandRef = useRef<HTMLInputElement>(null);
   const materialPriceRef = useRef<HTMLInputElement>(null);
@@ -63,7 +68,7 @@ export const AddMaterial = () => {
 
   //función que se ejecuta cuando presiona el botón cancelar
   const handleCancel = () => {
-    navigator("/materials");
+    navigator("/material/list");
   };
 
   const verifyFormErrorsOnAccept = (formErrors: FormError[]) => {
@@ -145,7 +150,13 @@ export const AddMaterial = () => {
     }
   };
 
-  const fommatterForm = () => {
+  const formatterForm = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+
     return {
       name: materialNameRef.current?.value,
       brand: materialBrandRef.current?.value,
@@ -154,10 +165,11 @@ export const AddMaterial = () => {
       presentationPrice: Number(
         materialPriceRef.current?.value.replaceAll(".", "").replace(",", ".")
       ),
-      priceDate: new Date(),
+      priceDate: formattedDate,
       currency: currencyValue,
       type: materialTypeRef.current?.value,
       component: materialComponentRef.current?.value,
+      unityPrice: String(prefix) + ' ' + String(inputValue),
     };
   };
 
@@ -166,7 +178,7 @@ export const AddMaterial = () => {
     verifyFormErrorsOnAccept(formErrors);
 
     if (formErrors.length === 0) {
-      const response: ResponseApi = await createMaterial(fommatterForm());
+      const response: ResponseApi = await createMaterial(formatterForm());
       console.log("response", response);
       if (response.data.error) {
         if (response.data.details) {
@@ -175,11 +187,12 @@ export const AddMaterial = () => {
           alert("Error: " + response.data.message);
         }
       } else {
+        dispatch({ type: "SAVE_MATERIAL", payload: formatterForm() });
         alert("Formulario enviado con éxito");
+        navigator("/material/list");
       }
     }
     setFormErrors(formErrors);
-    navigator("/materials");
   };
 
   const verifyFormErrors = (

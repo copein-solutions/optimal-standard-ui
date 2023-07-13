@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import NumberFormat, { NumberFormatValues } from "react-number-format";
 
@@ -44,7 +44,6 @@ export const EditMaterial = () => {
 
   const [inputValue, setInputValue] = useState<string | undefined>("0,00");
   const [inputValueNumberFormat, setInputValueNumberFormat] = useState("");
-  const [materialId, setMaterialId] = useState(1);
 
   const navigator = useNavigate();
 
@@ -55,7 +54,6 @@ export const EditMaterial = () => {
     async function fetchData() {
       console.log("id", id);
 
-      // TODO: quitar id hardcodeado
       const response = await getMaterialByID(Number(id));
       if (response?.data.error || response === undefined) {
         alert(
@@ -104,7 +102,7 @@ export const EditMaterial = () => {
 
   //función que se ejecuta cuando presiona el botón cancelar
   const handleCancel = () => {
-    navigator("/materials");
+    navigator("/material/list");
   };
 
   //   Obtengo el prefijo del precio unitario
