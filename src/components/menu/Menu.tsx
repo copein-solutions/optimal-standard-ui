@@ -11,10 +11,10 @@ import {
 import React from "react";
 import { Link } from "react-router-dom";
 import { CustomSkeleton } from "../skeleton/Skeleton";
-import { ListMaterial } from "../../pages/listMaterial/listMaterial";
-import { AddMaterial } from "../../pages/addMaterial/addMaterial";
-import { ListApplicationArea } from "../../pages/applicationArea/listApplicationArea/listApplicationArea";
-import { AddApplicationArea } from "../../pages/applicationArea/addApplicationArea/addApplicationArea";
+import ListMaterial from "../../pages/material/listMaterial/listMaterial";
+import AddMaterial from "../../pages/material/addMaterial/addMaterial";
+import ListApplicationArea from "../../pages/applicationArea/listApplicationArea/listApplicationArea";
+import AddApplicationArea from "../../pages/applicationArea/addApplicationArea/addApplicationArea";
 import SystemForm from "../../pages/system";
 
 type MenuProps = {

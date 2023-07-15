@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../redux/reducers/reducer";
 import { useNavigate } from "react-router-dom";
 
-export const ListApplicationArea = () => {
+const ListApplicationArea = () => {
   const applicationAreas = useSelector(
     (state: RootState) => state.applicationAreas
   );
@@ -50,3 +50,5 @@ export const ListApplicationArea = () => {
     </MainContainer>
   );
 };
+
+export default ListApplicationArea;

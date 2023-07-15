@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 import { Button } from "@mui/material";
 import "./listMaterial.css";
-import { getMaterials } from "../../services/ApiService";
-import { MainContainer } from "../../components/mainContainer/MainContainer";
-import { GridCustom } from "../../components/grid/Grid";
+import { getMaterials } from "../../../services/ApiService";
+import { MainContainer } from "../../../components/mainContainer/MainContainer";
+import { GridCustom } from "../../../components/grid/Grid";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../../redux/reducers/reducer";
+import { RootState } from "../../../redux/reducers/reducer";
 import { useNavigate } from "react-router-dom";
 
-export const ListMaterial = () => {
+const ListMaterial = () => {
   const materials = useSelector((state: RootState) => state.materials);
   const dispatch = useDispatch();
 
@@ -41,16 +41,12 @@ export const ListMaterial = () => {
             presentationQuantity: number;
             presentationUnit: string;
           }) => {
-            mat.unitPrice =
-              "$/" +
-              mat.presentationUnit +
-              " " +
-              String(
-                truncarDecimales(
-                  mat.presentationPrice / mat.presentationQuantity,
-                  2
-                )
-              );
+            mat.unitPrice = `${String(
+              truncarDecimales(
+                mat.presentationPrice / mat.presentationQuantity,
+                2
+              )
+            )} $/${mat.presentationUnit}`;
           }
         );
       }
@@ -80,3 +76,5 @@ export const ListMaterial = () => {
     </MainContainer>
   );
 };
+
+export default ListMaterial;

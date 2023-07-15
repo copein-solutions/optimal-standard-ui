@@ -1,2 +1,2 @@
-import { ListApplicationArea } from './listApplicationArea';
+import ListApplicationArea from './listApplicationArea';
 export default ListApplicationArea;
