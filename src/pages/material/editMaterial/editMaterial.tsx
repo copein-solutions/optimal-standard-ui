@@ -34,7 +34,7 @@ export const EditMaterial = () => {
 
   return (
     <MainContainer cardTitle="Editar material">
-      <MaterialForm data={formData} isUpdateForm={ false }/>
+      <MaterialForm data={formData} isUpdateForm={ true }/>
     </MainContainer>
   );
 };

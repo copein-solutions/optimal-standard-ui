@@ -17,7 +17,7 @@ interface MaterialInputs {
   presentationQuantity: string;
   presentationPrice: string;
   type: string;
-  components: string;
+  priceDate: string;
   presentationUnit: string;
   currency: string;
   component: string;

@@ -59,7 +59,7 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
       setValue("presentationPrice", String(data.presentationPrice));
       setValue("type", data.type);
       setValue("presentationUnit", data.presentationUnit);
-      setValue("components", data.component);
+      setValue("component", data.component);
       setValue("currency", data.currency);
     }
   }, [setValue, data]);
@@ -74,8 +74,8 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
       setValue("type", e.target.value as string, {
         shouldValidate: true,
       });
-    } else if (e.target.name === "components") {
-      setValue("components", e.target.value as string, {
+    } else if (e.target.name === "component") {
+      setValue("component", e.target.value as string, {
         shouldValidate: true,
       });
     } else if (e.target.name === "price") {
@@ -122,6 +122,7 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
 
   const onSubmit = async (data: MaterialInputs) => {
     console.log(data);
+    data.priceDate = "1891-09-28";
     let response: any;
     if (isUpdateForm) {
       response = await updateMaterial(Number(data?.id), data);
@@ -342,10 +343,10 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
         </div>
         {/* ------------- Composición ------------- */}
         <div className="col-lg-4 col-sm-6">
-          <FormControl fullWidth error={!!errors.components}>
+          <FormControl fullWidth error={!!errors.component}>
             <InputLabel id="custom-select-label">Composición</InputLabel>
             <Controller
-              name="components"
+              name="component"
               control={control}
               defaultValue=""
               rules={{ required: "Composición requerida." }}
@@ -367,14 +368,14 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
                 </Select>
               )}
             />
-            {errors.components && (
+            {errors.component && (
               <Typography
                 variant="caption"
                 align="left"
                 sx={{ marginLeft: "14px" }}
                 color="error"
               >
-                {errors.components.message}
+                {errors.component.message}
               </Typography>
             )}
           </FormControl>

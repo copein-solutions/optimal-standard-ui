@@ -145,7 +145,7 @@ export const EditMaterial = () => {
       priceDate: "1891-09-28",
       currency: data.currency,
       type: data.type,
-      component: data.components,
+      component: data.component,
     };
   };
 
