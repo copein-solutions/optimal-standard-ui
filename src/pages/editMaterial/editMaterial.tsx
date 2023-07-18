@@ -24,7 +24,7 @@ import {
   MATERIAL_TYPE,
   CURRENCY,
   MATERIAL_UNIT,
-  MATERIAL_COMPONENTS,
+  MATERIAL_COMPONENTS, MATERIAL_LIST,
 } from "../../utils/constants";
 
 import { MaterialInputs } from "../../interfaces/form/FormInterfaces";
@@ -102,7 +102,7 @@ export const EditMaterial = () => {
 
   //función que se ejecuta cuando presiona el botón cancelar
   const handleCancel = () => {
-    navigator("/material/list");
+    navigator(MATERIAL_LIST);
   };
 
   //   Obtengo el prefijo del precio unitario
@@ -162,7 +162,7 @@ export const EditMaterial = () => {
       }
     } else {
       alert("Formulario enviado con éxito");
-      navigator("/material/list");
+      navigator(MATERIAL_LIST);
     }
   };
 

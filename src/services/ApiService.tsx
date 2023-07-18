@@ -4,8 +4,7 @@ import { ResponseApi } from "../interfaces/service/ApiInterfaces";
 const API_BASE_URL = "http://localhost:8080";
 let config: AxiosRequestConfig = {
   headers: {
-    'Content-Type': 'Application/json',
-    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYW51Y2xlYWwiLCJleHAiOjE2ODk2Nzc3OTIsImlhdCI6MTY4OTY0ODk5Miwicm9sIjp7ImF1dGhvcml0eSI6IlJPTEVfQURNSU4ifX0.y3j0r7JqLa7gCS_u6-UZ94kGBj2NHFnAfuk4t4lACyo'
+    'Content-Type': 'Application/json'
   },
 };
 

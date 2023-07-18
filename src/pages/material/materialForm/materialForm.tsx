@@ -23,13 +23,14 @@ import {
   MATERIAL_TYPE,
   CURRENCY,
   MATERIAL_UNIT,
-  MATERIAL_COMPONENTS,
+  MATERIAL_COMPONENTS, MATERIAL_LIST,
 } from "../../../utils/constants";
 
 import { MaterialInputs } from "../../../interfaces/form/FormInterfaces";
 import { createMaterial, updateMaterial } from "../../../services/ApiService";
 import CustomTextField from "../../../components/TextField";
 import { useNavigate } from "react-router-dom";
+import CustomSelectField from "../../../components/customSelectField";
 
 type MaterialFromProps = {
   data?: MaterialInputs;
@@ -70,15 +71,7 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
   }
 
   const handleSelectChange = (e: any) => {
-    if (e.target.name === "type") {
-      setValue("type", e.target.value as string, {
-        shouldValidate: true,
-      });
-    } else if (e.target.name === "component") {
-      setValue("component", e.target.value as string, {
-        shouldValidate: true,
-      });
-    } else if (e.target.name === "price") {
+    if (e.target.name === "presentationPrice") {
       setValue("presentationPrice", e.target.value as string, {
         shouldValidate: true,
       });
@@ -87,10 +80,10 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
 
   //función que se ejecuta cuando presiona el botón cancelar
   const handleCancel = () => {
-    navigator("/materials");
+    navigator(MATERIAL_LIST);
   };
 
-  //   Obtengo el prefijo del precio unitario
+  // Obtengo el prefijo del precio unitario
   const unity = watch("presentationUnit");
   const prefix = unity != null ? `$/${unity}` : "";
   const watchedValues = watch(["presentationPrice", "presentationQuantity"]);
@@ -120,25 +113,28 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
     return numeroTruncado;
   };
 
-  const onSubmit = async (data: MaterialInputs) => {
-    console.log(data);
-    data.priceDate = "1891-09-28";
+  const onSubmit = async (formData: MaterialInputs) => {
+    formData.priceDate = "1891-09-28";
+    formData.presentationPrice = formData.presentationPrice.replace(",", ".");
     let response: any;
     if (isUpdateForm) {
-      response = await updateMaterial(Number(data?.id), data);
+      response = await updateMaterial(Number(data?.id), formData);
     } else {
-      response = await createMaterial(data);
+      response = await createMaterial(formData);
     }
-    console.log(response);
 
-    if (response.data.error) {
+    if (response.status !== 200) {
       if (response.data.details) {
         alert("Error: " + response.data.details.join(" "));
       } else {
         alert("Error: " + response.data.message);
       }
     } else {
+      if(!isUpdateForm) {
+        // dispatch({ type: "SAVE_APPLICATION_AREA", payload: response.data });
+      }
       alert("Formulario enviado con éxito");
+      navigator(MATERIAL_LIST);
     }
   };
 
@@ -175,15 +171,17 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
       {/* ------------- Precio unitario READONLY ------------- */}
       <div className="row">
         <div className="col-lg-3 col-sm-6 mb-3">
-          <TextField
-            className="read-only-text-field"
-            value={inputValue}
-            fullWidth
+          <CustomTextField
+            name="unitPrice"
+            control={control}
             label="Precio unitario"
+            value={inputValue}
+            variant="outlined"
+            fullWidth
             InputProps={{
               readOnly: true,
-              startAdornment: (
-                <InputAdornment position="end">{prefix}</InputAdornment>
+              endAdornment: (
+                <InputAdornment sx={{marginRight:"5px"}} position="end">{prefix}</InputAdornment>
               ),
             }}
           />
@@ -216,41 +214,14 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
         </div>
         {/* ------------- Unidad ------------- */}
         <div className="col-lg-3 col-sm-6">
-          <FormControl fullWidth error={!!errors.presentationUnit}>
-            <InputLabel id="custom-select-label">Unidad</InputLabel>
-            <Controller
+          <CustomSelectField
               name="presentationUnit"
               control={control}
-              defaultValue=""
-              rules={{ required: "Composición requerida." }}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  label="Unidad"
-                  onChange={(e) => {
-                    const value = e.target.value as string;
-                    field.onChange(value);
-                  }}
-                >
-                  {MATERIAL_UNIT.map((option, index) => (
-                    <MenuItem key={index} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              )}
-            />
-            {errors.presentationUnit && (
-              <Typography
-                variant="caption"
-                align="left"
-                sx={{ marginLeft: "14px" }}
-                color="error"
-              >
-                {errors.presentationUnit.message}
-              </Typography>
-            )}
-          </FormControl>
+              rules={{ required: "Unidad requerida." }}
+              label="Unidad"
+              error={errors.presentationUnit}
+              options={MATERIAL_UNIT}
+          />
         </div>
         {/* ------------- Moneda ------------- */}
         <div className="col-lg-3 col-sm-6">
@@ -282,6 +253,7 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
         {/* ------------- Precio ------------- */}
         <div className="col-lg-3 col-sm-6">
           <NumberFormat
+            size="small"
             label="Precio"
             {...register("presentationPrice", {
               required: "Precio requerido.",
@@ -303,82 +275,25 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
       {/* ------------- Tipo ------------- */}
       <div className="row mt-3">
         <div className="col-lg-4 col-sm-6 ">
-          <FormControl fullWidth error={!!errors.type}>
-            <InputLabel id="custom-select-label">Tipo</InputLabel>
-            <Controller
+          <CustomSelectField
               name="type"
               control={control}
-              defaultValue=""
               rules={{ required: "Tipo requerido." }}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  labelId="custom-select-label"
-                  label="Tipo"
-                  onChange={(e) => {
-                    const value = e.target.value as string;
-                    field.onChange(value);
-                    handleSelectChange(e);
-                  }}
-                >
-                  {MATERIAL_TYPE.map((option, index) => (
-                    <MenuItem key={index} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              )}
-            />
-            {errors.type && (
-              <Typography
-                variant="caption"
-                align="left"
-                sx={{ marginLeft: "14px" }}
-                color="error"
-              >
-                {errors.type.message}
-              </Typography>
-            )}
-          </FormControl>
+              label="Tipo"
+              error={errors.type}
+              options={MATERIAL_TYPE}
+          />
         </div>
         {/* ------------- Composición ------------- */}
         <div className="col-lg-4 col-sm-6">
-          <FormControl fullWidth error={!!errors.component}>
-            <InputLabel id="custom-select-label">Composición</InputLabel>
-            <Controller
+          <CustomSelectField
               name="component"
               control={control}
-              defaultValue=""
               rules={{ required: "Composición requerida." }}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  label="Composición"
-                  onChange={(e) => {
-                    const value = e.target.value as string;
-                    field.onChange(value);
-                    handleSelectChange(e);
-                  }}
-                >
-                  {MATERIAL_COMPONENTS.map((option, index) => (
-                    <MenuItem key={index} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              )}
-            />
-            {errors.component && (
-              <Typography
-                variant="caption"
-                align="left"
-                sx={{ marginLeft: "14px" }}
-                color="error"
-              >
-                {errors.component.message}
-              </Typography>
-            )}
-          </FormControl>
+              label="Composición"
+              error={errors.component}
+              options={MATERIAL_COMPONENTS}
+          />
         </div>
       </div>
       <Typography

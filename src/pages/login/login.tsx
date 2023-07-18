@@ -15,6 +15,7 @@ import { Typography } from "@mui/material";
 
 // Services
 import { login }  from "../../services/ApiService";
+import {MATERIAL_LIST} from "../../utils/constants";
 
 const Login = () => {
   const {
@@ -38,11 +39,11 @@ const Login = () => {
   const onSubmit = async (data: LoginInputs) => {
     localStorage.clear();
     let response = await login(data);
-    
+
     if(response.data.token) {
       localStorage.setItem('credentials', JSON.stringify(response.data.token));
       dispatch({ type: "LOGIN", payload: true });
-      navigator("/material/list");
+      navigator(MATERIAL_LIST);
     }
     setShowToast(true);
   };

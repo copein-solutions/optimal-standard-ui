@@ -7,6 +7,7 @@ import { GridCustom } from "../../../components/grid/Grid";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../redux/reducers/reducer";
 import { useNavigate } from "react-router-dom";
+import { MATERIAL_CREATE } from "../../../utils/constants";
 
 const ListMaterial = () => {
   const materials = useSelector((state: RootState) => state.materials);
@@ -59,7 +60,7 @@ const ListMaterial = () => {
   }, [dispatch]);
 
   const handleOpenForm = () => {
-    navigator("/material");
+    navigator(MATERIAL_CREATE);
   };
 
   return (

@@ -16,7 +16,7 @@ import { createMaterial } from "../../services/ApiService";
 import {
   MATERIAL_TYPE,
   MATERIAL_UNIT,
-  MATERIAL_COMPONENTS,
+  MATERIAL_COMPONENTS, MATERIAL_LIST,
 } from "../../utils/constants";
 
 // Interfaces
@@ -68,7 +68,7 @@ export const AddMaterial = () => {
 
   //función que se ejecuta cuando presiona el botón cancelar
   const handleCancel = () => {
-    navigator("/material/list");
+    navigator(MATERIAL_LIST);
   };
 
   const verifyFormErrorsOnAccept = (formErrors: FormError[]) => {
@@ -189,7 +189,7 @@ export const AddMaterial = () => {
       } else {
         dispatch({ type: "SAVE_MATERIAL", payload: formatterForm() });
         alert("Formulario enviado con éxito");
-        navigator("/material/list");
+        navigator(MATERIAL_LIST);
       }
     }
     setFormErrors(formErrors);
