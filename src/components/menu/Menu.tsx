@@ -16,6 +16,7 @@ import AddMaterial from "../../pages/material/addMaterial/addMaterial";
 import ListApplicationArea from "../../pages/applicationArea/listApplicationArea/listApplicationArea";
 import AddApplicationArea from "../../pages/applicationArea/addApplicationArea/addApplicationArea";
 import SystemForm from "../../pages/system";
+import Login from "../../pages/login";
 
 type MenuProps = {
   isOpen: boolean;
@@ -46,7 +47,7 @@ export const menuOptions = [
   {
     name: "Listado de materiales",
     icon: <ArrowRightIcon />,
-    path: "/materials",
+    path: "/material/list",
     component: ListMaterial,
   },
   {
@@ -54,6 +55,12 @@ export const menuOptions = [
     icon: <ArrowRightIcon />,
     path: "/application_areas",
     component: ListApplicationArea,
+  },
+  {
+    name: "Login",
+    icon: <ArrowRightIcon />,
+    path: "/login",
+    component: Login,
   },
 ];
 

@@ -33,7 +33,8 @@ const ListMaterial = () => {
     async function fetchData() {
       const response = await getMaterials();
       let updateMaterials: any = [];
-      if (response && response.data !== "") {
+      if (response && response.data !== "" && response.data.length > 0) {
+        updateMaterials = response.data;
         updateMaterials.map(
           (mat: {
             unitPrice: string;

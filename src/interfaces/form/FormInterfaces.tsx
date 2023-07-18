@@ -43,6 +43,12 @@ interface systemFormInputs {
   systemSupportConditions: string;
 }
 
+// Login
+interface LoginInputs {
+  username: string;
+  password: string;
+}
+
 interface ApplicationAreaInputs {
   id?: string;
   name: string;
@@ -50,9 +56,14 @@ interface ApplicationAreaInputs {
 }
 
 export type {
+
+};
+
+export type {
+  ApplicationAreaInputs,
+  LoginInputs,
   FormError,
   BackendError,
   MaterialInputs,
-  systemFormInputs,
-  ApplicationAreaInputs,
+  systemFormInputs
 };
