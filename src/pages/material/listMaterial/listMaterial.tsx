@@ -32,8 +32,8 @@ const ListMaterial = () => {
     // Carga los datos del JSON
     async function fetchData() {
       const response = await getMaterials();
-      const updateMaterials = response.data;
-      if (updateMaterials) {
+      let updateMaterials: any = [];
+      if (response && response.data !== "") {
         updateMaterials.map(
           (mat: {
             unitPrice: string;

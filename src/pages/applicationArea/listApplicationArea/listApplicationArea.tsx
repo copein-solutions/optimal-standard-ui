@@ -24,7 +24,9 @@ const ListApplicationArea = () => {
   useEffect(() => {
     async function fetchData() {
       const response = await getApplicationArea();
-      dispatch({ type: "SET_APPLICATION_AREA", payload: response.data });
+      if(response && response.data !== "") {
+        dispatch({ type: "SET_APPLICATION_AREA", payload: response.data });
+      }      
     }
     fetchData();
   }, [dispatch]);
