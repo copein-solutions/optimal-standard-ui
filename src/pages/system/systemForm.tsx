@@ -277,13 +277,13 @@ export const SystemForm = () => {
                   options={materialsTypeMesh}
                 />
               </div>
-              {/* ------------- Consumo total k/m2 ------------- */}
+              {/* ------------- Coeficiente por m2 ------------- */}
               <div className="col-lg-4 col-sm-6">
                 <CustomTextField
                   name="systemParcialMeshCoefficient"
                   control={control}
-                  rules={{ required: "Consumo total requerido." }}
-                  label="Consumo total k/m2"
+                  rules={{ required: "Coeficiente requerido." }}
+                  label="Coeficiente por m2"
                   variant="outlined"
                   fullWidth
                   type="number"
@@ -298,9 +298,11 @@ export const SystemForm = () => {
           <div className="row mt-3">
             <div className="col-lg-12 col-sm-6">
               <CustomTextField
+                multiline
+                minRows={3}
                 name="systemParcialMeshComents"
                 control={control}
-                label="Comentarios"
+                label="Descripción"
                 variant="outlined"
                 fullWidth
               />
@@ -347,12 +349,14 @@ export const SystemForm = () => {
                   }
                 />
               </div>
-              {/* ------------- Comentarios (otros complementos) ------------- */}
+              {/* ------------- Descripción (otros complementos) ------------- */}
               <div className="col-lg-12 col-sm-6 my-3">
                 <CustomTextField
+                  multiline
+                  minRows={3}
                   name={`systemOthersPluginsMaterialComments${index}`}
                   control={control}
-                  label="Comentarios"
+                  label="Descripción"
                   variant="outlined"
                   fullWidth
                 />
@@ -385,6 +389,22 @@ export const SystemForm = () => {
               fullWidth
               error={errors.systemSupportConditions}
               helperText={errors.systemSupportConditions?.message}
+            />
+          </div>
+        </div>
+        <CustomDivider text="Restricciones" />
+        <div className="row mt-3">
+          <div className="col-lg-3 col-sm-6">
+            <CustomTextField
+              name="systemMaterialAreaRestrictions"
+              control={control}
+              rules={{ required: "Restricción por área requerida." }}
+              label="Por área m2"
+              variant="outlined"
+              fullWidth
+              type="number"
+              error={errors.systemMaterialAreaRestrictions}
+              helperText={errors.systemMaterialAreaRestrictions?.message}
             />
           </div>
         </div>
