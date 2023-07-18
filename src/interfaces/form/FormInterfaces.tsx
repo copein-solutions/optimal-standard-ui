@@ -41,4 +41,23 @@ interface systemFormInputs {
   systemSupportConditions: string;
 }
 
-export type { FormError, BackendError, EditMaterialInputs, systemFormInputs };
+// Login
+interface LoginInputs {
+  username: string;
+  password: string;
+}
+
+interface ApplicationAreaInputs {
+  id?: string;
+  name: string;
+  considerations: string;
+}
+
+export type {
+  FormError,
+  BackendError,
+  EditMaterialInputs,
+  systemFormInputs,
+  ApplicationAreaInputs,
+  LoginInputs,
+};

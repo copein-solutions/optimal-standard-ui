@@ -109,7 +109,7 @@ export const SystemForm = () => {
   }, []);
 
   // Muestro inputs de malla 100% si corresponde
-  const watchedMeshHhundredPercent = watch("systemMeshHhundredPercent");
+  const watchedMeshHhundredPercent = watch("systemMeshHundredPercent");
   useEffect(() => {
     const showMeshHhundredPercentInput =
       watchedMeshHhundredPercent === "si" ? true : false;
@@ -125,7 +125,11 @@ export const SystemForm = () => {
 
   // Evento de botón agregar - otros complementos
   const handleAddMaterial = () => {
-    setMaterialCount((prevCount) => prevCount + 1);
+    if (materialCount > 2) {
+      alert("No se pueden agregar más de tres materiales complementarios");
+    } else {
+      setMaterialCount((prevCount) => prevCount + 1);
+    }
   };
 
   // Evento de botón eliminar - otros complementos
