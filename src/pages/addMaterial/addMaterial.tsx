@@ -68,7 +68,7 @@ export const AddMaterial = () => {
 
   //función que se ejecuta cuando presiona el botón cancelar
   const handleCancel = () => {
-    navigator("/materials");
+    navigator("/material/list");
   };
 
   const verifyFormErrorsOnAccept = (formErrors: FormError[]) => {
@@ -189,7 +189,7 @@ export const AddMaterial = () => {
       } else {
         dispatch({ type: "SAVE_MATERIAL", payload: formatterForm() });
         alert("Formulario enviado con éxito");
-        navigator("/materials");
+        navigator("/material/list");
       }
     }
     setFormErrors(formErrors);

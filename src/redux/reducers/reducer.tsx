@@ -2,6 +2,8 @@ import initialState from "../store/initialState";
 
 const rootReducer = (state = initialState, action: any) => {
   switch (action.type) {
+    case 'LOGIN':
+			return { ...state, logged: true }
     case "SET_MATERIALS":
       return { ...state, materials: action.payload };
     case "SAVE_MATERIAL":

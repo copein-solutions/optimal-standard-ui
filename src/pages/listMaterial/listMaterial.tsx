@@ -1,3 +1,4 @@
+import { connect } from 'react-redux';
 import { useEffect } from "react";
 import { Button } from "@mui/material";
 import "./listMaterial.css";
@@ -7,6 +8,7 @@ import { GridCustom } from "../../components/grid/Grid";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/reducers/reducer";
 import { useNavigate } from "react-router-dom";
+import EditMaterial from '../editMaterial';
 
 export const ListMaterial = () => {
   const materials = useSelector((state: RootState) => state.materials);
@@ -80,3 +82,5 @@ export const ListMaterial = () => {
     </MainContainer>
   );
 };
+
+export default connect()(ListMaterial);

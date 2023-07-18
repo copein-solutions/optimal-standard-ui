@@ -102,7 +102,7 @@ export const EditMaterial = () => {
 
   //función que se ejecuta cuando presiona el botón cancelar
   const handleCancel = () => {
-    navigator("/materials");
+    navigator("/material/list");
   };
 
   //   Obtengo el prefijo del precio unitario
@@ -162,6 +162,7 @@ export const EditMaterial = () => {
       }
     } else {
       alert("Formulario enviado con éxito");
+      navigator("/material/list");
     }
   };
 
