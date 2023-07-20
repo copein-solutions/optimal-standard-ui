@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../redux/reducers/reducer";
 import { useNavigate } from "react-router-dom";
 import { MATERIAL_CREATE } from "../../../utils/constants";
+import { format, parseISO } from "date-fns";
 
 const ListMaterial = () => {
   const materials = useSelector((state: RootState) => state.materials);
@@ -33,28 +34,35 @@ const ListMaterial = () => {
     // Carga los datos del JSON
     async function fetchData() {
       const response = await getMaterials();
-      let updateMaterials: any = [];
+      let listMaterials: any = [];
       if (response && response.data !== "" && response.data.length > 0) {
-        updateMaterials = response.data;
-        updateMaterials.map(
-          (mat: {
+        listMaterials = response.data;
+        listMaterials.map(
+          (material: {
             unitPrice: string;
             presentationPrice: number;
             presentationQuantity: number;
             presentationUnit: string;
+            priceDate: string;
           }) => {
-            mat.unitPrice = `${String(
+            // Genero dinamicamente el precio unitario para cada row.
+            material.unitPrice = `${String(
               truncarDecimales(
-                mat.presentationPrice / mat.presentationQuantity,
+                material.presentationPrice / material.presentationQuantity,
                 2
               )
-            )} $/${mat.presentationUnit}`;
+            )} $/${material.presentationUnit}`;
+
+            // Convierte la fecha a nuestra horaria.
+            const parsedDate = parseISO(material.priceDate);
+            // Formateo la fecha para que quede mejor visualmente.
+            material.priceDate = format(new Date(parsedDate), "dd/MM/yyyy");
           }
         );
       }
 
-      console.log(updateMaterials);
-      dispatch({ type: "SET_MATERIALS", payload: updateMaterials });
+      console.log(listMaterials);
+      dispatch({ type: "SET_MATERIALS", payload: listMaterials });
     }
     fetchData();
   }, [dispatch]);

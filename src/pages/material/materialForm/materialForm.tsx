@@ -13,9 +13,6 @@ import {
   Typography,
   TextField,
   InputAdornment,
-  Select,
-  MenuItem,
-  InputLabel,
   FormControl,
 } from "@mui/material";
 
@@ -23,7 +20,8 @@ import {
   MATERIAL_TYPE,
   CURRENCY,
   MATERIAL_UNIT,
-  MATERIAL_COMPONENTS, MATERIAL_LIST,
+  MATERIAL_COMPONENTS,
+  MATERIAL_LIST,
 } from "../../../utils/constants";
 
 import { MaterialInputs } from "../../../interfaces/form/FormInterfaces";
@@ -53,6 +51,7 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
   const navigator = useNavigate();
 
   useEffect(() => {
+    setValue("priceDate", loadTodayDate());
     if (data) {
       setValue("name", data.name);
       setValue("brand", data.brand);
@@ -62,8 +61,18 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
       setValue("presentationUnit", data.presentationUnit);
       setValue("component", data.component);
       setValue("currency", data.currency);
+      setValue("priceDate", data.priceDate);
     }
   }, [setValue, data]);
+
+  const loadTodayDate = (): string => {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+    const day = String(currentDate.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  };
 
   function handleValueChange(values: NumberFormatValues) {
     const { formattedValue } = values;
@@ -114,14 +123,17 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
   };
 
   const onSubmit = async (formData: MaterialInputs) => {
-    formData.priceDate = "1891-09-28";
+    // formData.priceDate = "1891-09-28";
+    console.log(formData);
     formData.presentationPrice = formData.presentationPrice.replace(",", ".");
+
     let response: any;
     if (isUpdateForm) {
       response = await updateMaterial(Number(data?.id), formData);
     } else {
       response = await createMaterial(formData);
     }
+    console.log(response);
 
     if (response.status !== 200) {
       if (response.data.details) {
@@ -130,7 +142,7 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
         alert("Error: " + response.data.message);
       }
     } else {
-      if(!isUpdateForm) {
+      if (!isUpdateForm) {
         // dispatch({ type: "SAVE_APPLICATION_AREA", payload: response.data });
       }
       alert("Formulario enviado con éxito");
@@ -181,9 +193,25 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
             InputProps={{
               readOnly: true,
               endAdornment: (
-                <InputAdornment sx={{marginRight:"5px"}} position="end">{prefix}</InputAdornment>
+                <InputAdornment sx={{ marginRight: "5px" }} position="end">
+                  {prefix}
+                </InputAdornment>
               ),
             }}
+          />
+        </div>
+        {/* ------------- Fecha ------------- */}
+        <div className="col-lg-3 col-sm-3">
+          <CustomTextField
+            name="priceDate"
+            control={control}
+            rules={{ required: "Fecha requerida." }}
+            label="Fecha"
+            variant="outlined"
+            type="date"
+            fullWidth
+            error={errors.priceDate}
+            helperText={errors.priceDate?.message}
           />
         </div>
       </div>
@@ -202,7 +230,7 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
           <CustomTextField
             name="presentationQuantity"
             control={control}
-            rules={{ required: "Marca requerida." }}
+            rules={{ required: "Cantidad requerida." }}
             label="Cantidad"
             variant="outlined"
             type="number"
@@ -215,12 +243,12 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
         {/* ------------- Unidad ------------- */}
         <div className="col-lg-3 col-sm-6">
           <CustomSelectField
-              name="presentationUnit"
-              control={control}
-              rules={{ required: "Unidad requerida." }}
-              label="Unidad"
-              error={errors.presentationUnit}
-              options={MATERIAL_UNIT}
+            name="presentationUnit"
+            control={control}
+            rules={{ required: "Unidad requerida." }}
+            label="Unidad"
+            error={errors.presentationUnit}
+            options={MATERIAL_UNIT}
           />
         </div>
         {/* ------------- Moneda ------------- */}
@@ -276,23 +304,23 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
       <div className="row mt-3">
         <div className="col-lg-4 col-sm-6 ">
           <CustomSelectField
-              name="type"
-              control={control}
-              rules={{ required: "Tipo requerido." }}
-              label="Tipo"
-              error={errors.type}
-              options={MATERIAL_TYPE}
+            name="type"
+            control={control}
+            rules={{ required: "Tipo requerido." }}
+            label="Tipo"
+            error={errors.type}
+            options={MATERIAL_TYPE}
           />
         </div>
         {/* ------------- Composición ------------- */}
         <div className="col-lg-4 col-sm-6">
           <CustomSelectField
-              name="component"
-              control={control}
-              rules={{ required: "Composición requerida." }}
-              label="Composición"
-              error={errors.component}
-              options={MATERIAL_COMPONENTS}
+            name="component"
+            control={control}
+            rules={{ required: "Composición requerida." }}
+            label="Composición"
+            error={errors.component}
+            options={MATERIAL_COMPONENTS}
           />
         </div>
       </div>

@@ -34,15 +34,9 @@ export const menuOptions = [
     component: AddMaterial,
   },
   {
-    name: "Agregar material viejo",
-    icon: <ArrowRightIcon />,
-    path: "/material",
-    component: AddMaterial,
-  },
-  {
     name: "Agregar campo de aplicación",
     icon: <ArrowRightIcon />,
-    path: "/application_area",
+    path: "/application_area/create",
     component: AddApplicationArea,
   },
   {
