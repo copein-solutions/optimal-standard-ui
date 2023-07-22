@@ -12,7 +12,7 @@ interface BackendError {
 
 interface MaterialInputs {
   id?: string;
-  name: string;
+  product: string;
   brand: string;
   presentationQuantity: string;
   presentationPrice: string;
@@ -22,7 +22,7 @@ interface MaterialInputs {
   currency: string;
   component: string;
   potLife?: string;
-  minApplicationTemperature?: string;
+  minApplicableTemp?: string;
 }
 
 // systemForm

@@ -53,7 +53,7 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
   useEffect(() => {
     setValue("priceDate", loadTodayDate());
     if (data) {
-      setValue("name", data.name);
+      setValue("product", data.product);
       setValue("brand", data.brand);
       setValue("presentationQuantity", data.presentationQuantity);
       setValue("presentationPrice", String(data.presentationPrice));
@@ -63,7 +63,7 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
       setValue("currency", data.currency);
       setValue("priceDate", data.priceDate);
       setValue("potLife", data.potLife);
-      setValue("minApplicationTemperature", data.minApplicationTemperature);
+      setValue("minApplicableTemp", data.minApplicableTemp);
     }
   }, [setValue, data]);
 
@@ -158,14 +158,14 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
       <div className="row mb-3">
         <div className="col-lg-6 col-sm-6">
           <CustomTextField
-            name="name"
+            name="product"
             control={control}
             rules={{ required: "Producto requerido." }}
             label="Producto"
             variant="outlined"
             fullWidth
-            error={errors.name}
-            helperText={errors.name?.message}
+            error={errors.product}
+            helperText={errors.product?.message}
           />
         </div>
         {/* ------------- Marca ------------- */}
@@ -351,14 +351,14 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
         {/* ------------- Temperatura mínima de aplicación ------------- */}
         <div className="col-lg-6 col-sm-6">
           <CustomTextField
-            name="minApplicationTemperature"
+            name="minApplicableTemp"
             control={control}
             // rules={{ required: "temperatura mínima de aplicación requerida." }}
             label="Temperatura mínima de aplicación (°C)"
             variant="outlined"
             fullWidth
-            // error={errors.minApplicationTemperature}
-            // helperText={errors.minApplicationTemperature?.message}
+            // error={errors.minApplicableTemp}
+            // helperText={errors.minApplicableTemp?.message}
           />
         </div>
       </div>
