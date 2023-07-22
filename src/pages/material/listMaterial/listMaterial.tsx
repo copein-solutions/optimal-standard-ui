@@ -9,6 +9,7 @@ import { RootState } from "../../../redux/reducers/reducer";
 import { useNavigate } from "react-router-dom";
 import { MATERIAL_CREATE } from "../../../utils/constants";
 import { format, parseISO } from "date-fns";
+import { getUnitPrice } from "../../../utils/mathUtils";
 
 const ListMaterial = () => {
   const materials = useSelector((state: RootState) => state.materials);
@@ -21,14 +22,9 @@ const ListMaterial = () => {
     { name: "Precio Unitario", value: "unitPrice" },
     { name: "Marca", value: "brand" },
     { name: "Tipo", value: "type" },
+    { name: "Composición", value: "component" },
     { name: "Fecha", value: "priceDate" },
   ];
-
-  const truncarDecimales = (numero: number, cantidadDecimales: number) => {
-    const multiplicador = Math.pow(10, cantidadDecimales);
-    const numeroTruncado = Math.floor(numero * multiplicador) / multiplicador;
-    return numeroTruncado;
-  };
 
   useEffect(() => {
     // Carga los datos del JSON
@@ -46,12 +42,12 @@ const ListMaterial = () => {
             priceDate: string;
           }) => {
             // Genero dinamicamente el precio unitario para cada row.
-            material.unitPrice = `${String(
-              truncarDecimales(
-                material.presentationPrice / material.presentationQuantity,
-                2
-              )
-            )} $/${material.presentationUnit}`;
+            material.unitPrice = getUnitPrice(
+              material.presentationPrice,
+              material.presentationQuantity,
+              material.presentationUnit,
+              true,
+            );
 
             // Convierte la fecha a nuestra horaria.
             const parsedDate = parseISO(material.priceDate);

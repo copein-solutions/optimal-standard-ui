@@ -29,6 +29,7 @@ import { createMaterial, updateMaterial } from "../../../services/ApiService";
 import CustomTextField from "../../../components/TextField";
 import { useNavigate } from "react-router-dom";
 import CustomSelectField from "../../../components/customSelectField";
+import { getUnitPrice } from "../../../utils/mathUtils";
 
 type MaterialFromProps = {
   data?: MaterialInputs;
@@ -113,16 +114,9 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
     if (materialQuantityWatch) {
       materialQuantity = Number(materialQuantityWatch);
     }
-    let price = materialPrice / (materialQuantity === 0 ? 1 : materialQuantity);
-    let formattedPrice = String(truncarDecimales(price, 2)).replace(".", ",");
+    let formattedPrice = getUnitPrice(materialPrice, materialQuantity).replace(".", ",");
     setInputValue(formattedPrice);
   }, [data, watchedValues]);
-
-  const truncarDecimales = (numero: number, cantidadDecimales: number) => {
-    const multiplicador = Math.pow(10, cantidadDecimales);
-    const numeroTruncado = Math.floor(numero * multiplicador) / multiplicador;
-    return numeroTruncado;
-  };
 
   const onSubmit = async (formData: MaterialInputs) => {
     formData.presentationPrice = formData.presentationPrice.replace(",", ".");
@@ -343,12 +337,12 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
           />
         </div>
         {/* ------------- Temperatura mínima de aplicación ------------- */}
-        <div className="col-lg-6 col-sm-6">
+        <div className="col-lg-3 col-sm-3">
           <CustomTextField
             name="minApplicableTemp"
             control={control}
             // rules={{ required: "temperatura mínima de aplicación requerida." }}
-            label="Temperatura mínima de aplicación (°C)"
+            label="Temp mín de aplicación (°C)"
             variant="outlined"
             fullWidth
             // error={errors.minApplicableTemp}
