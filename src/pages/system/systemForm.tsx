@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { MainContainer } from "../../components/mainContainer/MainContainer";
-import { Divider, Button } from "@mui/material";
+import { Divider, Button, Typography } from "@mui/material";
 import CustomTextField from "../../components/TextField";
 import CustomSelectField from "../../components/customSelectField";
 import CustomDivider from "../../components/divider";
 import { useForm } from "react-hook-form";
+import "./systemForm.css";
 
 // Services
 import {
   getApplicationArea,
+  getMaterialByID,
   getMaterials,
   getMaterialsByType,
 } from "../../services/ApiService";
@@ -20,11 +22,22 @@ import { APPLICATION_MODE, SI_NO } from "../../utils/constants";
 import { useNavigate } from "react-router-dom";
 import { systemFormInputs } from "../../interfaces/form/FormInterfaces";
 
+type Material = {
+  brand: string;
+  component: string;
+  presentationPrice: string;
+  presentationQuantity: string;
+  presentationUnit: string;
+  type: string;
+  priceDate: string;
+};
+
 export const SystemForm = () => {
   const {
     handleSubmit,
     watch,
     control,
+    getValues,
     formState: { errors },
   } = useForm<systemFormInputs>();
 
@@ -35,6 +48,18 @@ export const SystemForm = () => {
     useState(false);
   const [showParcialMeshInputs, setShowParcialMeshInputs] = useState(false);
   const [materialCount, setMaterialCount] = useState(0);
+  const [materialDataVisible, setMaterialDataVisible] = useState(false);
+  const [materialUnityPriceVisible, setMaterialUnityPriceVisible] = useState(false);
+  const [selectedMaterial, setSelectedMaterial] = useState<Material>({
+    brand: "",
+    component: "",
+    presentationPrice: "",
+    presentationQuantity: "",
+    presentationUnit: "",
+    type: "",
+    priceDate: "",
+  });
+  const [selectedHoundredMeshPrice, setSelectedHoundredMeshPrice] = useState(0);
 
   const navigator = useNavigate();
 
@@ -86,20 +111,88 @@ export const SystemForm = () => {
     fetchData();
   }, []);
 
+  async function setSelectedMaterialOption(value: number) {
+    setMaterialDataVisible(true);
+    const response = await getMaterialByID(value);
+    if (response && response.data) {
+      const backendMaterial = response.data;
+      setSelectedMaterial({
+        brand: backendMaterial.brand,
+        component: backendMaterial.component,
+        presentationPrice: backendMaterial.presentationPrice,
+        presentationQuantity: backendMaterial.presentationQuantity,
+        presentationUnit: backendMaterial.presentationUnit,
+        type: backendMaterial.type,
+        priceDate: backendMaterial.priceDate,
+      });
+    }
+  }
+
+  async function setSelectedHoundredMesh(value: number) {
+    setMaterialUnityPriceVisible(true);
+    console.log(value);
+    const response = await getMaterialByID(value);
+    // TODO: persistir precio unitario en la BD para poder recuperarlo
+    // setSelectedHoundredMeshPrice(response.data.unityPrice)
+    setSelectedHoundredMeshPrice(1891);
+  }
+
+  const renderMaterialData = (): ReactNode => {
+    return (
+      <div className="row mb-3">
+        <div className="material-data-container">
+          <div className="col-lg-2 data-div">
+            <Typography fontWeight="700" variant="body1">
+              {`Marca: ${selectedMaterial.brand}`}
+            </Typography>
+          </div>
+          <div className="col-lg-2 data-div">
+            <Typography fontWeight="700" variant="body1">
+              {`Tipo: ${selectedMaterial.type}`}
+            </Typography>
+          </div>
+          <div className="col-lg-2 data-div">
+            <Typography fontWeight="700" variant="body1">
+              {`Composición: ${selectedMaterial.component}`}
+            </Typography>
+          </div>
+          <div className="col-lg-2 data-div">
+            <Typography fontWeight="700" variant="body1">
+              {`Precio de presentación: ${selectedMaterial.presentationPrice}`}
+            </Typography>
+          </div>
+          <div className="col-lg-2 data-div">
+            <Typography fontWeight="700" variant="body1">
+              {`Cantidad de presentación: ${selectedMaterial.presentationQuantity}`}
+            </Typography>
+          </div>
+          <div className="col-lg-2 data-div">
+            <Typography fontWeight="700" variant="body1">
+              {`Unidad de presentación: ${selectedMaterial.presentationUnit}`}
+            </Typography>
+          </div>
+          <div className="col-lg-2 data-div">
+            <Typography fontWeight="700" variant="body1">
+              {`Fecha del precio: ${selectedMaterial.priceDate}`}
+            </Typography>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   // Obtengo materiales type=malla del back
   useEffect(() => {
     async function fetchData() {
       const response = await getMaterialsByType("malla");
       if (response && response.data) {
         const backendMaterialsByType = response.data;
-        console.log("backendMaterialsByType", backendMaterialsByType);
         const formattedMaterialsByType = backendMaterialsByType.map(
           (material: { id: any; name: any; brand: any }) => ({
             value: material.id,
             label: `${material.name} ${material.brand}`,
           })
         );
-        console.log(formattedMaterialsByType);
         setMaterialsTypeMesh(formattedMaterialsByType);
       } else {
         alert("No se pueden recuperar materiales de tipo malla del back");
@@ -156,8 +249,8 @@ export const SystemForm = () => {
               options={applicationAreas}
             />
           </div>
-          {/* ------------- Materiales ------------- */}
         </div>
+        {/* ------------- Materiales ------------- */}
         <div className="row mb-3">
           <div className="col-lg-6 col-sm-6">
             <CustomSelectField
@@ -167,9 +260,12 @@ export const SystemForm = () => {
               label="Material"
               error={errors.systemMaterial}
               options={materials}
+              onChange={(value) => setSelectedMaterialOption(value)}
             />
           </div>
         </div>
+        {/* ------------- Info del material seleccionado ------------- */}
+        {materialDataVisible && renderMaterialData()}
         <CustomDivider text="Aplicación" />
         {/* ------------- Consumo total ------------- */}
         <div className="row mt-3">
@@ -246,6 +342,7 @@ export const SystemForm = () => {
                 label="Malla"
                 error={errors.systemMeshHundredPercentName}
                 options={materialsTypeMesh}
+                onChange={(value) => setSelectedHoundredMesh(value)}
               />
             </div>
           )}
