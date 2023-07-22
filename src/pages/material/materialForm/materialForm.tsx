@@ -62,6 +62,8 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
       setValue("component", data.component);
       setValue("currency", data.currency);
       setValue("priceDate", data.priceDate);
+      setValue("potLife", data.potLife);
+      setValue("minApplicationTemperature", data.minApplicationTemperature);
     }
   }, [setValue, data]);
 
@@ -158,8 +160,8 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
           <CustomTextField
             name="name"
             control={control}
-            rules={{ required: "Nombre requerido." }}
-            label="Nombre"
+            rules={{ required: "Producto requerido." }}
+            label="Producto"
             variant="outlined"
             fullWidth
             error={errors.name}
@@ -251,6 +253,27 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
             options={MATERIAL_UNIT}
           />
         </div>
+        {/* ------------- Precio ------------- */}
+        <div className="col-lg-3 col-sm-6">
+          <NumberFormat
+            size="small"
+            label="Precio"
+            {...register("presentationPrice", {
+              required: "Precio requerido.",
+            })}
+            error={!!errors.presentationPrice}
+            helperText={errors.presentationPrice?.message}
+            customInput={TextField}
+            displayType={"input"}
+            fixedDecimalScale={true}
+            decimalScale={2}
+            decimalSeparator={","}
+            inputMode="numeric"
+            value={inputValueNumberFormat}
+            onChange={handleSelectChange}
+            onValueChange={handleValueChange}
+          />
+        </div>
         {/* ------------- Moneda ------------- */}
         <div className="col-lg-3 col-sm-6">
           <FormControl>
@@ -278,27 +301,6 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
             />
           </FormControl>
         </div>
-        {/* ------------- Precio ------------- */}
-        <div className="col-lg-3 col-sm-6">
-          <NumberFormat
-            size="small"
-            label="Precio"
-            {...register("presentationPrice", {
-              required: "Precio requerido.",
-            })}
-            error={!!errors.presentationPrice}
-            helperText={errors.presentationPrice?.message}
-            customInput={TextField}
-            displayType={"input"}
-            fixedDecimalScale={true}
-            decimalScale={2}
-            decimalSeparator={","}
-            inputMode="numeric"
-            value={inputValueNumberFormat}
-            onChange={handleSelectChange}
-            onValueChange={handleValueChange}
-          />
-        </div>
       </div>
       {/* ------------- Tipo ------------- */}
       <div className="row mt-3">
@@ -321,6 +323,42 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
             label="Composición"
             error={errors.component}
             options={MATERIAL_COMPONENTS}
+          />
+        </div>
+      </div>
+      <Typography
+        align="left"
+        variant="subtitle1"
+        component="div"
+        sx={{ mt: 3 }}
+      >
+        Restricciones
+      </Typography>
+      <Divider />
+      <div className="row mt-3">
+        <div className="col-lg-3 col-sm-3">
+          <CustomTextField
+            name="potLife"
+            control={control}
+            // rules={{ required: "Vida útil requerido." }}
+            label="Vida útil (hrs)"
+            variant="outlined"
+            fullWidth
+            // error={errors.potLife}
+            // helperText={errors.potLife?.message}
+          />
+        </div>
+        {/* ------------- Temperatura mínima de aplicación ------------- */}
+        <div className="col-lg-6 col-sm-6">
+          <CustomTextField
+            name="minApplicationTemperature"
+            control={control}
+            // rules={{ required: "temperatura mínima de aplicación requerida." }}
+            label="Temperatura mínima de aplicación (°C)"
+            variant="outlined"
+            fullWidth
+            // error={errors.minApplicationTemperature}
+            // helperText={errors.minApplicationTemperature?.message}
           />
         </div>
       </div>

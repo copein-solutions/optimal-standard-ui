@@ -21,6 +21,8 @@ interface MaterialInputs {
   presentationUnit: string;
   currency: string;
   component: string;
+  potLife?: string;
+  minApplicationTemperature?: string;
 }
 
 // systemForm
