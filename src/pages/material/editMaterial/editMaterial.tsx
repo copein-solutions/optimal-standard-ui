@@ -16,8 +16,6 @@ export const EditMaterial = () => {
   useEffect(() => {
     // Carga los datos del JSON
     async function fetchData() {
-      console.log("id", id);
-
       const response = await getMaterialByID(Number(id));
       if (response?.data.error || response === undefined) {
         alert(

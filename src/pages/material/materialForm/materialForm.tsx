@@ -125,8 +125,6 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
   };
 
   const onSubmit = async (formData: MaterialInputs) => {
-    // formData.priceDate = "1891-09-28";
-    console.log(formData);
     formData.presentationPrice = formData.presentationPrice.replace(",", ".");
 
     let response: any;
@@ -135,7 +133,6 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
     } else {
       response = await createMaterial(formData);
     }
-    console.log(response);
 
     if (response.status !== 200) {
       if (response.data.details) {
@@ -144,9 +141,6 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
         alert("Error: " + response.data.message);
       }
     } else {
-      if (!isUpdateForm) {
-        // dispatch({ type: "SAVE_APPLICATION_AREA", payload: response.data });
-      }
       alert("Formulario enviado con éxito");
       navigator(MATERIAL_LIST);
     }

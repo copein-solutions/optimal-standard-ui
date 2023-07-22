@@ -17,7 +17,7 @@ const ListMaterial = () => {
   const navigator = useNavigate();
 
   const header = [
-    { name: "Nombre", value: "name" },
+    { name: "Producto", value: "product" },
     { name: "Precio Unitario", value: "unitPrice" },
     { name: "Marca", value: "brand" },
     { name: "Tipo", value: "type" },
@@ -61,7 +61,6 @@ const ListMaterial = () => {
         );
       }
 
-      console.log(listMaterials);
       dispatch({ type: "SET_MATERIALS", payload: listMaterials });
     }
     fetchData();
