@@ -3,13 +3,14 @@ import { CustomHeader } from "../header/Header";
 import { useState } from "react";
 import { menuOptions } from "../menu/Menu";
 import { Route, Routes } from "react-router-dom";
-import EditMaterial from "../../pages/editMaterial";
-import ListMaterial from "../../pages/listMaterial";
-import AddMaterial from "../../pages/addMaterial";
+import EditMaterial from "../../pages/material/editMaterial";
+import ListMaterial from "../../pages/material/listMaterial";
+import AddMaterial from "../../pages/material/addMaterial";
 import AddApplicationArea from "../../pages/applicationArea/addApplicationArea";
 import ListApplicationArea from "../../pages/applicationArea/listApplicationArea";
 import EditApplicationArea from "../../pages/applicationArea/editApplicationArea";
 import PrivateRoute from "../PrivateRoute";
+import { MATERIAL_LIST } from "../../utils/constants";
 
 export default function PageWrapper() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -33,7 +34,7 @@ export default function PageWrapper() {
           }
         ></Route>
         <Route
-          path="/material/list"
+          path={MATERIAL_LIST}
           element={
             <PrivateRoute>
               <ListMaterial />

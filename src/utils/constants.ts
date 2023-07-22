@@ -1,3 +1,6 @@
+// routes constants
+export const MATERIAL_CREATE = "/material/create";
+export const MATERIAL_LIST = "/material/list";
 export const MATERIAL_TYPE = [
   {
     value: "cementicio",

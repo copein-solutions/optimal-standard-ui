@@ -10,13 +10,14 @@ import {
 } from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
-import { CustomSkeleton } from "../skeleton/Skeleton";
-import { ListMaterial } from "../../pages/listMaterial/listMaterial";
-import { AddMaterial } from "../../pages/addMaterial/addMaterial";
-import { ListApplicationArea } from "../../pages/applicationArea/listApplicationArea/listApplicationArea";
-import { AddApplicationArea } from "../../pages/applicationArea/addApplicationArea/addApplicationArea";
+import ListMaterial from "../../pages/material/listMaterial/listMaterial";
+import AddMaterial from "../../pages/material/addMaterial/addMaterial";
+import ListApplicationArea from "../../pages/applicationArea/listApplicationArea/listApplicationArea";
+import AddApplicationArea from "../../pages/applicationArea/addApplicationArea/addApplicationArea";
 import SystemForm from "../../pages/system";
 import Login from "../../pages/login";
+
+import {MATERIAL_CREATE, MATERIAL_LIST} from "../../utils/constants";
 
 type MenuProps = {
   isOpen: boolean;
@@ -29,13 +30,13 @@ export const menuOptions = [
   {
     name: "Agregar material",
     icon: <ArrowRightIcon />,
-    path: "/material",
+    path: MATERIAL_CREATE,
     component: AddMaterial,
   },
   {
     name: "Agregar campo de aplicación",
     icon: <ArrowRightIcon />,
-    path: "/application_area",
+    path: "/application_area/create",
     component: AddApplicationArea,
   },
   {
@@ -47,7 +48,7 @@ export const menuOptions = [
   {
     name: "Listado de materiales",
     icon: <ArrowRightIcon />,
-    path: "/material/list",
+    path: MATERIAL_LIST,
     component: ListMaterial,
   },
   {

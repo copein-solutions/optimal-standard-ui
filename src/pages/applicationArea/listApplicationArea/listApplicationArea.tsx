@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../redux/reducers/reducer";
 import { useNavigate } from "react-router-dom";
 
-export const ListApplicationArea = () => {
+const ListApplicationArea = () => {
   const applicationAreas = useSelector(
     (state: RootState) => state.applicationAreas
   );
@@ -24,7 +24,9 @@ export const ListApplicationArea = () => {
   useEffect(() => {
     async function fetchData() {
       const response = await getApplicationArea();
-      dispatch({ type: "SET_APPLICATION_AREA", payload: response.data });
+      if(response && response.data !== "") {
+        dispatch({ type: "SET_APPLICATION_AREA", payload: response.data });
+      }      
     }
     fetchData();
   }, [dispatch]);
@@ -50,3 +52,5 @@ export const ListApplicationArea = () => {
     </MainContainer>
   );
 };
+
+export default ListApplicationArea;
