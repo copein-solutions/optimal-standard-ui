@@ -1,2 +1,2 @@
-import { AddApplicationArea } from './addApplicationArea';
+import AddApplicationArea from './addApplicationArea';
 export default AddApplicationArea;

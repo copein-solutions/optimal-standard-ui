@@ -79,11 +79,13 @@ export const GridCustom: React.FC<GridProps> = ({
     <>
       <table className="table">
         <thead>
-          {header?.map((item) => (
-            <th>{item.name}</th>
-          ))}
-          {hasEdit && <th></th>}
-          {hasDelete && <th></th>}
+          <tr>
+            {header?.map((item) => (
+              <th>{item.name}</th>
+            ))}
+            {hasEdit && <th></th>}
+            {hasDelete && <th></th>}
+          </tr>
         </thead>
         <tbody>
           {body?.map((item, index) => (

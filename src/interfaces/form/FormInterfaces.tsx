@@ -10,15 +10,19 @@ interface BackendError {
   showError: boolean;
 }
 
-interface EditMaterialInputs {
-  materialName: string;
-  materialBrand: string;
-  materialQuantity: string;
-  materialPrice: string;
-  materialType: string;
-  materialComponents: string;
-  materialUnit: string;
-  materialCurrency: string;
+interface MaterialInputs {
+  id?: string;
+  product: string;
+  brand: string;
+  presentationQuantity: string;
+  presentationPrice: string;
+  type: string;
+  priceDate: string;
+  presentationUnit: string;
+  currency: string;
+  component: string;
+  potLife?: string;
+  minApplicableTemp?: string;
 }
 
 // systemForm
@@ -30,7 +34,7 @@ interface systemFormInputs {
   systemApplicationMode: string;
   systemCured: string;
   systemComplementaryMaterial: string;
-  systemMeshHundredPercent: string; // Si / No 
+  systemMeshHundredPercent: string; // Si / No
   systemMeshHundredPercentName: string;
   systemParcialMesh: string; // Si / No
   systemParcialMeshName: string;
@@ -54,10 +58,14 @@ interface ApplicationAreaInputs {
 }
 
 export type {
-  FormError,
-  BackendError,
-  EditMaterialInputs,
-  systemFormInputs,
+
+};
+
+export type {
   ApplicationAreaInputs,
   LoginInputs,
+  FormError,
+  BackendError,
+  MaterialInputs,
+  systemFormInputs
 };

@@ -4,7 +4,7 @@ import { ResponseApi } from "../interfaces/service/ApiInterfaces";
 const API_BASE_URL = "http://localhost:8080";
 let config: AxiosRequestConfig = {
   headers: {
-    'Content-Type': 'Application/json'   
+    'Content-Type': 'Application/json'
   },
 };
 
