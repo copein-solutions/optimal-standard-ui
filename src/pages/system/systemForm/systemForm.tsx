@@ -16,7 +16,7 @@ import {
 } from "../../../services/ApiService";
 
 // Constants
-import { APPLICATION_MODE, SI_NO } from "../../../utils/constants";
+import { APPLICATION_MODE, SI_NO, SYSTEM_LIST } from "../../../utils/constants";
 
 // Interfaces
 import { useNavigate } from "react-router-dom";
@@ -72,7 +72,9 @@ export const SystemForm: React.FC<SystemFormProps> = ({ data, isUpdateForm }) =>
   const navigator = useNavigate();
 
   //función que se ejecuta cuando presiona el botón cancelar
-  const handleCancel = () => {};
+  const handleCancel = () => {
+    navigator(SYSTEM_LIST);
+  };
 
   // TODO: si los name de los campos son = que en la BD queda mejor el código
   const processFormData = (data: systemFormInputs) => {

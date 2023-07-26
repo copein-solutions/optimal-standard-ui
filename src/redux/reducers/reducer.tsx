@@ -27,6 +27,8 @@ const rootReducer = (state = initialState, action: any) => {
           (t: any) => t.id !== action.payload
         ),
       };
+    case "SET_SYSTEM":
+      return { ...state, systems: action.payload };
     default:
       return state;
   }

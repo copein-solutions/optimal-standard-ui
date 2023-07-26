@@ -1,2 +1,2 @@
-import ListApplicationArea from './listApplicationArea';
-export default ListApplicationArea;
+import ListSystem from './listSystem';
+export default ListSystem;

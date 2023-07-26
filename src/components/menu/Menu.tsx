@@ -18,6 +18,7 @@ import AddSystem from "../../pages/system/addSystem";
 import Login from "../../pages/login";
 
 import {APPLICATION_AREA_CREATE, APPLICATION_AREA_LIST, LOGIN, MATERIAL_CREATE, MATERIAL_LIST, SYSTEM_CREATE, SYSTEM_LIST} from "../../utils/constants";
+import ListSystem from "../../pages/system/listSystem";
 
 type MenuProps = {
   isOpen: boolean;
@@ -57,12 +58,12 @@ export const menuOptions = [
     path: APPLICATION_AREA_LIST,
     component: ListApplicationArea,
   },
-  // {
-  //   name: "Listado de sistemas",
-  //   icon: <ArrowRightIcon />,
-  //   path: SYSTEM_LIST,
-  //   component: ListSystem,
-  // },
+  {
+    name: "Listado de sistemas",
+    icon: <ArrowRightIcon />,
+    path: SYSTEM_LIST,
+    component: ListSystem,
+  },
   {
     name: "Login",
     icon: <ArrowRightIcon />,
