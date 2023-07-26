@@ -33,7 +33,12 @@ type Material = {
   priceDate: string;
 };
 
-export const SystemForm = () => {
+type SystemFormProps = {
+    data?: systemFormInputs | undefined;
+    isUpdateForm: boolean;
+}
+
+export const SystemForm: React.FC<SystemFormProps> = ({ data, isUpdateForm }) => {
   const {
     handleSubmit,
     watch,

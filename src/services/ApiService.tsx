@@ -86,6 +86,12 @@ export const createSystem = async (data: any): Promise<ResponseApi> => {
   return post("/construction_system", data);
 };
 
+export const getSystemByID = async (
+  id: number
+): Promise<ResponseApi> => {
+  return get(`/construction_system/${id}`);
+};
+
 //#endregion
 const post = async (url: string, data: any): Promise<ResponseApi> => {
   try {

@@ -15,7 +15,7 @@ import { APPLICATION_AREA_LIST } from "../../../utils/constants";
 type ApplicationAreaFormProps = {
     data?: ApplicationAreaInputs | undefined;
     isUpdateForm: boolean;
-  }
+}
 
 const ApplicationAreaForm: React.FC<ApplicationAreaFormProps> = ({ data, isUpdateForm }) => {
   const {

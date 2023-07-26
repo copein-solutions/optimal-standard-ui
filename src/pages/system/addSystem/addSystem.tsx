@@ -5,7 +5,7 @@ import "./addSystem.css";
 const AddMaterial = () => {
   return (
     <MainContainer cardTitle="Alta de sistema">
-      <SystemForm/>
+      <SystemForm isUpdateForm={false}/>
     </MainContainer>
   );
 };
