@@ -83,7 +83,7 @@ export const getApplicationAreaByID = async (
 //#region SISTEMA
 
 export const createSystem = async (data: any): Promise<ResponseApi> => {
-  return post("/system", data);
+  return post("/construction_system", data);
 };
 
 //#endregion

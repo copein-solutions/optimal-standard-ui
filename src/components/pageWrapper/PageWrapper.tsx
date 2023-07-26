@@ -10,7 +10,16 @@ import AddApplicationArea from "../../pages/applicationArea/addApplicationArea";
 import ListApplicationArea from "../../pages/applicationArea/listApplicationArea";
 import EditApplicationArea from "../../pages/applicationArea/editApplicationArea";
 import PrivateRoute from "../PrivateRoute";
-import { MATERIAL_LIST } from "../../utils/constants";
+import {
+  APPLICATION_AREA_CREATE,
+  APPLICATION_AREA_EDIT,
+  APPLICATION_AREA_LIST,
+  MATERIAL_CREATE,
+  MATERIAL_EDIT,
+  MATERIAL_LIST,
+  SYSTEM_CREATE,
+} from "../../utils/constants";
+import AddSystem from "../../pages/system/addSystem";
 
 export default function PageWrapper() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -26,7 +35,7 @@ export default function PageWrapper() {
 
       <Routes>
         <Route
-          path="/material/create"
+          path={MATERIAL_CREATE}
           element={
             <PrivateRoute>
               <AddMaterial />
@@ -42,7 +51,7 @@ export default function PageWrapper() {
           }
         />
         <Route
-          path="/material/:id/update"
+          path={MATERIAL_EDIT}
           element={
             <PrivateRoute>
               <EditMaterial />
@@ -50,7 +59,7 @@ export default function PageWrapper() {
           }
         />
         <Route
-          path="/application_area/create"
+          path={APPLICATION_AREA_CREATE}
           element={
             <PrivateRoute>
               <AddApplicationArea />
@@ -58,7 +67,7 @@ export default function PageWrapper() {
           }
         />
         <Route
-          path="/application_areas"
+          path={APPLICATION_AREA_LIST}
           element={
             <PrivateRoute>
               <ListApplicationArea />
@@ -66,10 +75,18 @@ export default function PageWrapper() {
           }
         />
         <Route
-          path="/application_area/:id/update"
+          path={APPLICATION_AREA_EDIT}
           element={
             <PrivateRoute>
               <EditApplicationArea />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={SYSTEM_CREATE}
+          element={
+            <PrivateRoute>
+              <AddSystem />
             </PrivateRoute>
           }
         />

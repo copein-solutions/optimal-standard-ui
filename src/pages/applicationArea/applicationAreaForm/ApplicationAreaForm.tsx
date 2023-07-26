@@ -10,6 +10,7 @@ import { updateApplicationArea, createApplicationArea } from "../../../services/
 
 // Redux
 import { useDispatch } from "react-redux";
+import { APPLICATION_AREA_LIST } from "../../../utils/constants";
 
 type ApplicationAreaFormProps = {
     data?: ApplicationAreaInputs | undefined;
@@ -40,10 +41,8 @@ const ApplicationAreaForm: React.FC<ApplicationAreaFormProps> = ({ data, isUpdat
       response = await updateApplicationArea(Number(data?.id), formData);
       console.log(response);
     } else {
-      //TODO: addApplicationArea
       response = await createApplicationArea(formData);
     }
-
 
     if (response.status !== 200) {
       alert("Error: " + response.data.details.join(" "));
@@ -52,12 +51,12 @@ const ApplicationAreaForm: React.FC<ApplicationAreaFormProps> = ({ data, isUpdat
         dispatch({ type: "SAVE_APPLICATION_AREA", payload: response.data });
       }      
       alert("Formulario enviado con éxito");
-      navigator("/application_areas");
+      navigator(APPLICATION_AREA_LIST);
     }
   };
 
   const handleCancel = () => {
-    navigator("/application_areas");
+    navigator(APPLICATION_AREA_LIST);
   };
 
   return (

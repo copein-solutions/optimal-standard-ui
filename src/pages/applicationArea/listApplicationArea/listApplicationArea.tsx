@@ -7,6 +7,7 @@ import { GridCustom } from "../../../components/grid/Grid";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../redux/reducers/reducer";
 import { useNavigate } from "react-router-dom";
+import { APPLICATION_AREA_CREATE } from "../../../utils/constants";
 
 const ListApplicationArea = () => {
   const applicationAreas = useSelector(
@@ -32,7 +33,7 @@ const ListApplicationArea = () => {
   }, [dispatch]);
 
   const handleOpenForm = () => {
-    navigator("/application_area");
+    navigator(APPLICATION_AREA_CREATE);
   };
 
   return (
