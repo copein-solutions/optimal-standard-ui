@@ -52,7 +52,6 @@ export const updateMaterial = async (
 export const getMaterialByID = async (id: number): Promise<ResponseApi> => {
   return get(`/material/${id}`);
 };
-
 //#endregion
 
 // #region CAMPO DE APLICACIÓN
@@ -81,6 +80,13 @@ export const getApplicationAreaByID = async (
 
 //#endregion
 
+//#region SISTEMA
+
+export const createSystem = async (data: any): Promise<ResponseApi> => {
+  return post("/system", data);
+};
+
+//#endregion
 const post = async (url: string, data: any): Promise<ResponseApi> => {
   try {
     return await api.post(url, data, fetchHeaders());

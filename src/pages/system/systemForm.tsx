@@ -13,6 +13,7 @@ import {
   getMaterialByID,
   getMaterials,
   getMaterialsByType,
+  createSystem,
 } from "../../services/ApiService";
 
 // Constants
@@ -21,6 +22,7 @@ import { APPLICATION_MODE, SI_NO } from "../../utils/constants";
 // Interfaces
 import { useNavigate } from "react-router-dom";
 import { systemFormInputs } from "../../interfaces/form/FormInterfaces";
+import { getUnitPrice } from "../../utils/mathUtils";
 
 type Material = {
   brand: string;
@@ -49,7 +51,8 @@ export const SystemForm = () => {
   const [showParcialMeshInputs, setShowParcialMeshInputs] = useState(false);
   const [materialCount, setMaterialCount] = useState(0);
   const [materialDataVisible, setMaterialDataVisible] = useState(false);
-  const [materialUnityPriceVisible, setMaterialUnityPriceVisible] = useState(false);
+  const [materialUnityPriceVisible, setMaterialUnityPriceVisible] =
+    useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState<Material>({
     brand: "",
     component: "",
@@ -59,16 +62,78 @@ export const SystemForm = () => {
     type: "",
     priceDate: "",
   });
-  const [selectedHoundredMeshPrice, setSelectedHoundredMeshPrice] = useState(0);
+  const [selectedHoundredMeshPrice, setSelectedHoundredMeshPrice] =
+    useState("");
 
   const navigator = useNavigate();
 
   //función que se ejecuta cuando presiona el botón cancelar
   const handleCancel = () => {};
 
+  // TODO: si los name de los campos son = que en la BD queda mejor el código
+  const processFormData = (data: systemFormInputs) => {
+    const {
+      systemTotalConsumption,
+      systemMaterialLayers,
+      systemApplicationMode,
+      systemCured,
+      systemApplicacionArea,
+      systemBasicConditions,
+      systemSupportConditions,
+      systemMaterialAreaRestrictions,
+      systemMaterial,
+      systemMeshHundredPercentName,
+      systemParcialMeshName,
+      systemParcialMeshCoefficient,
+      systemParcialMeshComents,
+      systemOthersPluginsMaterials0,
+      systemOthersPluginsMaterialCoefficient0,
+      systemOthersPluginsMaterialComments0,
+      systemOthersPluginsMaterialCoefficientComments0,
+    } = data;
+
+    return {
+      totalConsumption: systemTotalConsumption,
+      layers: systemMaterialLayers,
+      applicationMode: systemApplicationMode,
+      cured: systemCured,
+      applicationAreaId: systemApplicacionArea,
+      layerBaseConditions: systemBasicConditions,
+      layerConditionsAsSupport: systemSupportConditions,
+      areaRestrictions: systemMaterialAreaRestrictions,
+      materials: [
+        {
+          id: systemMaterial,
+          typeOfUse: "base",
+        },
+        {
+          id: systemMeshHundredPercentName,
+          typeOfUse: "total_mesh",
+        },
+        {
+          id: systemParcialMeshName,
+          typeOfUse: "partial_mesh",
+          coefficient: systemParcialMeshCoefficient,
+          comment: systemParcialMeshComents,
+        },
+        {
+          id: systemOthersPluginsMaterials0,
+          typeOfUse: "plugin_material",
+          coefficient: systemOthersPluginsMaterialCoefficient0,
+          materialComment: systemOthersPluginsMaterialComments0,
+          coefficientComment: systemOthersPluginsMaterialCoefficientComments0,
+        },
+      ],
+    };
+  };
+
   const onSubmit = async (data: systemFormInputs) => {
-    // TODO: agregar metodo post en backend e insertar data en front
-    console.log(data);
+    if (data) {
+      const formData = processFormData(data);
+      console.log(formData);
+      // Enviar data al back
+      createSystem(formData);
+    }
   };
 
   // Obtengo campos de aplicación del back
@@ -130,48 +195,56 @@ export const SystemForm = () => {
 
   async function setSelectedHoundredMesh(value: number) {
     setMaterialUnityPriceVisible(true);
-    console.log(value);
     const response = await getMaterialByID(value);
-    // TODO: persistir precio unitario en la BD para poder recuperarlo
-    // setSelectedHoundredMeshPrice(response.data.unityPrice)
-    setSelectedHoundredMeshPrice(1891);
+    if (response && response.data) {
+      const backendMesh = response.data;
+
+      const materialHoundredMesh = getUnitPrice(
+        backendMesh.presentationPrice,
+        backendMesh.presentationQuantity,
+        backendMesh.presentationUnit,
+        true
+      );
+      console.log("materialHoundredMesh", materialHoundredMesh);
+      setSelectedHoundredMeshPrice(materialHoundredMesh);
+    }
   }
 
   const renderMaterialData = (): ReactNode => {
     return (
-      <div className="row mb-3">
+      <div className="col-lg-12">
         <div className="material-data-container">
-          <div className="col-lg-2 data-div">
+          <div className="col-lg-2 col-sm-2 data-div">
             <Typography fontWeight="700" variant="body1">
               {`Marca: ${selectedMaterial.brand}`}
             </Typography>
           </div>
-          <div className="col-lg-2 data-div">
+          <div className="col-lg-2 col-sm-2 data-div">
             <Typography fontWeight="700" variant="body1">
               {`Tipo: ${selectedMaterial.type}`}
             </Typography>
           </div>
-          <div className="col-lg-2 data-div">
+          <div className="col-lg-2 col-sm-2 data-div">
             <Typography fontWeight="700" variant="body1">
               {`Composición: ${selectedMaterial.component}`}
             </Typography>
           </div>
-          <div className="col-lg-2 data-div">
+          <div className="col-lg-2 col-sm-2 data-div">
             <Typography fontWeight="700" variant="body1">
               {`Precio de presentación: ${selectedMaterial.presentationPrice}`}
             </Typography>
           </div>
-          <div className="col-lg-2 data-div">
+          <div className="col-lg-2 col-sm-2 data-div">
             <Typography fontWeight="700" variant="body1">
               {`Cantidad de presentación: ${selectedMaterial.presentationQuantity}`}
             </Typography>
           </div>
-          <div className="col-lg-2 data-div">
+          <div className="col-lg-2 col-sm-2 data-div">
             <Typography fontWeight="700" variant="body1">
               {`Unidad de presentación: ${selectedMaterial.presentationUnit}`}
             </Typography>
           </div>
-          <div className="col-lg-2 data-div">
+          <div className="col-lg-2 col-sm-2 data-div">
             <Typography fontWeight="700" variant="body1">
               {`Fecha del precio: ${selectedMaterial.priceDate}`}
             </Typography>
@@ -260,12 +333,14 @@ export const SystemForm = () => {
               label="Material"
               error={errors.systemMaterial}
               options={materials}
-              onChange={(value) => setSelectedMaterialOption(value)}
+              onSelectOption={(value) => setSelectedMaterialOption(value)}
             />
           </div>
         </div>
         {/* ------------- Info del material seleccionado ------------- */}
-        {materialDataVisible && renderMaterialData()}
+        <div className="row mb-3">
+          {materialDataVisible && renderMaterialData()}
+        </div>
         <CustomDivider text="Aplicación" />
         {/* ------------- Consumo total ------------- */}
         <div className="row mt-3">
@@ -342,11 +417,26 @@ export const SystemForm = () => {
                 label="Malla"
                 error={errors.systemMeshHundredPercentName}
                 options={materialsTypeMesh}
-                onChange={(value) => setSelectedHoundredMesh(value)}
+                onSelectOption={(value) => setSelectedHoundredMesh(value)}
               />
             </div>
           )}
         </div>
+        {/* ------------- Info malla 100% seleccionada ------------- */}
+        <div className="row mt-3">
+          {materialUnityPriceVisible && showMeshHundredPercentInput && (
+            <div className="col-lg-3 col-sm-4">
+              <div className="material-data-container">
+                <div className="data-div ml-2">
+                  <Typography fontWeight="700" variant="body1">
+                    {`Precio: ${selectedHoundredMeshPrice}`}
+                  </Typography>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* ------------- Malla parcial ------------- */}
         <CustomDivider text="Malla parcial" />
         <div className="row mt-3">
@@ -396,7 +486,7 @@ export const SystemForm = () => {
             <div className="col-lg-12 col-sm-6">
               <CustomTextField
                 multiline
-                minRows={3}
+                minRows={2}
                 name="systemParcialMeshComents"
                 control={control}
                 label="Descripción"
@@ -446,14 +536,26 @@ export const SystemForm = () => {
                   }
                 />
               </div>
-              {/* ------------- Descripción (otros complementos) ------------- */}
-              <div className="col-lg-12 col-sm-6 my-3">
+              {/* ------------- Descripción complemento (otros complementos) ------------- */}
+              <div className="col-lg-6 col-sm-6 mt-3">
                 <CustomTextField
                   multiline
                   minRows={3}
                   name={`systemOthersPluginsMaterialComments${index}`}
                   control={control}
-                  label="Descripción"
+                  label="Descripción complemento"
+                  variant="outlined"
+                  fullWidth
+                />
+              </div>
+              {/* ------------- Descripción coef m2 (otros complementos) ------------- */}
+              <div className="col-lg-6 col-sm-6 mt-3">
+                <CustomTextField
+                  multiline
+                  minRows={3}
+                  name={`systemOthersPluginsMaterialCoefficientComments${index}`}
+                  control={control}
+                  label="Descripción coeficiente m2"
                   variant="outlined"
                   fullWidth
                 />

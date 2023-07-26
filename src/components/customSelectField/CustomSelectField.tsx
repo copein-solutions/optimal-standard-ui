@@ -21,7 +21,7 @@ type CustomSelectFieldProps = {
   rules?: any;
   error?: any;
   defaultValue?: ReactNode;
-  onChange?: (value: any) => void;
+  onSelectOption?: (value: any) => void;
 };
 
 const CustomSelectField: React.FC<CustomSelectFieldProps> = ({
@@ -32,7 +32,7 @@ const CustomSelectField: React.FC<CustomSelectFieldProps> = ({
   rules,
   error,
   defaultValue = "",
-  onChange,
+  onSelectOption: onSelectOption,
 }) => {
   return (
     <FormControl fullWidth error={!!error} size="small">
@@ -50,8 +50,8 @@ const CustomSelectField: React.FC<CustomSelectFieldProps> = ({
             onChange={(e) => {
               const value = e.target.value as string;
               field.onChange(value);
-              if (onChange) {
-                onChange(value);
+              if (onSelectOption) {
+                onSelectOption(value);
               }
             }}
           >
