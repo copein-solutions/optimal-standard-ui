@@ -1,57 +1,58 @@
 import { useEffect } from "react";
 import { Button } from "@mui/material";
-import "./listApplicationArea.css";
-import { getApplicationArea } from "../../../services/ApiService";
+import "./listSystem.css";
+import { getSystems } from "../../../services/ApiService";
 import { MainContainer } from "../../../components/mainContainer/MainContainer";
 import { GridCustom } from "../../../components/grid/Grid";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../redux/reducers/reducer";
 import { useNavigate } from "react-router-dom";
-import { APPLICATION_AREA_CREATE } from "../../../utils/constants";
+import { SYSTEM_CREATE } from "../../../utils/constants";
 
-const ListApplicationArea = () => {
-  const applicationAreas = useSelector(
-    (state: RootState) => state.applicationAreas
+const ListSystem = () => {
+  const systems = useSelector(
+    (state: RootState) => state.systems
   );
 
   const dispatch = useDispatch();
   const navigator = useNavigate();
 
   const header = [
-    { name: "Nombre", value: "name" },
-    { name: "Consideración", value: "considerations" },
+    // TODO: Ver que campos mostrar
+    { name: "Id", value: "id" },
+    { name: "Campo de aplicacion ID", value: "application_area_id" },
   ];
 
   useEffect(() => {
     async function fetchData() {
-      const response = await getApplicationArea();
+      const response = await getSystems();
       if(response && response.data !== "") {
-        dispatch({ type: "SET_APPLICATION_AREA", payload: response.data });
+        dispatch({ type: "SET_SYSTEM", payload: response.data });
       }      
     }
     fetchData();
   }, [dispatch]);
 
   const handleOpenForm = () => {
-    navigator(APPLICATION_AREA_CREATE);
+    navigator(SYSTEM_CREATE);
   };
 
   return (
-    <MainContainer cardTitle="Campo de aplicación">
+    <MainContainer cardTitle="Sistema">
       <div>
         <Button variant="text" color="success" onClick={handleOpenForm}>
-          Agregar campo de aplicación
+          Agregar sistema
         </Button>
         <GridCustom
           header={header}
-          body={applicationAreas}
+          body={systems}
           hasEdit
           hasDelete
-          editNav="application_area"
+          editNav="system"
         />
       </div>
     </MainContainer>
   );
 };
 
-export default ListApplicationArea;
+export default ListSystem;
