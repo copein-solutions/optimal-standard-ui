@@ -18,8 +18,12 @@ import {
   MATERIAL_EDIT,
   MATERIAL_LIST,
   SYSTEM_CREATE,
+  SYSTEM_EDIT,
+  SYSTEM_LIST,
 } from "../../utils/constants";
 import AddSystem from "../../pages/system/addSystem";
+import ListSystem from "../../pages/system/listSystem";
+import EditSystem from "../../pages/system/editSystem";
 
 export default function PageWrapper() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -87,6 +91,22 @@ export default function PageWrapper() {
           element={
             <PrivateRoute>
               <AddSystem />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={SYSTEM_LIST}
+          element={
+            <PrivateRoute>
+              <ListSystem />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={SYSTEM_EDIT}
+          element={
+            <PrivateRoute>
+              <EditSystem />
             </PrivateRoute>
           }
         />

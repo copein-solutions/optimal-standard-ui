@@ -13,6 +13,7 @@ import {
   getMaterials,
   getMaterialsByType,
   createSystem,
+  updateSystem,
 } from "../../../services/ApiService";
 
 // Constants
@@ -22,6 +23,7 @@ import { APPLICATION_MODE, SI_NO, SYSTEM_LIST } from "../../../utils/constants";
 import { useNavigate } from "react-router-dom";
 import { systemFormInputs } from "../../../interfaces/form/FormInterfaces";
 import { getUnitPrice } from "../../../utils/mathUtils";
+import Toast from "../../../components/toast";
 
 type Material = {
   brand: string;
@@ -34,11 +36,14 @@ type Material = {
 };
 
 type SystemFormProps = {
-    data?: systemFormInputs | undefined;
-    isUpdateForm: boolean;
-}
+  data?: systemFormInputs | undefined;
+  isUpdateForm: boolean;
+};
 
-export const SystemForm: React.FC<SystemFormProps> = ({ data, isUpdateForm }) => {
+export const SystemForm: React.FC<SystemFormProps> = ({
+  data,
+  isUpdateForm,
+}) => {
   const {
     handleSubmit,
     watch,
@@ -47,6 +52,8 @@ export const SystemForm: React.FC<SystemFormProps> = ({ data, isUpdateForm }) =>
     formState: { errors },
   } = useForm<systemFormInputs>();
 
+  const [showToast, setShowToast] = useState(false);
+  const [toastMsg, setToastMsg] = useState(String);
   const [materials, setMaterials] = useState([]);
   const [applicationAreas, setApplicationAreas] = useState([]);
   const [materialsTypeMesh, setMaterialsTypeMesh] = useState([]);
@@ -70,6 +77,15 @@ export const SystemForm: React.FC<SystemFormProps> = ({ data, isUpdateForm }) =>
     useState("");
 
   const navigator = useNavigate();
+
+  const handleOpenToast = (msg: any) => {
+    setToastMsg(msg);
+    setShowToast(true);
+  };
+
+  const handleCloseToast = () => {
+    setShowToast(false);
+  };
 
   //función que se ejecuta cuando presiona el botón cancelar
   const handleCancel = () => {
@@ -98,49 +114,80 @@ export const SystemForm: React.FC<SystemFormProps> = ({ data, isUpdateForm }) =>
       systemOthersPluginsMaterialCoefficientComments0,
     } = data;
 
+    let materialsArray = [
+      {
+        id: systemMaterial,
+        typeOfUse: "BASE",
+        coefficient: "",
+        comment: "",
+        materialComment: "",
+        coefficientComment: "",
+      }
+    ];
+
+    if (systemMeshHundredPercentName) {
+      materialsArray.push({
+        id: systemMeshHundredPercentName,
+        typeOfUse: "TOTAL_MESH",
+        coefficient: "",
+        comment: "",
+        materialComment: "",
+        coefficientComment: "",
+      });
+    }
+    
+    if (systemParcialMeshName) {
+      materialsArray.push({
+        id: systemParcialMeshName,
+        typeOfUse: "PARTIAL_MESH",
+        coefficient: systemParcialMeshCoefficient,
+        comment: systemParcialMeshComents,
+        materialComment: "",
+        coefficientComment: "",
+      });
+    }
+
+    if (systemOthersPluginsMaterials0) {
+      materialsArray.push({
+        id: systemOthersPluginsMaterials0,
+        typeOfUse: "PLUGIN_MATERIAL",
+        coefficient: systemOthersPluginsMaterialCoefficient0,
+        comment: "",
+        materialComment: systemOthersPluginsMaterialComments0,
+        coefficientComment: systemOthersPluginsMaterialCoefficientComments0,
+      });
+    }
+
     return {
       totalConsumption: systemTotalConsumption,
       layers: systemMaterialLayers,
       applicationMode: systemApplicationMode,
-      cured: systemCured === 'si',
+      cured: systemCured === "si",
       applicationAreaId: systemApplicacionArea,
       layerBaseConditions: systemBasicConditions,
       layerConditionsAsSupport: systemSupportConditions,
       areaRestrictions: systemMaterialAreaRestrictions,
-      materials: [
-        {
-          id: systemMaterial,
-          typeOfUse: "BASE",
-        },
-        {
-          id: systemMeshHundredPercentName,
-          typeOfUse: "TOTAL_MESH",
-        },
-        {
-          id: systemParcialMeshName,
-          typeOfUse: "PARTIAL_MESH",
-          coefficient: systemParcialMeshCoefficient,
-          comment: systemParcialMeshComents,
-        },
-        {
-          id: systemOthersPluginsMaterials0,
-          typeOfUse: "PLUGIN_MATERIAL",
-          coefficient: systemOthersPluginsMaterialCoefficient0,
-          materialComment: systemOthersPluginsMaterialComments0,
-          coefficientComment: systemOthersPluginsMaterialCoefficientComments0,
-        },
-      ],
+      materials: materialsArray,
     };
   };
 
   const onSubmit = async (data: systemFormInputs) => {
     if (data) {
       const formData = processFormData(data);
-      console.log(formData);
       // Enviar data al back
-      const response = await createSystem(formData);
-      console.log(response);
-      
+      let response: any;
+      if (!isUpdateForm) {
+        response = await updateSystem(Number(data?.id), formData);
+      } else {
+        response = await createSystem(formData);
+      }
+
+      if (response.status !== 200) {
+        handleOpenToast("Failure");
+      } else {
+        handleOpenToast("Success");
+        navigator(SYSTEM_LIST);
+      }
     }
   };
 
@@ -158,7 +205,8 @@ export const SystemForm: React.FC<SystemFormProps> = ({ data, isUpdateForm }) =>
         );
         setApplicationAreas(formattedApplicationAreas);
       } else {
-        alert("No se pueden recuperar campos de aplicación del back");
+        // alert("No se pueden recuperar campos de aplicación del back");
+        handleOpenToast("No se pueden recuperar campos de aplicación del back");
       }
     }
     fetchData();
@@ -178,7 +226,8 @@ export const SystemForm: React.FC<SystemFormProps> = ({ data, isUpdateForm }) =>
         );
         setMaterials(formattedMaterials);
       } else {
-        alert("No se pueden recuperar materiales del back");
+        // alert("No se pueden recuperar materiales del back");
+        handleOpenToast("No se pueden recuperar materiales del back");
       }
     }
     fetchData();
@@ -276,7 +325,10 @@ export const SystemForm: React.FC<SystemFormProps> = ({ data, isUpdateForm }) =>
         );
         setMaterialsTypeMesh(formattedMaterialsByType);
       } else {
-        alert("No se pueden recuperar materiales de tipo malla del back");
+        // alert("No se pueden recuperar materiales de tipo malla del back");
+        handleOpenToast(
+          "No se pueden recuperar materiales de tipo malla del back"
+        );
       }
     }
     fetchData();
@@ -300,7 +352,10 @@ export const SystemForm: React.FC<SystemFormProps> = ({ data, isUpdateForm }) =>
   // Evento de botón agregar - otros complementos
   const handleAddMaterial = () => {
     if (materialCount > 2) {
-      alert("No se pueden agregar más de tres materiales complementarios");
+      // alert("No se pueden agregar más de tres materiales complementarios");
+      handleOpenToast(
+        "No se pueden agregar más de tres materiales complementarios"
+      );
     } else {
       setMaterialCount((prevCount) => prevCount + 1);
     }
@@ -309,7 +364,8 @@ export const SystemForm: React.FC<SystemFormProps> = ({ data, isUpdateForm }) =>
   // Evento de botón eliminar - otros complementos
   const handleDeleteMaterial = () => {
     if (materialCount === 0) {
-      alert("No hay materiales para eliminar");
+      // alert("No hay materiales para eliminar");
+      handleOpenToast("No hay materiales para eliminar");
     } else {
       setMaterialCount((prevCount) => Math.max(prevCount - 1, 0));
     }
@@ -625,6 +681,12 @@ export const SystemForm: React.FC<SystemFormProps> = ({ data, isUpdateForm }) =>
           Aceptar
         </Button>
       </div>
+      <Toast
+        type="error"
+        message={toastMsg}
+        open={showToast}
+        onClose={handleCloseToast}
+      />
     </form>
   );
 };
