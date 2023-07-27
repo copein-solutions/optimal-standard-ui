@@ -62,7 +62,7 @@ export const createApplicationArea = async (
 };
 
 export const getApplicationArea = async (): Promise<ResponseApi> => {
-  return get("/application_areas");
+  return get("/application_area");
 };
 
 export const updateApplicationArea = async (
