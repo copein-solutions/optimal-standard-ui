@@ -17,6 +17,8 @@ const fetchHeaders = () => {
   const credentials = localStorage.getItem('credentials');
   if(credentials && config.headers) {
     config.headers.Authorization = `Bearer ${JSON.parse(credentials)}`;
+  } else if (config.headers) {
+    config.headers.Authorization = null;
   }
   return config;
 }
@@ -62,7 +64,7 @@ export const createApplicationArea = async (
 };
 
 export const getApplicationArea = async (): Promise<ResponseApi> => {
-  return get("/application_areas");
+  return get("/application_area");
 };
 
 export const updateApplicationArea = async (

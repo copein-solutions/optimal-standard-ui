@@ -80,8 +80,8 @@ export const GridCustom: React.FC<GridProps> = ({
       <table className="table">
         <thead>
           <tr>
-            {header?.map((item) => (
-              <th>{item.name}</th>
+            {header?.map((item, index) => (
+              <th key={index}>{item.name}</th>
             ))}
             {hasEdit && <th></th>}
             {hasDelete && <th></th>}
@@ -90,8 +90,8 @@ export const GridCustom: React.FC<GridProps> = ({
         <tbody>
           {body?.map((item, index) => (
             <tr key={index}>
-              {header?.map((col) => (
-                <td>{item[col.value]}</td>
+              {header?.map((col, index) => (
+                <td key={index}>{item[col.value]}</td>
               ))}
               {hasEdit && <td>{editButton(item.id)}</td>}
               {hasDelete && <td>{deleteButton(item.id)}</td>}
