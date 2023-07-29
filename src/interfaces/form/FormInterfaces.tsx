@@ -25,26 +25,38 @@ interface MaterialInputs {
   minApplicableTemp?: string;
 }
 
-// systemForm
-interface systemFormInputs {
-  id: string;
-  systemApplicacionArea: string;
+// SystemForm
+interface SystemFormInputs {
+  id?: string | any;
+  applicationAreaId: string;
+  applicationAreaName: string;
+  applicationMode: string;
+  cured: boolean | string | any;
+  layers: string;
+  totalConsumption: string;
+  supportConditions: string;
+  baseConditions: string;
+  materialAreaRestrictions: string;
+  materials?: SystemMaterialFormInputs[] | any;
+  // Utils para ingresar los distintos materiales
   systemMaterial: string;
-  systemTotalConsumption: string;
-  systemMaterialLayers: string;
-  systemApplicationMode: string;
-  systemCured: string;
   systemComplementaryMaterial: string;
   systemMeshHundredPercent: string; // Si / No
   systemMeshHundredPercentName: string;
-  systemParcialMesh: string; // Si / No
-  systemParcialMeshName: string;
-  systemParcialMeshCoefficient: string;
-  systemParcialMeshComents: string;
+  systemPartialMesh: string; // Si / No
+  systemPartialMeshName: string;
+  systemPartialMeshCoefficient: string;
+  systemPartialMeshDescription: string;
   [key: string]: string; //otros complementos - inputs dinámicos
-  systemBasicConditions: string;
-  systemSupportConditions: string;
-  systemMaterialAreaRestrictions: string;
+}
+
+interface SystemMaterialFormInputs {
+  id: string;
+  typeOfUse: string;
+  coefficient?: string;
+  description?: string;
+  materialDescription?: string;
+  coefficientDescription?: string;
 }
 
 // Login
@@ -59,9 +71,7 @@ interface ApplicationAreaInputs {
   considerations: string;
 }
 
-export type {
-
-};
+export type {};
 
 export type {
   ApplicationAreaInputs,
@@ -69,5 +79,6 @@ export type {
   FormError,
   BackendError,
   MaterialInputs,
-  systemFormInputs
+  SystemFormInputs,
+  SystemMaterialFormInputs,
 };

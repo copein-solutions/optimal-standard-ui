@@ -21,7 +21,7 @@ import { APPLICATION_MODE, SI_NO, SYSTEM_LIST } from "../../../utils/constants";
 
 // Interfaces
 import { useNavigate } from "react-router-dom";
-import { systemFormInputs } from "../../../interfaces/form/FormInterfaces";
+import { SystemFormInputs } from "../../../interfaces/form/FormInterfaces";
 import { getUnitPrice } from "../../../utils/mathUtils";
 import Toast from "../../../components/toast";
 
@@ -36,7 +36,7 @@ type Material = {
 };
 
 type SystemFormProps = {
-  data?: systemFormInputs | undefined;
+  data?: SystemFormInputs | undefined;
   isUpdateForm: boolean;
 };
 
@@ -47,10 +47,10 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   const {
     handleSubmit,
     watch,
+    setValue,
     control,
-    getValues,
     formState: { errors },
-  } = useForm<systemFormInputs>();
+  } = useForm<SystemFormInputs>();
 
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState(String);
@@ -93,93 +93,67 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   };
 
   // TODO: si los name de los campos son = que en la BD queda mejor el código
-  const processFormData = (data: systemFormInputs) => {
-    const {
-      systemTotalConsumption,
-      systemMaterialLayers,
-      systemApplicationMode,
-      systemCured,
-      systemApplicacionArea,
-      systemBasicConditions,
-      systemSupportConditions,
-      systemMaterialAreaRestrictions,
-      systemMaterial,
-      systemMeshHundredPercentName,
-      systemParcialMeshName,
-      systemParcialMeshCoefficient,
-      systemParcialMeshComents,
-      systemOthersPluginsMaterials0,
-      systemOthersPluginsMaterialCoefficient0,
-      systemOthersPluginsMaterialComments0,
-      systemOthersPluginsMaterialCoefficientComments0,
-    } = data;
-
+  const processFormData = (data: SystemFormInputs) => {
     let materialsArray = [
       {
-        id: systemMaterial,
+        id: data.systemMaterial,
         typeOfUse: "BASE",
         coefficient: "",
-        comment: "",
-        materialComment: "",
-        coefficientComment: "",
-      }
+        description: "",
+        materialDescription: "",
+        coefficientDescription: "",
+      },
     ];
 
-    if (systemMeshHundredPercentName) {
+    if (data.systemMeshHundredPercentName) {
       materialsArray.push({
-        id: systemMeshHundredPercentName,
+        id: data.systemMeshHundredPercentName,
         typeOfUse: "TOTAL_MESH",
         coefficient: "",
-        comment: "",
-        materialComment: "",
-        coefficientComment: "",
+        description: "",
+        materialDescription: "",
+        coefficientDescription: "",
       });
     }
-    
-    if (systemParcialMeshName) {
+
+    if (data.systemParcialMeshName) {
       materialsArray.push({
-        id: systemParcialMeshName,
+        id: data.systemParcialMeshName,
         typeOfUse: "PARTIAL_MESH",
-        coefficient: systemParcialMeshCoefficient,
-        comment: systemParcialMeshComents,
-        materialComment: "",
-        coefficientComment: "",
+        coefficient: data.systemParcialMeshCoefficient,
+        description: data.systemPartialMeshDescription,
+        materialDescription: "",
+        coefficientDescription: "",
       });
     }
 
-    if (systemOthersPluginsMaterials0) {
+    if (data.systemOthersPluginsMaterials0) {
       materialsArray.push({
-        id: systemOthersPluginsMaterials0,
+        id: data.systemOthersPluginsMaterials0,
         typeOfUse: "PLUGIN_MATERIAL",
-        coefficient: systemOthersPluginsMaterialCoefficient0,
-        comment: "",
-        materialComment: systemOthersPluginsMaterialComments0,
-        coefficientComment: systemOthersPluginsMaterialCoefficientComments0,
+        coefficient: data.systemOthersPluginsMaterialCoefficient0,
+        description: "",
+        materialDescription: data.systemOthersPluginsMaterialComments0,
+        coefficientDescription:
+          data.systemOthersPluginsMaterialCoefficientComments0,
       });
     }
 
-    return {
-      totalConsumption: systemTotalConsumption,
-      layers: systemMaterialLayers,
-      applicationMode: systemApplicationMode,
-      cured: systemCured === "si",
-      applicationAreaId: systemApplicacionArea,
-      layerBaseConditions: systemBasicConditions,
-      layerConditionsAsSupport: systemSupportConditions,
-      areaRestrictions: systemMaterialAreaRestrictions,
-      materials: materialsArray,
-    };
+    data.materials = materialsArray;
+
+    return data;
   };
 
-  const onSubmit = async (data: systemFormInputs) => {
-    if (data) {
-      const formData = processFormData(data);
-      // Enviar data al back
+  const onSubmit = async (formData: SystemFormInputs) => {
+    if (formData) {
       let response: any;
-      if (!isUpdateForm) {
-        response = await updateSystem(Number(data?.id), formData);
+      if (isUpdateForm) {
+        response = await updateSystem(
+          Number(formData?.id),
+          processFormData(formData)
+        );
       } else {
-        response = await createSystem(formData);
+        response = await createSystem(processFormData(formData));
       }
 
       if (response.status !== 200) {
@@ -190,6 +164,34 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       }
     }
   };
+
+  // Pre cargo formulario en caso de ser update
+  useEffect(() => {
+    if (data) {
+      setValue("applicationAreaName", data.applicationAreaName);
+      setValue("applicationMode", data.applicationMode);
+      setValue("cured", data.cured ? "si" : "no");
+      setValue("layers", data.layers);
+      setValue("totalConsumption", data.totalConsumption);
+      setValue("supportConditions", data.supportConditions);
+      setValue("baseConditions", data.baseConditions);
+      setValue("materialAreaRestrictions", data.materialAreaRestrictions);
+      // ver como manejar listado de material
+      // materials: materialsArray,
+
+      data.materials?.foreach((m: any) => {
+        let pluginMaterialC = 0;
+        if (m.typeOfUse === "BASE") {
+        } else if (m.typeOfUse === "TOTAL_MESH") {
+        } else if (m.typeOfUse === "PARTIAL_MESH") {
+        } else if (m.typeOfUse === "PLUGIN_MATERIAL") {
+          console.log(pluginMaterialC);
+
+          pluginMaterialC++;
+        }
+      });
+    }
+  }, [setValue, data]);
 
   // Obtengo campos de aplicación del back
   useEffect(() => {
@@ -379,11 +381,11 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       <div className="row mb-3">
         <div className="col-lg-8 col-sm-6">
           <CustomSelectField
-            name="systemApplicacionArea"
+            name="applicationAreaName"
             control={control}
             rules={{ required: "Campo de aplicación requerido" }}
             label="Campo de aplicación"
-            error={errors.systemApplicacionArea}
+            error={errors.applicationAreaName}
             options={applicationAreas}
           />
         </div>
@@ -411,49 +413,49 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       <div className="row mt-3">
         <div className="col-lg-3 col-sm-6">
           <CustomTextField
-            name="systemTotalConsumption"
+            name="totalConsumption"
             control={control}
             rules={{ required: "Consumo total requerido." }}
             label="Consumo total k/m2"
             variant="outlined"
             fullWidth
-            error={errors.systemTotalConsumption}
-            helperText={errors.systemTotalConsumption?.message}
+            error={errors.totalConsumption}
+            helperText={errors.totalConsumption?.message}
           />
         </div>
         {/* ------------- Cantidad de manos ------------- */}
         <div className="col-lg-3 col-sm-6">
           <CustomTextField
-            name="systemMaterialLayers"
+            name="layers"
             control={control}
             rules={{ required: "Cantidad de manos requerida." }}
             label="Cantidad de manos"
             variant="outlined"
             fullWidth
             type="number"
-            error={errors.systemMaterialLayers}
-            helperText={errors.systemMaterialLayers?.message}
+            error={errors.layers}
+            helperText={errors.layers?.message}
           />
         </div>
         {/* ------------- Modo de aplicación ------------- */}
         <div className="col-lg-3 col-sm-6">
           <CustomSelectField
-            name="systemApplicationMode"
+            name="applicationMode"
             control={control}
             rules={{ required: "Modo de aplicación requerido." }}
             label="Modo de aplicación"
-            error={errors.systemApplicationMode}
+            error={errors.applicationMode}
             options={APPLICATION_MODE}
           />
         </div>
         {/* ------------- Curado ------------- */}
         <div className="col-lg-3 col-sm-6">
           <CustomSelectField
-            name="systemCured"
+            name="cured"
             control={control}
             rules={{ required: "Curado requerido." }}
             label="Curado"
-            error={errors.systemCured}
+            error={errors.cured}
             options={SI_NO}
           />
         </div>
@@ -552,7 +554,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             <CustomTextField
               multiline
               minRows={2}
-              name="systemParcialMeshComents"
+              name="systemPartialMeshDescription"
               control={control}
               label="Descripción"
               variant="outlined"
@@ -631,26 +633,26 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       <div className="row mt-3">
         <div className="col-lg-12 col-sm-6">
           <CustomTextField
-            name="systemBasicConditions"
+            name="baseConditions"
             control={control}
             rules={{ required: "Condiciones de base requeridas." }}
             label="Condiciones de base"
             variant="outlined"
             fullWidth
-            error={errors.systemBasicConditions}
-            helperText={errors.systemBasicConditions?.message}
+            error={errors.baseConditions}
+            helperText={errors.baseConditions?.message}
           />
         </div>
         <div className="col-lg-12 col-sm-6 mt-3">
           <CustomTextField
-            name="systemSupportConditions"
+            name="supportConditions"
             control={control}
             rules={{ required: "Condiciones como soporte requeridas." }}
             label="Condiciones como soporte"
             variant="outlined"
             fullWidth
-            error={errors.systemSupportConditions}
-            helperText={errors.systemSupportConditions?.message}
+            error={errors.supportConditions}
+            helperText={errors.supportConditions?.message}
           />
         </div>
       </div>
@@ -658,15 +660,15 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       <div className="row mt-3">
         <div className="col-lg-3 col-sm-6">
           <CustomTextField
-            name="systemMaterialAreaRestrictions"
+            name="materialAreaRestrictions"
             control={control}
             rules={{ required: "Restricción por área requerida." }}
             label="Por área m2"
             variant="outlined"
             fullWidth
             type="number"
-            error={errors.systemMaterialAreaRestrictions}
-            helperText={errors.systemMaterialAreaRestrictions?.message}
+            error={errors.materialAreaRestrictions}
+            helperText={errors.materialAreaRestrictions?.message}
           />
         </div>
       </div>
