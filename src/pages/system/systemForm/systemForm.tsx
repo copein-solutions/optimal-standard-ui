@@ -268,10 +268,12 @@ export const SystemForm: React.FC<SystemFormProps> = ({ data, isUpdateForm }) =>
       const response = await getMaterialsByType("malla");
       if (response && response.data) {
         const backendMaterialsByType = response.data;
+        console.log(backendMaterialsByType);
+        
         const formattedMaterialsByType = backendMaterialsByType.map(
-          (material: { id: any; name: any; brand: any }) => ({
+          (material: { id: any; product: any; brand: any }) => ({
             value: material.id,
-            label: `${material.name} ${material.brand}`,
+            label: `${material.product} ${material.brand}`,
           })
         );
         setMaterialsTypeMesh(formattedMaterialsByType);
