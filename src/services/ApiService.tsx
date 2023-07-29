@@ -17,6 +17,8 @@ const fetchHeaders = () => {
   const credentials = localStorage.getItem('credentials');
   if(credentials && config.headers) {
     config.headers.Authorization = `Bearer ${JSON.parse(credentials)}`;
+  } else if (config.headers) {
+    config.headers.Authorization = null;
   }
   return config;
 }
@@ -52,7 +54,6 @@ export const updateMaterial = async (
 export const getMaterialByID = async (id: number): Promise<ResponseApi> => {
   return get(`/material/${id}`);
 };
-
 //#endregion
 
 // #region CAMPO DE APLICACIÓN
@@ -63,7 +64,7 @@ export const createApplicationArea = async (
 };
 
 export const getApplicationArea = async (): Promise<ResponseApi> => {
-  return get("/application_areas");
+  return get("/application_area");
 };
 
 export const updateApplicationArea = async (
@@ -81,6 +82,23 @@ export const getApplicationAreaByID = async (
 
 //#endregion
 
+//#region SISTEMA
+
+export const createSystem = async (data: any): Promise<ResponseApi> => {
+  return post("/construction_system", data);
+};
+
+export const getSystems = async (): Promise<ResponseApi> => {
+  return get("/construction_system");
+};
+
+export const getSystemByID = async (
+  id: number
+): Promise<ResponseApi> => {
+  return get(`/construction_system/${id}`);
+};
+
+//#endregion
 const post = async (url: string, data: any): Promise<ResponseApi> => {
   try {
     return await api.post(url, data, fetchHeaders());

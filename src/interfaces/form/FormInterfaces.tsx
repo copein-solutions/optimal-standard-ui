@@ -43,6 +43,7 @@ interface systemFormInputs {
   [key: string]: string; //otros complementos - inputs dinámicos
   systemBasicConditions: string;
   systemSupportConditions: string;
+  systemMaterialAreaRestrictions: string;
 }
 
 // Login

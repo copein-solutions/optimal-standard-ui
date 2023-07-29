@@ -31,7 +31,7 @@ export const GridCustom: React.FC<GridProps> = ({
 }) => {
   const navigator = useNavigate();
 
-  const onDelete = async () => {
+  const onDelete = async (id: number) => {
     try {
     } catch (error) {
       console.log(error);
@@ -59,7 +59,7 @@ export const GridCustom: React.FC<GridProps> = ({
     </Button>
   );
 
-  const deleteButton = (
+  const deleteButton = (id: number) => (
     <Button
       sx={{
         borderRadius: "50%",
@@ -69,7 +69,7 @@ export const GridCustom: React.FC<GridProps> = ({
       }}
       color="error"
       variant="contained"
-      onClick={onDelete}
+      onClick={() => onDelete(id)}
     >
       <DeleteIcon />
     </Button>
@@ -80,8 +80,8 @@ export const GridCustom: React.FC<GridProps> = ({
       <table className="table">
         <thead>
           <tr>
-            {header?.map((item) => (
-              <th>{item.name}</th>
+            {header?.map((item, index) => (
+              <th key={index}>{item.name}</th>
             ))}
             {hasEdit && <th></th>}
             {hasDelete && <th></th>}
@@ -90,11 +90,11 @@ export const GridCustom: React.FC<GridProps> = ({
         <tbody>
           {body?.map((item, index) => (
             <tr key={index}>
-              {header?.map((col) => (
-                <td>{item[col.value]}</td>
+              {header?.map((col, index) => (
+                <td key={index}>{item[col.value]}</td>
               ))}
               {hasEdit && <td>{editButton(item.id)}</td>}
-              {hasDelete && <td>{deleteButton}</td>}
+              {hasDelete && <td>{deleteButton(item.id)}</td>}
             </tr>
           ))}
         </tbody>

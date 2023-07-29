@@ -1,6 +1,29 @@
-// routes constants
+//# routes constants
+
+// Login
+export const LOGIN = "/login";
+
+
+// Material
 export const MATERIAL_CREATE = "/material/create";
 export const MATERIAL_LIST = "/material/list";
+export const MATERIAL_EDIT = "/material/:id/update";
+
+// Application area
+export const APPLICATION_AREA_CREATE = "/application_area/create";
+export const APPLICATION_AREA_LIST = "/application_area/list";
+export const APPLICATION_AREA_EDIT = "/application_area/:id/update";
+
+// System
+export const SYSTEM_CREATE = "/system/create";
+export const SYSTEM_LIST = "/system/list";
+export const SYSTEM_EDIT = "/system/:id/update";
+
+
+
+//#endregion
+
+// data constants
 export const MATERIAL_TYPE = [
   {
     value: "cementicio",

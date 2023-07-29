@@ -14,10 +14,11 @@ import ListMaterial from "../../pages/material/listMaterial/listMaterial";
 import AddMaterial from "../../pages/material/addMaterial/addMaterial";
 import ListApplicationArea from "../../pages/applicationArea/listApplicationArea/listApplicationArea";
 import AddApplicationArea from "../../pages/applicationArea/addApplicationArea/addApplicationArea";
-import SystemForm from "../../pages/system";
+import AddSystem from "../../pages/system/addSystem";
 import Login from "../../pages/login";
 
-import {MATERIAL_CREATE, MATERIAL_LIST} from "../../utils/constants";
+import {APPLICATION_AREA_CREATE, APPLICATION_AREA_LIST, LOGIN, MATERIAL_CREATE, MATERIAL_LIST, SYSTEM_CREATE, SYSTEM_LIST} from "../../utils/constants";
+import ListSystem from "../../pages/system/listSystem";
 
 type MenuProps = {
   isOpen: boolean;
@@ -36,14 +37,14 @@ export const menuOptions = [
   {
     name: "Agregar campo de aplicación",
     icon: <ArrowRightIcon />,
-    path: "/application_area/create",
+    path: APPLICATION_AREA_CREATE,
     component: AddApplicationArea,
   },
   {
     name: "Agregar sistema",
     icon: <ArrowRightIcon />,
-    path: "/system",
-    component: SystemForm,
+    path: SYSTEM_CREATE,
+    component: AddSystem,
   },
   {
     name: "Listado de materiales",
@@ -54,13 +55,19 @@ export const menuOptions = [
   {
     name: "Listado de campo de aplicación",
     icon: <ArrowRightIcon />,
-    path: "/application_areas",
+    path: APPLICATION_AREA_LIST,
     component: ListApplicationArea,
+  },
+  {
+    name: "Listado de sistemas",
+    icon: <ArrowRightIcon />,
+    path: SYSTEM_LIST,
+    component: ListSystem,
   },
   {
     name: "Login",
     icon: <ArrowRightIcon />,
-    path: "/login",
+    path: LOGIN,
     component: Login,
   },
 ];
