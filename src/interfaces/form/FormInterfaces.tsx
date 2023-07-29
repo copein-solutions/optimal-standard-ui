@@ -27,6 +27,7 @@ interface MaterialInputs {
 
 // systemForm
 interface systemFormInputs {
+  id: string;
   systemApplicacionArea: string;
   systemMaterial: string;
   systemTotalConsumption: string;

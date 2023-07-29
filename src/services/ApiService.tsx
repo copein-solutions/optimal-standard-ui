@@ -98,6 +98,13 @@ export const getSystemByID = async (
   return get(`/construction_system/${id}`);
 };
 
+export const updateSystem = async (
+  id: number,
+  data: any
+): Promise<ResponseApi> => {
+  return put(`/system/${id}`, data);
+};
+
 //#endregion
 const post = async (url: string, data: any): Promise<ResponseApi> => {
   try {
