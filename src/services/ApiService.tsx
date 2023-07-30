@@ -101,7 +101,7 @@ export const updateSystem = async (
   id: number,
   data: any
 ): Promise<ResponseApi> => {
-  return put(`/system/${id}`, data);
+  return put(`/construction_system/${id}`, data);
 };
 
 //#endregion

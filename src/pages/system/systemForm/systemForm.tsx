@@ -140,6 +140,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     }
 
     data.materials = materialsArray;
+    data.cured = data.cured === 'si';
 
     return data;
   };
@@ -147,15 +148,17 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   const onSubmit = async (formData: SystemFormInputs) => {
     if (formData) {
       let response: any;
+      
       if (isUpdateForm) {
         response = await updateSystem(
-          Number(formData?.id),
+          Number(data?.id),
           processFormData(formData)
         );
       } else {
         response = await createSystem(processFormData(formData));
       }
 
+      console.log(response);
       if (response.status !== 200) {
         handleOpenToast("Failure");
       } else {
@@ -168,7 +171,10 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   // Pre cargo formulario en caso de ser update
   useEffect(() => {
     if (data) {
+      console.log(data);
+      
       setValue("applicationAreaName", data.applicationAreaName);
+      setValue("applicationAreaId", data.applicationAreaId);
       setValue("applicationMode", data.applicationMode);
       setValue("cured", data.cured ? "si" : "no");
       setValue("layers", data.layers);
@@ -176,11 +182,11 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       setValue("supportConditions", data.supportConditions);
       setValue("baseConditions", data.baseConditions);
       setValue("materialAreaRestrictions", data.materialAreaRestrictions);
+      
       // ver como manejar listado de material
       // materials: materialsArray,
-
+      let pluginMaterialC = 0;
       data.materials?.foreach((m: any) => {
-        let pluginMaterialC = 0;
         if (m.typeOfUse === "BASE") {
         } else if (m.typeOfUse === "TOTAL_MESH") {
         } else if (m.typeOfUse === "PARTIAL_MESH") {
@@ -381,11 +387,11 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       <div className="row mb-3">
         <div className="col-lg-8 col-sm-6">
           <CustomSelectField
-            name="applicationAreaName"
+            name="applicationAreaId"
             control={control}
             rules={{ required: "Campo de aplicación requerido" }}
             label="Campo de aplicación"
-            error={errors.applicationAreaName}
+            error={errors.applicationAreaId}
             options={applicationAreas}
           />
         </div>

@@ -19,7 +19,7 @@ const ListSystem = () => {
 
   const header = [
     // TODO: Ver que campos mostrar
-    { name: "Id", value: "id" },
+    // { name: "Id", value: "id" },
     { name: "Campo de aplicacion", value: "applicationAreaName" },
     { name: "Curado", value: "cured" },
     { name: "Manos", value: "layers" },
@@ -32,6 +32,10 @@ const ListSystem = () => {
       console.log(response);
       
       if(response && response.data !== "") {
+        let listSystems: any = response.data;
+        listSystems.map((system: {cured: any}) => {
+          system.cured = system.cured ? 'si' : 'no';
+        });
         dispatch({ type: "SET_SYSTEM", payload: response.data });
       }      
     }
