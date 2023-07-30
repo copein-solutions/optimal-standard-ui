@@ -35,12 +35,8 @@ const PrivateRoute = ({ children }) => {
   if (isLoading) {
     return <CustomSkeleton/>;
   }
-  
-  const redirect = () => {
-    return isLoggedIn ? children : <Navigate to="/login" />;
-  };
 
-  return redirect();
+  return isLoggedIn ? children : <Navigate to="/login" />;
 };
 
 export default PrivateRoute;
