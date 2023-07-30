@@ -8,12 +8,11 @@ let config: AxiosRequestConfig = {
   },
 };
 
-
-const api = axios.create({
+export const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
-const fetchHeaders = () => {
+export const fetchHeaders = () => {
   const credentials = localStorage.getItem('credentials');
   if(credentials && config.headers) {
     config.headers.Authorization = `Bearer ${JSON.parse(credentials)}`;
