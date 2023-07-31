@@ -96,10 +96,10 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   const processFormData = (data: SystemFormInputs) => {
     let materialsArray = [
       {
-        id: data.systemMaterial,
+        id: data.systemMaterialId,
+        materialId: data.systemMaterial,
         typeOfUse: "BASE",
         coefficient: "",
-        description: "",
         materialDescription: "",
         coefficientDescription: "",
       },
@@ -107,10 +107,10 @@ export const SystemForm: React.FC<SystemFormProps> = ({
 
     if (data.systemMeshHundredPercentName) {
       materialsArray.push({
-        id: data.systemMeshHundredPercentName,
+        id: data.systemMeshHundredPercentId,
+        materialId: data.systemMeshHundredPercentName,
         typeOfUse: "TOTAL_MESH",
         coefficient: "",
-        description: "",
         materialDescription: "",
         coefficientDescription: "",
       });
@@ -118,30 +118,33 @@ export const SystemForm: React.FC<SystemFormProps> = ({
 
     if (data.systemParcialMeshName) {
       materialsArray.push({
-        id: data.systemParcialMeshName,
+        id: data.systemParcialMeshId,
+        materialId: data.systemParcialMeshName,
         typeOfUse: "PARTIAL_MESH",
         coefficient: data.systemParcialMeshCoefficient,
-        description: data.systemPartialMeshDescription,
-        materialDescription: "",
+        materialDescription: data.systemPartialMeshDescription,
         coefficientDescription: "",
       });
     }
 
+    // Ver como manejar los plugin 1, 2
     if (data.systemOthersPluginsMaterials0) {
       materialsArray.push({
-        id: data.systemOthersPluginsMaterials0,
+        id: data.systemOthersPluginsMaterialsId0,
+        materialId: data.systemOthersPluginsMaterials0,
         typeOfUse: "PLUGIN_MATERIAL",
         coefficient: data.systemOthersPluginsMaterialCoefficient0,
-        description: "",
-        materialDescription: data.systemOthersPluginsMaterialComments0,
+        materialDescription: data.systemOthersPluginsMaterialDescription0,
         coefficientDescription:
-          data.systemOthersPluginsMaterialCoefficientComments0,
+          data.systemOthersPluginsMaterialCoefficientDescription0,
       });
     }
 
     data.materials = materialsArray;
     data.cured = data.cured === 'si';
 
+    console.log(data);
+    
     return data;
   };
 
@@ -171,10 +174,10 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   // Pre cargo formulario en caso de ser update
   useEffect(() => {
     if (data) {
-      console.log(data);
+      console.log('pre cargo data', data);
       
-      setValue("applicationAreaId", data.applicationAreaName);
-      setValue("applicationAreaName", data.applicationAreaName);
+      setValue("applicationAreaId", data.applicationArea.Id);
+      setValue("applicationAreaName", data.applicationArea.Id);
       setValue("applicationMode", data.applicationMode);
       setValue("cured", data.cured ? "si" : "no");
       setValue("layers", data.layers);
@@ -189,17 +192,23 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       let pluginMaterialC = 0;
       data.materials?.map((m: any) => {
         if (m.typeOfUse === "BASE") {
+          setValue("systemMaterialId", m.id);
           setValue("systemMaterial", m.material.id);
+          setSelectedMaterialOption(m.material.id)
         } else if (m.typeOfUse === "TOTAL_MESH") {
           setValue("systemMeshHundredPercent", 'si');
+          setValue("systemMeshHundredPercentId", m.id);
           setValue("systemMeshHundredPercentName", m.material.id);
+          setSelectedHoundredMesh(Number(m.material.id));
         } else if (m.typeOfUse === "PARTIAL_MESH") {
           setValue("systemParcialMesh", 'si');
+          setValue("systemParcialMeshId", m.id);
           setValue("systemParcialMeshName", m.material.id);
           setValue("systemParcialMeshCoefficient", m.coefficient);
           setValue("systemPartialMeshDescription", m.materialDescription);
         } else if (m.typeOfUse === "PLUGIN_MATERIAL") {
           handleAddMaterial();
+          setValue("systemOthersPluginsMaterialsId" + pluginMaterialC, m.id);
           setValue("systemOthersPluginsMaterials" + pluginMaterialC, m.material.id);
           setValue("systemOthersPluginsMaterialCoefficient" + pluginMaterialC, m.coefficient);
           setValue("systemOthersPluginsMaterialDescription" + pluginMaterialC, m.materialDescription);
@@ -644,7 +653,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
               />
             </div>
           </div>
-          {index < materialCount - 1 && <Divider />}
+          {index < materialCount - 1 && <Divider className="mt-3"/>}
         </div>
       ))}
       <CustomDivider text="Sistema de capas" />

@@ -29,7 +29,7 @@ interface MaterialInputs {
 interface SystemFormInputs {
   id?: string | any;
   applicationAreaId: string;
-  applicationAreaName: string;
+  applicationArea: SystemMaterialApplicationAreaFormInputs | any;
   applicationMode: string;
   cured: boolean | string | any;
   layers: string;
@@ -50,8 +50,15 @@ interface SystemFormInputs {
   [key: string]: string; //otros complementos - inputs dinámicos
 }
 
+interface SystemMaterialApplicationAreaFormInputs {
+  id: string;
+  name: string;
+  considerations: string;
+}
+
 interface SystemMaterialFormInputs {
   id: string;
+  materialId: string;
   typeOfUse: string;
   coefficient?: string;
   description?: string;
