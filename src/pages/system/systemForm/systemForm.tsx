@@ -127,7 +127,6 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       });
     }
 
-    // Ver como manejar los plugin 1, 2
     if (data.systemOthersPluginsMaterials0) {
       materialsArray.push({
         id: data.systemOthersPluginsMaterialsId0,
@@ -137,6 +136,30 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         materialDescription: data.systemOthersPluginsMaterialDescription0,
         coefficientDescription:
           data.systemOthersPluginsMaterialCoefficientDescription0,
+      });
+    }
+
+    if (data.systemOthersPluginsMaterials1) {
+      materialsArray.push({
+        id: data.systemOthersPluginsMaterialsId1,
+        materialId: data.systemOthersPluginsMaterials1,
+        typeOfUse: "PLUGIN_MATERIAL",
+        coefficient: data.systemOthersPluginsMaterialCoefficient1,
+        materialDescription: data.systemOthersPluginsMaterialDescription1,
+        coefficientDescription:
+          data.systemOthersPluginsMaterialCoefficientDescription1,
+      });
+    }
+
+    if (data.systemOthersPluginsMaterials2) {
+      materialsArray.push({
+        id: data.systemOthersPluginsMaterialsId2,
+        materialId: data.systemOthersPluginsMaterials2,
+        typeOfUse: "PLUGIN_MATERIAL",
+        coefficient: data.systemOthersPluginsMaterialCoefficient2,
+        materialDescription: data.systemOthersPluginsMaterialDescription2,
+        coefficientDescription:
+          data.systemOthersPluginsMaterialCoefficientDescription2,
       });
     }
 
@@ -174,10 +197,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   // Pre cargo formulario en caso de ser update
   useEffect(() => {
     if (data) {
-      console.log('pre cargo data', data);
-      
-      setValue("applicationAreaId", data.applicationArea.Id);
-      setValue("applicationAreaName", data.applicationArea.Id);
+      setValue("applicationAreaId", data.applicationArea.id);
       setValue("applicationMode", data.applicationMode);
       setValue("cured", data.cured ? "si" : "no");
       setValue("layers", data.layers);
