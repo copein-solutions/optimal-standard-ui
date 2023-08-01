@@ -92,8 +92,19 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     navigator(SYSTEM_LIST);
   };
 
-  // TODO: si los name de los campos son = que en la BD queda mejor el código
   const processFormData = (data: SystemFormInputs) => {
+  //   para emprolijarlo
+  //   let requestData: SystemFormInputs | any;
+
+  //   requestData.applicationAreaId = data.applicationAreaId;
+  //   requestData.applicationMode = data.applicationMode;
+  //   requestData.baseConditions = data.baseConditions;
+  //   requestData.cured = data.cured === 'si';
+  //   requestData.layers = data.layers;
+  //   requestData.materialAreaRestrictions = data.materialAreaRestrictions;
+  //   requestData.totalConsumption = data.totalConsumption;
+  //   requestData.supportConditions = data.supportConditions;
+
     let materialsArray = [
       {
         id: data.systemMaterialId,
@@ -105,7 +116,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       },
     ];
 
-    if (data.systemMeshHundredPercentName) {
+    if (data.systemMeshHundredPercent === 'si') {
       materialsArray.push({
         id: data.systemMeshHundredPercentId,
         materialId: data.systemMeshHundredPercentName,
@@ -116,7 +127,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       });
     }
 
-    if (data.systemParcialMeshName) {
+    if (data.systemParcialMesh === 'si') {
       materialsArray.push({
         id: data.systemParcialMeshId,
         materialId: data.systemParcialMeshName,
@@ -127,7 +138,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       });
     }
 
-    if (data.systemOthersPluginsMaterials0) {
+    if (materialCount === 1) {
       materialsArray.push({
         id: data.systemOthersPluginsMaterialsId0,
         materialId: data.systemOthersPluginsMaterials0,
@@ -139,7 +150,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       });
     }
 
-    if (data.systemOthersPluginsMaterials1) {
+    if (materialCount === 2) {
       materialsArray.push({
         id: data.systemOthersPluginsMaterialsId1,
         materialId: data.systemOthersPluginsMaterials1,
@@ -151,7 +162,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       });
     }
 
-    if (data.systemOthersPluginsMaterials2) {
+    if (materialCount === 3) {
       materialsArray.push({
         id: data.systemOthersPluginsMaterialsId2,
         materialId: data.systemOthersPluginsMaterials2,

@@ -38,15 +38,6 @@ interface SystemFormInputs {
   baseConditions: string;
   materialAreaRestrictions: string;
   materials?: SystemMaterialFormInputs[] | any;
-  // Utils para ingresar los distintos materiales
-  systemMaterial: string;
-  systemComplementaryMaterial: string;
-  systemMeshHundredPercent: string; // Si / No
-  systemMeshHundredPercentName: string;
-  systemPartialMesh: string; // Si / No
-  systemPartialMeshName: string;
-  systemPartialMeshCoefficient: string;
-  systemPartialMeshDescription: string;
   [key: string]: string; //otros complementos - inputs dinámicos
 }
 
