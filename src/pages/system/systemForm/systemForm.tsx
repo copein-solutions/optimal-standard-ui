@@ -138,7 +138,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       });
     }
 
-    if (materialCount === 1) {
+    if (materialCount >= 1) {
       materialsArray.push({
         id: data.systemOthersPluginsMaterialsId0,
         materialId: data.systemOthersPluginsMaterials0,
@@ -150,7 +150,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       });
     }
 
-    if (materialCount === 2) {
+    if (materialCount >= 2) {
       materialsArray.push({
         id: data.systemOthersPluginsMaterialsId1,
         materialId: data.systemOthersPluginsMaterials1,
@@ -162,7 +162,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       });
     }
 
-    if (materialCount === 3) {
+    if (materialCount >= 3) {
       materialsArray.push({
         id: data.systemOthersPluginsMaterialsId2,
         materialId: data.systemOthersPluginsMaterials2,
