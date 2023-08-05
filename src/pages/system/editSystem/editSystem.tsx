@@ -24,7 +24,6 @@ export const EditSystem = () => {
         );
       } else {
         setFormData(response.data);
-        console.log(response.data);
       }
     }
     fetchData();

@@ -29,7 +29,6 @@ const ListSystem = () => {
   useEffect(() => {
     async function fetchData() {
       const response = await getSystems();
-      console.log(response);
       
       if(response && response.data !== "") {
         let listSystems: any = response.data;
