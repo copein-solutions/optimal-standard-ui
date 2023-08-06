@@ -34,6 +34,8 @@ interface BaseMaterial {
   presentationUnit: string;
   type: string;
   priceDate: string;
+  potLife: string;
+  minApplicableTemp: string;
 };
 
 interface SystemFormProps {

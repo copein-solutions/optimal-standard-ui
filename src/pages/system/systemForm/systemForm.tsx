@@ -69,6 +69,8 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       presentationUnit: "",
       type: "",
       priceDate: "",
+      potLife: "",
+      minApplicableTemp: "",
     });
   // MALLA 100%
   const [houndredMeshUnityPriceVisible, setHoundredMeshUnityPriceVisible] =
@@ -191,16 +193,16 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         if (m.typeOfUse === "BASE") {
           setValue("systemMaterialId", m.id);
           setValue("systemMaterial", m.material.id);
-          setSelectedMaterialOption(m.material.id, "preLoad");
+          setSelectedMaterialOption(m.material.id, "isUpdate");
         } else if (m.typeOfUse === "TOTAL_MESH") {
           setValue("systemMeshHundredPercent", "si");
           setValue("systemMeshHundredPercentId", m.id);
-          // setValue("systemMeshHundredPercentName", m.material.id);
-          handleHoundredMesh(Number(m.material.id));
+          setValue("systemMeshHundredPercentName", m.material.id);
+          handleHoundredMesh(Number(m.material.id), "isUpdate");
         } else if (m.typeOfUse === "PARTIAL_MESH") {
           setValue("systemParcialMesh", "si");
           setValue("systemParcialMeshId", m.id);
-          // setValue("systemParcialMeshName", m.material.id);
+          setValue("systemParcialMeshName", m.material.id);
           setValue("systemParcialMeshCoefficient", m.coefficient);
           setValue("systemPartialMeshDescription", m.materialDescription);
         } else if (m.typeOfUse === "PLUGIN_MATERIAL") {
@@ -280,6 +282,8 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       presentationUnit: material.presentationUnit,
       type: material.type,
       priceDate: material.priceDate,
+      potLife: material.potLife ? String(material.potLife) : "-",
+      minApplicableTemp: material.minApplicableTemp ? String(material.minApplicableTemp) : "-",
     });
   };
 
@@ -314,39 +318,36 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     }
   }
 
-  // Obtengo precio unitario malla 100 %
-  function handleHoundredMesh(value: number) {
-    setHoundredMeshUnityPriceVisible(true);
-    // const response = await getMaterialByID(value);
-    // if (response && response.data) {
-    //   const backendMesh = response.data;
+  const findMeshesAndGetUnitPrice = (value: number) :string => {
+    let result = "";
+    const selectedMesh = materialsTypeMesh.find(
+      (item) => item.id === value
+    );
 
-    //   const meshPrice = getUnitPrice(
-    //     backendMesh.presentationPrice,
-    //     backendMesh.presentationQuantity,
-    //     backendMesh.presentationUnit,
-    //     true
-    //   );
-    //   setSelectedHoundredMeshPrice(meshPrice);
-    // }
+    if (selectedMesh) {
+      const meshPrice = getUnitPrice(
+        Number(selectedMesh.presentationPrice),
+        Number(selectedMesh.presentationQuantity),
+        selectedMesh.presentationUnit,
+        true
+      );
+      result = meshPrice;
+    }
+    return result;
+  }
+
+  // Obtengo precio unitario malla 100 %
+  function handleHoundredMesh(value: number, origin: string) {
+    setHoundredMeshUnityPriceVisible(true);
+    const meshPrice = findMeshesAndGetUnitPrice(value);
+    setSelectedHoundredMeshPrice(meshPrice);
   }
 
   // Obtengo precio unitario malla parcial
   function handlePartialMesh(value: number) {
     setPartialMeshUnityPriceVisible(true);
-    const selectedPartialMesh = materialsTypeMesh.find(
-      (item) => item.id === value
-    );
-
-    if (selectedPartialMesh) {
-      const meshPrice = getUnitPrice(
-        Number(selectedPartialMesh.presentationPrice),
-        Number(selectedPartialMesh.presentationQuantity),
-        selectedPartialMesh.presentationUnit,
-        true
-      );
-      setSelectedPartialMeshPrice(meshPrice);
-    }
+    const meshPrice = findMeshesAndGetUnitPrice(value);
+    setSelectedPartialMeshPrice(meshPrice);
   }
 
   const renderMaterialData = (): ReactNode => {
@@ -386,6 +387,16 @@ export const SystemForm: React.FC<SystemFormProps> = ({
           <div className="col-lg-2 col-sm-2 data-div">
             <Typography fontWeight="700" variant="body1">
               {`Fecha del precio: ${selectedMaterialDetail.priceDate}`}
+            </Typography>
+          </div>
+          <div className="col-lg-2 col-sm-2 data-div">
+            <Typography fontWeight="700" variant="body1">
+              {`Vida útil: ${selectedMaterialDetail.potLife}`}
+            </Typography>
+          </div>
+          <div className="col-lg-2 col-sm-2 data-div">
+            <Typography fontWeight="700" variant="body1">
+              {`Temp min aplicable: ${selectedMaterialDetail.minApplicableTemp}`}
             </Typography>
           </div>
         </div>
@@ -570,7 +581,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
               label="Malla"
               error={errors.systemMeshHundredPercentName}
               options={formattedMeshSelect}
-              onSelectOption={(value) => handleHoundredMesh(value)}
+              onSelectOption={(value) => handleHoundredMesh(value, "select")}
             />
           </div>
         )}
