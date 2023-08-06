@@ -24,46 +24,14 @@ import { useNavigate } from "react-router-dom";
 import {
   Material,
   SystemFormInputs,
+  Options,
+  SystemFormProps,
+  BaseMaterial,
+  TypeOfUseOfMaterial,
+  ConstructionSystem,
 } from "../../../interfaces/form/FormInterfaces";
 import { getUnitPrice } from "../../../utils/mathUtils";
 import Toast from "../../../components/toast";
-
-type BaseMaterial = {
-  brand: string;
-  component: string;
-  presentationPrice: string;
-  presentationQuantity: string;
-  presentationUnit: string;
-  type: string;
-  priceDate: string;
-};
-
-type TypeOfUseOfMaterial = {
-  id: string;
-  materialId: string;
-  typeOfUse: string;
-  coefficient?: string;
-  coefficientDescription?: string;
-  materialDescription?: string;
-  material?: Material;
-};
-
-type ConstructionSystem = {
-  totalConsumption: string;
-  layers: string;
-  applicationMode: string;
-  cured: boolean;
-  applicationAreaId: string;
-  baseConditions: string;
-  supportConditions: string;
-  materialAreaRestrictions: string;
-  materials: TypeOfUseOfMaterial[];
-};
-
-type SystemFormProps = {
-  data?: SystemFormInputs | undefined;
-  isUpdateForm: boolean;
-};
 
 export const SystemForm: React.FC<SystemFormProps> = ({
   data,
@@ -79,7 +47,8 @@ export const SystemForm: React.FC<SystemFormProps> = ({
 
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMsg, setToastMsg] = useState<string>("");
-  const [materials, setMaterials] = useState<Material[]>([]);
+  const [materialsSelect, setMaterialsSelect] = useState<Options[]>([]);
+  const [globalMaterials, setGlobalMaterials] = useState<Material[]>([]);
   const [applicationAreas, setApplicationAreas] = useState([]);
   const [materialsTypeMesh, setMaterialsTypeMesh] = useState([]);
   const [showMeshHundredPercentInput, setShowMeshHundredPercentInput] =
@@ -90,15 +59,16 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   // MATERIAL BASE
   const [materialDataVisible, setMaterialDataVisible] =
     useState<boolean>(false);
-  const [selectedMaterial, setSelectedMaterial] = useState<BaseMaterial>({
-    brand: "",
-    component: "",
-    presentationPrice: "",
-    presentationQuantity: "",
-    presentationUnit: "",
-    type: "",
-    priceDate: "",
-  });
+  const [selectedMaterialDetail, setSelectedMaterialDetail] =
+    useState<BaseMaterial>({
+      brand: "",
+      component: "",
+      presentationPrice: "",
+      presentationQuantity: "",
+      presentationUnit: "",
+      type: "",
+      priceDate: "",
+    });
   // MALLA 100%
   const [houndredMeshUnityPriceVisible, setHoundredMeshUnityPriceVisible] =
     useState<boolean>(false);
@@ -220,7 +190,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         if (m.typeOfUse === "BASE") {
           setValue("systemMaterialId", m.id);
           setValue("systemMaterial", m.material.id);
-          setSelectedMaterialOption(m.material.id);
+          setSelectedMaterialOption(m.material.id, "preLoad");
         } else if (m.typeOfUse === "TOTAL_MESH") {
           setValue("systemMeshHundredPercent", "si");
           setValue("systemMeshHundredPercentId", m.id);
@@ -292,45 +262,55 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             label: `${material.product} ${material.brand}`,
           })
         );
-        setMaterials(formattedMaterials);
+        setMaterialsSelect(formattedMaterials);
+        setGlobalMaterials(backendMaterials);
       } else {
         handleOpenToast("No se pueden recuperar materiales del back");
       }
     }
     fetchData();
   }, []);
-
-  async function setSelectedMaterialOption(value: number) {
+  
+  const setMaterialDetail = (material: Material) => {
+    setSelectedMaterialDetail({
+      brand: material.brand,
+      component: material.component,
+      presentationPrice: material.presentationPrice,
+      presentationQuantity: material.presentationQuantity,
+      presentationUnit: material.presentationUnit,
+      type: material.type,
+      priceDate: material.priceDate,
+    });
+  }
+  
+  async function setSelectedMaterialOption(value: number, origin: string) {
     setMaterialDataVisible(true);
-    console.log("data", data);
-    console.log("materials", materials);
-    // const response = await getMaterialByID(value);
-    // if (response && response.data) {
-    //   const backendMaterial = response.data;
-    //   setSelectedMaterial({
-    //     brand: backendMaterial.brand,
-    //     component: backendMaterial.component,
-    //     presentationPrice: backendMaterial.presentationPrice,
-    //     presentationQuantity: backendMaterial.presentationQuantity,
-    //     presentationUnit: backendMaterial.presentationUnit,
-    //     type: backendMaterial.type,
-    //     priceDate: backendMaterial.priceDate,
-    //   });
-    // }
-    if (isUpdateForm) {
-      const typeOfUseMaterial = data?.materials.find(
-        (item: TypeOfUseOfMaterial) => item.material?.id === value
+    if(isUpdateForm) {
+      if (origin !== "select") {
+        const typeOfUseMaterial = data?.materials.find(
+          (item: TypeOfUseOfMaterial) => item.material?.id === value
+        );
+  
+        if (typeOfUseMaterial) {
+          setMaterialDetail(typeOfUseMaterial.material);
+        }
+      } else if (origin === "select") {
+        const material = globalMaterials.find(
+          (item: Material) => item.id === value
+        );
+        
+        if (material) {
+          setMaterialDetail(material);
+        }
+      }
+    } else {
+      const material = globalMaterials.find(
+        (item: Material) => item.id === value
       );
-
-      setSelectedMaterial({
-        brand: typeOfUseMaterial.material.brand,
-        component: typeOfUseMaterial.material.component,
-        presentationPrice: typeOfUseMaterial.material.presentationPrice,
-        presentationQuantity: typeOfUseMaterial.material.presentationQuantity,
-        presentationUnit: typeOfUseMaterial.material.presentationUnit,
-        type: typeOfUseMaterial.material.type,
-        priceDate: typeOfUseMaterial.material.priceDate,
-      });
+      
+      if (material) {
+        setMaterialDetail(material);
+      }
     }
   }
 
@@ -374,37 +354,37 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         <div className="material-data-container">
           <div className="col-lg-2 col-sm-2 data-div">
             <Typography fontWeight="700" variant="body1">
-              {`Marca: ${selectedMaterial.brand}`}
+              {`Marca: ${selectedMaterialDetail.brand}`}
             </Typography>
           </div>
           <div className="col-lg-2 col-sm-2 data-div">
             <Typography fontWeight="700" variant="body1">
-              {`Tipo: ${selectedMaterial.type}`}
+              {`Tipo: ${selectedMaterialDetail.type}`}
             </Typography>
           </div>
           <div className="col-lg-2 col-sm-2 data-div">
             <Typography fontWeight="700" variant="body1">
-              {`Composición: ${selectedMaterial.component}`}
+              {`Composición: ${selectedMaterialDetail.component}`}
             </Typography>
           </div>
           <div className="col-lg-2 col-sm-2 data-div">
             <Typography fontWeight="700" variant="body1">
-              {`Precio de presentación: ${selectedMaterial.presentationPrice}`}
+              {`Precio de presentación: ${selectedMaterialDetail.presentationPrice}`}
             </Typography>
           </div>
           <div className="col-lg-2 col-sm-2 data-div">
             <Typography fontWeight="700" variant="body1">
-              {`Cantidad de presentación: ${selectedMaterial.presentationQuantity}`}
+              {`Cantidad de presentación: ${selectedMaterialDetail.presentationQuantity}`}
             </Typography>
           </div>
           <div className="col-lg-2 col-sm-2 data-div">
             <Typography fontWeight="700" variant="body1">
-              {`Unidad de presentación: ${selectedMaterial.presentationUnit}`}
+              {`Unidad de presentación: ${selectedMaterialDetail.presentationUnit}`}
             </Typography>
           </div>
           <div className="col-lg-2 col-sm-2 data-div">
             <Typography fontWeight="700" variant="body1">
-              {`Fecha del precio: ${selectedMaterial.priceDate}`}
+              {`Fecha del precio: ${selectedMaterialDetail.priceDate}`}
             </Typography>
           </div>
         </div>
@@ -496,8 +476,10 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             rules={{ required: "Material requerido." }}
             label="Material"
             error={errors.systemMaterial}
-            options={materials}
-            onSelectOption={(value) => setSelectedMaterialOption(value)}
+            options={materialsSelect}
+            onSelectOption={(value) =>
+              setSelectedMaterialOption(value, "select")
+            }
           />
         </div>
       </div>
@@ -691,7 +673,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
                 rules={{ required: "Material requerido." }}
                 label={`Material ${index + 1}`}
                 error={errors[`systemOthersPluginsMaterials${index}`]}
-                options={materials}
+                options={materialsSelect}
               />
             </div>
             {/* ------------- Coeficiente por m2 (otros complementos) ------------- */}

@@ -26,6 +26,21 @@ interface MaterialInputs {
 }
 
 // SystemForm
+interface BaseMaterial {
+  brand: string;
+  component: string;
+  presentationPrice: string;
+  presentationQuantity: string;
+  presentationUnit: string;
+  type: string;
+  priceDate: string;
+};
+
+interface SystemFormProps {
+  data?: SystemFormInputs | undefined;
+  isUpdateForm: boolean;
+};
+
 interface SystemFormInputs {
   id?: string | any;
   applicationAreaId: string;
@@ -47,13 +62,18 @@ interface SystemMaterialApplicationAreaFormInputs {
   considerations: string;
 }
 
+interface Options {
+  value: any,
+  label: string
+}
+
 interface Material {
   id: number,
   product: string,
   brand: string,
-  presentationQuantity: number,
+  presentationQuantity: string,
   presentationUnit: string,
-  presentationPrice: number,
+  presentationPrice: string,
   priceDate: string,
   currency: string,
   type: string,
@@ -61,6 +81,28 @@ interface Material {
   potLife: number,
   minApplicableTemp: number
 }
+
+interface ConstructionSystem {
+  totalConsumption: string,
+  layers: string,
+  applicationMode: string,
+  cured: boolean,
+  applicationAreaId: string,
+  baseConditions: string,
+  supportConditions: string,
+  materialAreaRestrictions: string,
+  materials: TypeOfUseOfMaterial[],
+};
+
+interface TypeOfUseOfMaterial {
+  id: string,
+  materialId: string,
+  typeOfUse: string,
+  coefficient?: string,
+  coefficientDescription?: string,
+  materialDescription?: string,
+  material?: Material,
+};
 
 interface SystemMaterialFormInputs {
   id: string;
@@ -93,4 +135,9 @@ export type {
   SystemFormInputs,
   SystemMaterialFormInputs,
   Material,
+  Options,
+  BaseMaterial,
+  SystemFormProps,
+  ConstructionSystem,
+  TypeOfUseOfMaterial
 };
