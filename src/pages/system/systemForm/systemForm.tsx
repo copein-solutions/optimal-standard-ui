@@ -21,7 +21,10 @@ import { APPLICATION_MODE, SI_NO, SYSTEM_LIST } from "../../../utils/constants";
 
 // Interfaces
 import { useNavigate } from "react-router-dom";
-import { SystemFormInputs } from "../../../interfaces/form/FormInterfaces";
+import {
+  Material,
+  SystemFormInputs,
+} from "../../../interfaces/form/FormInterfaces";
 import { getUnitPrice } from "../../../utils/mathUtils";
 import Toast from "../../../components/toast";
 
@@ -42,6 +45,7 @@ type TypeOfUseOfMaterial = {
   coefficient?: string;
   coefficientDescription?: string;
   materialDescription?: string;
+  material?: Material;
 };
 
 type ConstructionSystem = {
@@ -75,7 +79,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
 
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMsg, setToastMsg] = useState<string>("");
-  const [materials, setMaterials] = useState([]);
+  const [materials, setMaterials] = useState<Material[]>([]);
   const [applicationAreas, setApplicationAreas] = useState([]);
   const [materialsTypeMesh, setMaterialsTypeMesh] = useState([]);
   const [showMeshHundredPercentInput, setShowMeshHundredPercentInput] =
@@ -123,8 +127,6 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   };
 
   const processFormData = (data: SystemFormInputs) => {
-    console.log("data", data);
-
     let constructionSystem: ConstructionSystem = {
       totalConsumption: data.totalConsumption,
       layers: data.layers,
@@ -161,7 +163,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       });
     }
 
-    for (let i = 1; i <= materialCount; i++) {
+    for (let i = 0; i < materialCount; i++) {
       constructionSystem.materials.push({
         id: data[`systemOthersPluginsMaterialsId${i}`],
         materialId: data[`systemOthersPluginsMaterials${i}`],
@@ -172,8 +174,6 @@ export const SystemForm: React.FC<SystemFormProps> = ({
           data[`systemOthersPluginsMaterialCoefficientDescription${i}`],
       });
     }
-    console.log("materialCount", materialCount);
-    console.log("constructionSystem", constructionSystem);
 
     return constructionSystem;
   };
@@ -202,7 +202,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
 
   // Pre cargo formulario en caso de ser update
   useEffect(() => {
-    if (data) {
+    if (data && isUpdateForm) {
       setValue("applicationAreaId", data.applicationArea.id);
       setValue("applicationMode", data.applicationMode);
       setValue("cured", data.cured ? "si" : "no");
@@ -224,12 +224,12 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         } else if (m.typeOfUse === "TOTAL_MESH") {
           setValue("systemMeshHundredPercent", "si");
           setValue("systemMeshHundredPercentId", m.id);
-          setValue("systemMeshHundredPercentName", m.material.id);
+          // setValue("systemMeshHundredPercentName", m.material.id);
           setSelectedHoundredMesh(Number(m.material.id));
         } else if (m.typeOfUse === "PARTIAL_MESH") {
           setValue("systemParcialMesh", "si");
           setValue("systemParcialMeshId", m.id);
-          setValue("systemParcialMeshName", m.material.id);
+          // setValue("systemParcialMeshName", m.material.id);
           setValue("systemParcialMeshCoefficient", m.coefficient);
           setValue("systemPartialMeshDescription", m.materialDescription);
         } else if (m.typeOfUse === "PLUGIN_MATERIAL") {
@@ -302,17 +302,34 @@ export const SystemForm: React.FC<SystemFormProps> = ({
 
   async function setSelectedMaterialOption(value: number) {
     setMaterialDataVisible(true);
-    const response = await getMaterialByID(value);
-    if (response && response.data) {
-      const backendMaterial = response.data;
+    console.log("data", data);
+    console.log("materials", materials);
+    // const response = await getMaterialByID(value);
+    // if (response && response.data) {
+    //   const backendMaterial = response.data;
+    //   setSelectedMaterial({
+    //     brand: backendMaterial.brand,
+    //     component: backendMaterial.component,
+    //     presentationPrice: backendMaterial.presentationPrice,
+    //     presentationQuantity: backendMaterial.presentationQuantity,
+    //     presentationUnit: backendMaterial.presentationUnit,
+    //     type: backendMaterial.type,
+    //     priceDate: backendMaterial.priceDate,
+    //   });
+    // }
+    if (isUpdateForm) {
+      const typeOfUseMaterial = data?.materials.find(
+        (item: TypeOfUseOfMaterial) => item.material?.id === value
+      );
+
       setSelectedMaterial({
-        brand: backendMaterial.brand,
-        component: backendMaterial.component,
-        presentationPrice: backendMaterial.presentationPrice,
-        presentationQuantity: backendMaterial.presentationQuantity,
-        presentationUnit: backendMaterial.presentationUnit,
-        type: backendMaterial.type,
-        priceDate: backendMaterial.priceDate,
+        brand: typeOfUseMaterial.material.brand,
+        component: typeOfUseMaterial.material.component,
+        presentationPrice: typeOfUseMaterial.material.presentationPrice,
+        presentationQuantity: typeOfUseMaterial.material.presentationQuantity,
+        presentationUnit: typeOfUseMaterial.material.presentationUnit,
+        type: typeOfUseMaterial.material.type,
+        priceDate: typeOfUseMaterial.material.priceDate,
       });
     }
   }
@@ -336,8 +353,6 @@ export const SystemForm: React.FC<SystemFormProps> = ({
 
   // Obtengo precio unitario malla parcial
   async function handlePartialMesh(value: number) {
-    console.log("value", value);
-
     setPartialMeshUnityPriceVisible(true);
     const response = await getMaterialByID(value);
     if (response && response.data) {
@@ -349,7 +364,6 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         backendMesh.presentationUnit,
         true
       );
-      console.log("meshPrice", meshPrice);
       setSelectedPartialMeshPrice(meshPrice);
     }
   }

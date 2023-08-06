@@ -47,6 +47,21 @@ interface SystemMaterialApplicationAreaFormInputs {
   considerations: string;
 }
 
+interface Material {
+  id: number,
+  product: string,
+  brand: string,
+  presentationQuantity: number,
+  presentationUnit: string,
+  presentationPrice: number,
+  priceDate: string,
+  currency: string,
+  type: string,
+  component: string,
+  potLife: number,
+  minApplicableTemp: number
+}
+
 interface SystemMaterialFormInputs {
   id: string;
   materialId: string;
@@ -55,6 +70,7 @@ interface SystemMaterialFormInputs {
   description?: string;
   materialDescription?: string;
   coefficientDescription?: string;
+  material: Material;
 }
 
 // Login
@@ -62,14 +78,11 @@ interface LoginInputs {
   username: string;
   password: string;
 }
-
 interface ApplicationAreaInputs {
   id?: string;
   name: string;
   considerations: string;
 }
-
-export type {};
 
 export type {
   ApplicationAreaInputs,
@@ -79,4 +92,5 @@ export type {
   MaterialInputs,
   SystemFormInputs,
   SystemMaterialFormInputs,
+  Material,
 };
