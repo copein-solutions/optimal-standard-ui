@@ -282,10 +282,21 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       priceDate: material.priceDate,
     });
   }
+
+  const findFromGlobalMaterialsAndSetDetails = (value: number) => {
+    const material = globalMaterials.find(
+      (item: Material) => item.id === value
+    );
+    
+    if (material) {
+      setMaterialDetail(material);
+    }
+  }
   
   async function setSelectedMaterialOption(value: number, origin: string) {
     setMaterialDataVisible(true);
     if(isUpdateForm) {
+      // pre cuando se llama desde el backend sin recorrer todos los materiales
       if (origin !== "select") {
         const typeOfUseMaterial = data?.materials.find(
           (item: TypeOfUseOfMaterial) => item.material?.id === value
@@ -294,23 +305,12 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         if (typeOfUseMaterial) {
           setMaterialDetail(typeOfUseMaterial.material);
         }
+        // pre cargo cuando se llama desde select recorriendo todos los materiales
       } else if (origin === "select") {
-        const material = globalMaterials.find(
-          (item: Material) => item.id === value
-        );
-        
-        if (material) {
-          setMaterialDetail(material);
-        }
+        findFromGlobalMaterialsAndSetDetails(value);
       }
     } else {
-      const material = globalMaterials.find(
-        (item: Material) => item.id === value
-      );
-      
-      if (material) {
-        setMaterialDetail(material);
-      }
+      findFromGlobalMaterialsAndSetDetails(value);
     }
   }
 
