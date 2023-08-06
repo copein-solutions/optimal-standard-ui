@@ -50,7 +50,8 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   const [materialsSelect, setMaterialsSelect] = useState<Options[]>([]);
   const [globalMaterials, setGlobalMaterials] = useState<Material[]>([]);
   const [applicationAreas, setApplicationAreas] = useState([]);
-  const [materialsTypeMesh, setMaterialsTypeMesh] = useState([]);
+  const [materialsTypeMesh, setMaterialsTypeMesh] = useState<Material[]>([]);
+  const [formattedMeshSelect, setFormattedMeshSelect] = useState([]);
   const [showMeshHundredPercentInput, setShowMeshHundredPercentInput] =
     useState<boolean>(false);
   const [showParcialMeshInputs, setShowParcialMeshInputs] =
@@ -195,7 +196,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
           setValue("systemMeshHundredPercent", "si");
           setValue("systemMeshHundredPercentId", m.id);
           // setValue("systemMeshHundredPercentName", m.material.id);
-          setSelectedHoundredMesh(Number(m.material.id));
+          handleHoundredMesh(Number(m.material.id));
         } else if (m.typeOfUse === "PARTIAL_MESH") {
           setValue("systemParcialMesh", "si");
           setValue("systemParcialMeshId", m.id);
@@ -243,7 +244,6 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         );
         setApplicationAreas(formattedApplicationAreas);
       } else {
-        // alert("No se pueden recuperar campos de aplicación del back");
         handleOpenToast("No se pueden recuperar campos de aplicación del back");
       }
     }
@@ -270,7 +270,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     }
     fetchData();
   }, []);
-  
+
   const setMaterialDetail = (material: Material) => {
     setSelectedMaterialDetail({
       brand: material.brand,
@@ -281,27 +281,27 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       type: material.type,
       priceDate: material.priceDate,
     });
-  }
+  };
 
   const findFromGlobalMaterialsAndSetDetails = (value: number) => {
     const material = globalMaterials.find(
       (item: Material) => item.id === value
     );
-    
+
     if (material) {
       setMaterialDetail(material);
     }
-  }
-  
-  async function setSelectedMaterialOption(value: number, origin: string) {
+  };
+
+  function setSelectedMaterialOption(value: number, origin: string) {
     setMaterialDataVisible(true);
-    if(isUpdateForm) {
+    if (isUpdateForm) {
       // pre cuando se llama desde el backend sin recorrer todos los materiales
       if (origin !== "select") {
         const typeOfUseMaterial = data?.materials.find(
           (item: TypeOfUseOfMaterial) => item.material?.id === value
         );
-  
+
         if (typeOfUseMaterial) {
           setMaterialDetail(typeOfUseMaterial.material);
         }
@@ -315,33 +315,34 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   }
 
   // Obtengo precio unitario malla 100 %
-  async function setSelectedHoundredMesh(value: number) {
+  function handleHoundredMesh(value: number) {
     setHoundredMeshUnityPriceVisible(true);
-    const response = await getMaterialByID(value);
-    if (response && response.data) {
-      const backendMesh = response.data;
+    // const response = await getMaterialByID(value);
+    // if (response && response.data) {
+    //   const backendMesh = response.data;
 
-      const meshPrice = getUnitPrice(
-        backendMesh.presentationPrice,
-        backendMesh.presentationQuantity,
-        backendMesh.presentationUnit,
-        true
-      );
-      setSelectedHoundredMeshPrice(meshPrice);
-    }
+    //   const meshPrice = getUnitPrice(
+    //     backendMesh.presentationPrice,
+    //     backendMesh.presentationQuantity,
+    //     backendMesh.presentationUnit,
+    //     true
+    //   );
+    //   setSelectedHoundredMeshPrice(meshPrice);
+    // }
   }
 
   // Obtengo precio unitario malla parcial
-  async function handlePartialMesh(value: number) {
+  function handlePartialMesh(value: number) {
     setPartialMeshUnityPriceVisible(true);
-    const response = await getMaterialByID(value);
-    if (response && response.data) {
-      const backendMesh = response.data;
+    const selectedPartialMesh = materialsTypeMesh.find(
+      (item) => item.id === value
+    );
 
+    if (selectedPartialMesh) {
       const meshPrice = getUnitPrice(
-        backendMesh.presentationPrice,
-        backendMesh.presentationQuantity,
-        backendMesh.presentationUnit,
+        Number(selectedPartialMesh.presentationPrice),
+        Number(selectedPartialMesh.presentationQuantity),
+        selectedPartialMesh.presentationUnit,
         true
       );
       setSelectedPartialMeshPrice(meshPrice);
@@ -369,7 +370,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
           </div>
           <div className="col-lg-2 col-sm-2 data-div">
             <Typography fontWeight="700" variant="body1">
-              {`Precio de presentación: ${selectedMaterialDetail.presentationPrice}`}
+              {`Precio de presentación: $ ${selectedMaterialDetail.presentationPrice}`}
             </Typography>
           </div>
           <div className="col-lg-2 col-sm-2 data-div">
@@ -397,15 +398,10 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     async function fetchData() {
       const response = await getMaterialsByType("malla");
       if (response && response.data) {
-        const backendMaterialsByType = response.data;
+        const backendMeshMaterials = response.data;
 
-        const formattedMaterialsByType = backendMaterialsByType.map(
-          (material: { id: any; product: any; brand: any }) => ({
-            value: material.id,
-            label: `${material.product} ${material.brand}`,
-          })
-        );
-        setMaterialsTypeMesh(formattedMaterialsByType);
+        formatMeshSelect(backendMeshMaterials);
+        setMaterialsTypeMesh(backendMeshMaterials);
       } else {
         handleOpenToast(
           "No se pueden recuperar materiales de tipo malla del back"
@@ -414,6 +410,17 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     }
     fetchData();
   }, []);
+
+  // TODO: arreglar tipado, ver si no se puede hacer sin generar otra const formattedMeshSelect
+  function formatMeshSelect(backendMeshMaterials: any) {
+    const formattedMaterialsByType = backendMeshMaterials.map(
+      (material: { id: any; product: any; brand: any }) => ({
+        value: material.id,
+        label: `${material.product} ${material.brand}`,
+      })
+    );
+    setFormattedMeshSelect(formattedMaterialsByType);
+  }
 
   // Muestro inputs de malla 100% si corresponde
   const watchedMeshHhundredPercent = watch("systemMeshHundredPercent");
@@ -562,8 +569,8 @@ export const SystemForm: React.FC<SystemFormProps> = ({
               rules={{ required: "Nombre malla requerido." }}
               label="Malla"
               error={errors.systemMeshHundredPercentName}
-              options={materialsTypeMesh}
-              onSelectOption={(value) => setSelectedHoundredMesh(value)}
+              options={formattedMeshSelect}
+              onSelectOption={(value) => handleHoundredMesh(value)}
             />
           </div>
         )}
@@ -606,7 +613,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
                 rules={{ required: "Nombre de malla requerido." }}
                 label="Malla"
                 error={errors.systemParcialMeshName}
-                options={materialsTypeMesh}
+                options={formattedMeshSelect}
                 onSelectOption={(value) => handlePartialMesh(value)}
               />
             </div>
