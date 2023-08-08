@@ -1,0 +1,18 @@
+.material-data-container {
+    background-color: rgb(238, 238, 238);
+    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    outline: 0.5px solid black;
+    overflow: hidden;
+}
+
+.data-div {
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    white-space: nowrap;
+    height: 40px;
+    min-width: fit-content;
+    text-align: left;
+}
