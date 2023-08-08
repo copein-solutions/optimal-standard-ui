@@ -92,7 +92,7 @@ interface ConstructionSystem {
   applicationAreaId: string,
   baseConditions: string,
   supportConditions: string,
-  materialAreaRestrictions: string,
+  materialAreaRestrictions: string | null,
   materials: TypeOfUseOfMaterial[],
 };
 

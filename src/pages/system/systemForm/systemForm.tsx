@@ -9,7 +9,6 @@ import "./systemForm.css";
 // Services
 import {
   getApplicationArea,
-  getMaterialByID,
   getMaterials,
   getMaterialsByType,
   createSystem,
@@ -17,7 +16,7 @@ import {
 } from "../../../services/ApiService";
 
 // Constants
-import { APPLICATION_MODE, SI_NO, SYSTEM_LIST } from "../../../utils/constants";
+import { APPLICATION_MODE, SI_NO, SI_NO_NE, SYSTEM_LIST } from "../../../utils/constants";
 
 // Interfaces
 import { useNavigate } from "react-router-dom";
@@ -55,6 +54,8 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   const [showMeshHundredPercentInput, setShowMeshHundredPercentInput] =
     useState<boolean>(false);
   const [showParcialMeshInputs, setShowParcialMeshInputs] =
+    useState<boolean>(false);
+  const [showRestrictions, setShowRestrictions] =
     useState<boolean>(false);
   const [materialCount, setMaterialCount] = useState<number>(0);
   // MATERIAL BASE
@@ -99,7 +100,18 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     navigator(SYSTEM_LIST);
   };
 
+  const handleMaterialRestrictions = (materialAreaRestrictions: string, materialAreaRestrictionValue: string) => {
+    let materialRestriction = null;
+    if(materialAreaRestrictions === 'si') {
+      materialRestriction = materialAreaRestrictionValue;
+    } else if(materialAreaRestrictions === 'n/e') {
+      materialRestriction = 'n/e';
+    }
+    return materialRestriction;
+  }
+
   const processFormData = (data: SystemFormInputs) => {
+    
     let constructionSystem: ConstructionSystem = {
       totalConsumption: data.totalConsumption,
       layers: data.layers,
@@ -108,7 +120,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       applicationAreaId: data.applicationAreaId,
       baseConditions: data.baseConditions,
       supportConditions: data.supportConditions,
-      materialAreaRestrictions: data.materialAreaRestrictions,
+      materialAreaRestrictions: handleMaterialRestrictions(data.materialAreaRestrictions, data.materialAreaRestrictionValue),
       materials: [],
     };
 
@@ -183,10 +195,14 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       setValue("totalConsumption", data.totalConsumption);
       setValue("supportConditions", data.supportConditions);
       setValue("baseConditions", data.baseConditions);
-      setValue("materialAreaRestrictions", data.materialAreaRestrictions);
-
+      if(data.materialAreaRestrictions !== null && data.materialAreaRestrictions !== 'n/e') {
+        setValue("materialAreaRestrictionValue", data.materialAreaRestrictions);  
+        setValue("materialAreaRestrictions", 'si');
+      } else {
+        setValue("materialAreaRestrictions", data.materialAreaRestrictions);
+      }
       setValue("systemMeshHundredPercent", "no");
-      setValue("systemParcialMesh", "no");
+      setValue("systemParcialMesh", "no");      
 
       let pluginMaterialC = 0;
       data.materials?.map((m: any) => {
@@ -208,24 +224,10 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         } else if (m.typeOfUse === "PLUGIN_MATERIAL") {
           handleAddMaterial();
           setValue("systemOthersPluginsMaterialsId" + pluginMaterialC, m.id);
-          setValue(
-            "systemOthersPluginsMaterials" + pluginMaterialC,
-            m.material.id
-          );
-          setValue(
-            "systemOthersPluginsMaterialCoefficient" + pluginMaterialC,
-            m.coefficient
-          );
-          setValue(
-            "systemOthersPluginsMaterialDescription" + pluginMaterialC,
-            m.materialDescription
-          );
-          setValue(
-            "systemOthersPluginsMaterialCoefficientDescription" +
-              pluginMaterialC,
-            m.coefficientDescription
-          );
-
+          setValue(`systemOthersPluginsMaterials${pluginMaterialC}`,m.material.id);
+          setValue(`systemOthersPluginsMaterialCoefficient${pluginMaterialC}`,m.coefficient);
+          setValue(`systemOthersPluginsMaterialDescription${pluginMaterialC}`,m.materialDescription);
+          setValue(`systemOthersPluginsMaterialCoefficientDescription${pluginMaterialC}`,m.coefficientDescription);
           pluginMaterialC++;
         }
       });
@@ -444,9 +446,14 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   // Muestro inputs de malla parcial si corresponde
   const watchedParcialMesh = watch("systemParcialMesh");
   useEffect(() => {
-    const showParcialMeshInputs = watchedParcialMesh === "si" ? true : false;
-    setShowParcialMeshInputs(showParcialMeshInputs);
+    setShowParcialMeshInputs(watchedParcialMesh === "si" ? true : false);
   }, [watchedParcialMesh]);
+
+  // Muestro input de restriction si corresponde
+  const watchedRestriction = watch("materialAreaRestrictions");
+  useEffect(() => {    
+    setShowRestrictions(watchedRestriction === "si" ? true : false);
+  }, [watchedRestriction]);
 
   // Evento de botón agregar - otros complementos
   const handleAddMaterial = () => {
@@ -766,7 +773,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         </div>
       </div>
       <CustomDivider text="Restricciones" />
-      <div className="row mt-3">
+      {/* <div className="row mt-3">
         <div className="col-lg-3 col-sm-6">
           <CustomTextField
             name="materialAreaRestrictions"
@@ -780,7 +787,38 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             helperText={errors.materialAreaRestrictions?.message}
           />
         </div>
+      </div> */}
+
+      {/* ------------- Si | No | N/E ------------- */}
+      <div className="row mt-3">
+        <div className="col-lg-2 col-sm-6">
+          <CustomSelectField
+            name="materialAreaRestrictions"
+            control={control}
+            rules={{ required: "Seleccione una opción." }}
+            label="Si / No / N/E"
+            error={errors.materialAreaRestrictions}
+            options={SI_NO_NE}
+          />
+        </div>
+        {/* ------------- Campo restriction ------------- */}
+        {showRestrictions && (
+          <div className="col-lg-3 col-sm-6">
+            <CustomTextField
+              name="materialAreaRestrictionValue"
+              control={control}
+              rules={{ required: "Restricción por área requerida." }}
+              label="Por área m2"
+              variant="outlined"
+              fullWidth
+              type="number"
+              error={errors.materialAreaRestrictionValue}
+              helperText={errors.materialAreaRestrictionValue?.message}
+            />
+          </div>
+        )}
       </div>
+
       {/* ------------- Botones formulario ------------- */}
       <div className="card-footer text-body-secondary align-right">
         <Button onClick={handleCancel} variant="text">
