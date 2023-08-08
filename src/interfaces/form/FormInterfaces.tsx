@@ -54,6 +54,7 @@ interface SystemFormInputs {
   supportConditions: string;
   baseConditions: string;
   materialAreaRestrictions: string;
+  materialAreaDescription: string;
   materials?: SystemMaterialFormInputs[] | any;
   [key: string]: string; //otros complementos - inputs dinámicos
 }
@@ -93,6 +94,7 @@ interface ConstructionSystem {
   baseConditions: string,
   supportConditions: string,
   materialAreaRestrictions: string | null,
+  materialAreaDescription: string  | null,
   materials: TypeOfUseOfMaterial[],
 };
 

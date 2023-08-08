@@ -16,7 +16,12 @@ import {
 } from "../../../services/ApiService";
 
 // Constants
-import { APPLICATION_MODE, SI_NO, SI_NO_NE, SYSTEM_LIST } from "../../../utils/constants";
+import {
+  APPLICATION_MODE,
+  SI_NO,
+  SI_NO_NE,
+  SYSTEM_LIST,
+} from "../../../utils/constants";
 
 // Interfaces
 import { useNavigate } from "react-router-dom";
@@ -55,8 +60,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     useState<boolean>(false);
   const [showParcialMeshInputs, setShowParcialMeshInputs] =
     useState<boolean>(false);
-  const [showRestrictions, setShowRestrictions] =
-    useState<boolean>(false);
+  const [showRestrictions, setShowRestrictions] = useState<boolean>(false);
   const [materialCount, setMaterialCount] = useState<number>(0);
   // MATERIAL BASE
   const [materialDataVisible, setMaterialDataVisible] =
@@ -100,18 +104,20 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     navigator(SYSTEM_LIST);
   };
 
-  const handleMaterialRestrictions = (materialAreaRestrictions: string, materialAreaRestrictionValue: string) => {
+  const handleMaterialRestrictions = (
+    materialAreaRestrictions: string,
+    materialAreaRestrictionValue: string
+  ) => {
     let materialRestriction = null;
-    if(materialAreaRestrictions === 'si') {
+    if (materialAreaRestrictions === "si") {
       materialRestriction = materialAreaRestrictionValue;
-    } else if(materialAreaRestrictions === 'n/e') {
-      materialRestriction = 'n/e';
+    } else if (materialAreaRestrictions === "n/e") {
+      materialRestriction = "n/e";
     }
     return materialRestriction;
-  }
+  };
 
   const processFormData = (data: SystemFormInputs) => {
-    
     let constructionSystem: ConstructionSystem = {
       totalConsumption: data.totalConsumption,
       layers: data.layers,
@@ -120,7 +126,11 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       applicationAreaId: data.applicationAreaId,
       baseConditions: data.baseConditions,
       supportConditions: data.supportConditions,
-      materialAreaRestrictions: handleMaterialRestrictions(data.materialAreaRestrictions, data.materialAreaRestrictionValue),
+      materialAreaRestrictions: handleMaterialRestrictions(
+        data.materialAreaRestrictions,
+        data.materialAreaRestrictionValue
+      ),
+      materialAreaDescription: data.materialAreaDescription,
       materials: [],
     };
 
@@ -195,14 +205,18 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       setValue("totalConsumption", data.totalConsumption);
       setValue("supportConditions", data.supportConditions);
       setValue("baseConditions", data.baseConditions);
-      if(data.materialAreaRestrictions !== null && data.materialAreaRestrictions !== 'n/e') {
-        setValue("materialAreaRestrictionValue", data.materialAreaRestrictions);  
-        setValue("materialAreaRestrictions", 'si');
+      if (
+        data.materialAreaRestrictions !== null &&
+        data.materialAreaRestrictions !== "n/e"
+      ) {
+        setValue("materialAreaRestrictionValue", data.materialAreaRestrictions);
+        setValue("materialAreaRestrictions", "si");
       } else {
         setValue("materialAreaRestrictions", data.materialAreaRestrictions);
       }
+      setValue("materialAreaDescription", data.materialAreaDescription);
       setValue("systemMeshHundredPercent", "no");
-      setValue("systemParcialMesh", "no");      
+      setValue("systemParcialMesh", "no");
 
       let pluginMaterialC = 0;
       data.materials?.map((m: any) => {
@@ -224,10 +238,22 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         } else if (m.typeOfUse === "PLUGIN_MATERIAL") {
           handleAddMaterial();
           setValue("systemOthersPluginsMaterialsId" + pluginMaterialC, m.id);
-          setValue(`systemOthersPluginsMaterials${pluginMaterialC}`,m.material.id);
-          setValue(`systemOthersPluginsMaterialCoefficient${pluginMaterialC}`,m.coefficient);
-          setValue(`systemOthersPluginsMaterialDescription${pluginMaterialC}`,m.materialDescription);
-          setValue(`systemOthersPluginsMaterialCoefficientDescription${pluginMaterialC}`,m.coefficientDescription);
+          setValue(
+            `systemOthersPluginsMaterials${pluginMaterialC}`,
+            m.material.id
+          );
+          setValue(
+            `systemOthersPluginsMaterialCoefficient${pluginMaterialC}`,
+            m.coefficient
+          );
+          setValue(
+            `systemOthersPluginsMaterialDescription${pluginMaterialC}`,
+            m.materialDescription
+          );
+          setValue(
+            `systemOthersPluginsMaterialCoefficientDescription${pluginMaterialC}`,
+            m.coefficientDescription
+          );
           pluginMaterialC++;
         }
       });
@@ -285,7 +311,9 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       type: material.type,
       priceDate: material.priceDate,
       potLife: material.potLife ? String(material.potLife) : "-",
-      minApplicableTemp: material.minApplicableTemp ? String(material.minApplicableTemp) : "-",
+      minApplicableTemp: material.minApplicableTemp
+        ? String(material.minApplicableTemp)
+        : "-",
     });
   };
 
@@ -320,11 +348,9 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     }
   }
 
-  const findMeshesAndGetUnitPrice = (value: number) :string => {
+  const findMeshesAndGetUnitPrice = (value: number): string => {
     let result = "";
-    const selectedMesh = materialsTypeMesh.find(
-      (item) => item.id === value
-    );
+    const selectedMesh = materialsTypeMesh.find((item) => item.id === value);
 
     if (selectedMesh) {
       const meshPrice = getUnitPrice(
@@ -336,7 +362,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       result = meshPrice;
     }
     return result;
-  }
+  };
 
   // Obtengo precio unitario malla 100 %
   function handleHoundredMesh(value: number, origin: string) {
@@ -451,7 +477,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
 
   // Muestro input de restriction si corresponde
   const watchedRestriction = watch("materialAreaRestrictions");
-  useEffect(() => {    
+  useEffect(() => {
     setShowRestrictions(watchedRestriction === "si" ? true : false);
   }, [watchedRestriction]);
 
@@ -773,22 +799,6 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         </div>
       </div>
       <CustomDivider text="Restricciones" />
-      {/* <div className="row mt-3">
-        <div className="col-lg-3 col-sm-6">
-          <CustomTextField
-            name="materialAreaRestrictions"
-            control={control}
-            rules={{ required: "Restricción por área requerida." }}
-            label="Por área m2"
-            variant="outlined"
-            fullWidth
-            type="number"
-            error={errors.materialAreaRestrictions}
-            helperText={errors.materialAreaRestrictions?.message}
-          />
-        </div>
-      </div> */}
-
       {/* ------------- Si | No | N/E ------------- */}
       <div className="row mt-3">
         <div className="col-lg-2 col-sm-6">
@@ -817,6 +827,20 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             />
           </div>
         )}
+      </div>
+
+      <div className="row mt-3">
+        <div className="col-lg-5 col-sm-6">
+          <CustomTextField
+            multiline
+            minRows={3}
+            name="materialAreaDescription"
+            control={control}
+            label="Otras restricciones"
+            variant="outlined"
+            fullWidth
+          />
+        </div>
       </div>
 
       {/* ------------- Botones formulario ------------- */}
