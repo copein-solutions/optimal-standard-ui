@@ -3,6 +3,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate } from "react-router-dom";
 import "./Grid.css";
+import { Check } from "@mui/icons-material";
 
 type Header = {
   name: string;
@@ -39,7 +40,6 @@ export const GridCustom: React.FC<GridProps> = ({
   };
 
   const onEdit = (id: number) => {
-    console.log("edit", id);
     navigator(`/${editNav}/${id}/update`);
   };
 
@@ -91,7 +91,9 @@ export const GridCustom: React.FC<GridProps> = ({
           {body?.map((item, index) => (
             <tr key={index}>
               {header?.map((col, index) => (
-                <td key={index}>{item[col.value]}</td>
+                <td key={index} >
+                  {item[col.value] === "si" ? <Check /> : item[col.value] === "no" ? "" : (item[col.value])}
+                </td>
               ))}
               {hasEdit && <td>{editButton(item.id)}</td>}
               {hasDelete && <td>{deleteButton(item.id)}</td>}

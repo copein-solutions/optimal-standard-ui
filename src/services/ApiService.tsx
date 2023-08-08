@@ -8,12 +8,11 @@ let config: AxiosRequestConfig = {
   },
 };
 
-
-const api = axios.create({
+export const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
-const fetchHeaders = () => {
+export const fetchHeaders = () => {
   const credentials = localStorage.getItem('credentials');
   if(credentials && config.headers) {
     config.headers.Authorization = `Bearer ${JSON.parse(credentials)}`;
@@ -96,6 +95,13 @@ export const getSystemByID = async (
   id: number
 ): Promise<ResponseApi> => {
   return get(`/construction_system/${id}`);
+};
+
+export const updateSystem = async (
+  id: number,
+  data: any
+): Promise<ResponseApi> => {
+  return put(`/construction_system/${id}`, data);
 };
 
 //#endregion

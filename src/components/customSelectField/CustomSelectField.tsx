@@ -8,15 +8,10 @@ import {
 } from "@mui/material";
 import { ReactNode } from "react";
 
-type Option = {
-  value: string;
-  label: string;
-};
-
 type CustomSelectFieldProps = {
   name: string;
   label: string;
-  options: Option[];
+  options: any;
   control: any;
   rules?: any;
   error?: any;
@@ -55,7 +50,7 @@ const CustomSelectField: React.FC<CustomSelectFieldProps> = ({
               }
             }}
           >
-            {options.map((option, index) => (
+            {options.map((option: any, index: number) => (
               <MenuItem key={index} value={option.value}>
                 {option.label}
               </MenuItem>

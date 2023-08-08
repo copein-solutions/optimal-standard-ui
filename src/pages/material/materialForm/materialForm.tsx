@@ -52,7 +52,6 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
   const navigator = useNavigate();
 
   useEffect(() => {
-    setValue("priceDate", loadTodayDate());
     if (data) {
       setValue("product", data.product);
       setValue("brand", data.brand);
@@ -65,6 +64,8 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
       setValue("priceDate", data.priceDate);
       setValue("potLife", data.potLife);
       setValue("minApplicableTemp", data.minApplicableTemp);
+    } else {
+      setValue("priceDate", loadTodayDate());
     }
   }, [setValue, data]);
 

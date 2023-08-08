@@ -1,20 +1,42 @@
-import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from 'react-redux'
-import { Navigate } from 'react-router-dom'
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { Navigate } from "react-router-dom";
 
-const PrivateRoute = ({ children }) => {  
-  const isAuthenticated = useSelector(state => state.logged)
-  const credentials = localStorage.getItem('credentials')
+import { api, fetchHeaders } from "../../services/ApiService";
+import { CustomSkeleton } from "../skeleton/Skeleton";
+
+const PrivateRoute = ({ children }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const dispatch = useDispatch();
-  const [isLogged, setLogged] = useState(false);
-  if (!isAuthenticated && credentials != null) {
-      dispatch({ type: "LOGIN", payload: true });
-      setLogged(true);
-  }
-  if (!isAuthenticated && !isLogged) {
-    return <Navigate to='/login' replace={true} />
-  }    
-  return children
-}
+  const PING = "/ping";
 
-export default PrivateRoute
+  useEffect(() => {
+    const headers = fetchHeaders();
+    if (headers) {
+      api
+        .get(PING, headers)
+        .then((response) => {
+          setIsLoggedIn(true);
+          dispatch({ type: "LOGIN", payload: true });
+        })
+        .catch((error) => {
+          setIsLoggedIn(false);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    } else {
+      setIsLoggedIn(false);
+      setIsLoading(false);
+    }
+  }, []);
+
+  if (isLoading) {
+    return <CustomSkeleton/>;
+  }
+
+  return isLoggedIn ? children : <Navigate to="/login" />;
+};
+
+export default PrivateRoute;

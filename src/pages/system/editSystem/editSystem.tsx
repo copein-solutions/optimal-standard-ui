@@ -1,17 +1,15 @@
 import { MainContainer } from "../../../components/mainContainer/MainContainer";
-import { systemFormInputs } from "../../../interfaces/form/FormInterfaces";
+import { SystemFormInputs } from "../../../interfaces/form/FormInterfaces";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "./editSystem.css";
 
 // Services
-import {
-  getSystemByID,
-} from "../../../services/ApiService";
+import { getSystemByID } from "../../../services/ApiService";
 import SystemForm from "../systemForm";
 
 export const EditSystem = () => {
-  const [formData, setFormData] = useState<systemFormInputs>();
+  const [formData, setFormData] = useState<SystemFormInputs>();
   const { id } = useParams();
 
   useEffect(() => {
@@ -33,7 +31,7 @@ export const EditSystem = () => {
 
   return (
     <MainContainer cardTitle="Editar sistema">
-      <SystemForm data={formData} isUpdateForm={ true }/>
+      <SystemForm data={formData} isUpdateForm={true} />
     </MainContainer>
   );
 };

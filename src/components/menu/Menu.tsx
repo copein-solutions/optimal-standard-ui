@@ -10,65 +10,50 @@ import {
 } from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
-import ListMaterial from "../../pages/material/listMaterial/listMaterial";
-import AddMaterial from "../../pages/material/addMaterial/addMaterial";
-import ListApplicationArea from "../../pages/applicationArea/listApplicationArea/listApplicationArea";
-import AddApplicationArea from "../../pages/applicationArea/addApplicationArea/addApplicationArea";
-import AddSystem from "../../pages/system/addSystem";
-import Login from "../../pages/login";
 
 import {APPLICATION_AREA_CREATE, APPLICATION_AREA_LIST, LOGIN, MATERIAL_CREATE, MATERIAL_LIST, SYSTEM_CREATE, SYSTEM_LIST} from "../../utils/constants";
-import ListSystem from "../../pages/system/listSystem";
 
 type MenuProps = {
   isOpen: boolean;
   setOpen: CallableFunction;
 };
 
-//Opciones que serán renderizadas en el menú
-// TODO: cambiar este objeto para un archivo aparte??
-export const menuOptions = [
+const menuOptions = [
   {
     name: "Agregar material",
     icon: <ArrowRightIcon />,
     path: MATERIAL_CREATE,
-    component: AddMaterial,
-  },
-  {
-    name: "Agregar campo de aplicación",
-    icon: <ArrowRightIcon />,
-    path: APPLICATION_AREA_CREATE,
-    component: AddApplicationArea,
   },
   {
     name: "Agregar sistema",
     icon: <ArrowRightIcon />,
     path: SYSTEM_CREATE,
-    component: AddSystem,
   },
+  {
+    name: "Agregar campo de aplicación",
+    icon: <ArrowRightIcon />,
+    path: APPLICATION_AREA_CREATE,
+  },
+
   {
     name: "Listado de materiales",
     icon: <ArrowRightIcon />,
     path: MATERIAL_LIST,
-    component: ListMaterial,
   },
   {
     name: "Listado de campo de aplicación",
     icon: <ArrowRightIcon />,
     path: APPLICATION_AREA_LIST,
-    component: ListApplicationArea,
   },
   {
     name: "Listado de sistemas",
     icon: <ArrowRightIcon />,
     path: SYSTEM_LIST,
-    component: ListSystem,
   },
   {
     name: "Login",
     icon: <ArrowRightIcon />,
     path: LOGIN,
-    component: Login,
   },
 ];
 

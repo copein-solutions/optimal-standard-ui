@@ -161,3 +161,18 @@ export const SI_NO = [
     value: "no",
   },
 ];
+
+export const SI_NO_NE = [
+  {
+    label: "Si",
+    value: "si",
+  },
+  {
+    label: "No",
+    value: "no",
+  },
+  {
+    label: "N/E",
+    value: "n/e",
+  },
+];
