@@ -50,11 +50,6 @@ const menuOptions = [
     icon: <ArrowRightIcon />,
     path: SYSTEM_LIST,
   },
-  {
-    name: "Login",
-    icon: <ArrowRightIcon />,
-    path: LOGIN,
-  },
 ];
 
 export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
