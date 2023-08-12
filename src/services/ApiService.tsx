@@ -57,6 +57,7 @@ export const getMaterialByID = async (id: number): Promise<ResponseApi> => {
 export const deleteMaterial = async (id: number | null): Promise<ResponseApi> => {
   return remove(`/material/${id}`);
 };
+
 //#endregion
 
 // #region CAMPO DE APLICACIÓN
@@ -81,6 +82,10 @@ export const getApplicationAreaByID = async (
   id: number
 ): Promise<ResponseApi> => {
   return get(`/application_area/${id}`);
+};
+
+export const deleteApplicationArea = async (id: number | null): Promise<ResponseApi> => {
+  return remove(`/application_area/${id}`);
 };
 
 //#endregion

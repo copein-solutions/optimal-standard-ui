@@ -6,8 +6,12 @@ import "./Grid.css";
 import { Check } from "@mui/icons-material";
 import CustomModal from "../modal/customModal";
 import { useState } from "react";
-import { deleteMaterial } from "../../services/ApiService";
+import {
+  deleteApplicationArea,
+  deleteMaterial,
+} from "../../services/ApiService";
 import { useDispatch } from "react-redux";
+import Toast, { ToastType } from "../toast/toast";
 
 type Header = {
   name: string;
@@ -24,7 +28,7 @@ type GridProps = {
   /** Si es false, se renderizará el botón de eliminar elemento. */
   hasDelete?: boolean;
   /** String que indica la url a la cual redireccionará el botón de edit. */
-  editNav?: string;
+  navigateTo?: string;
 };
 
 export const GridCustom: React.FC<GridProps> = ({
@@ -32,21 +36,38 @@ export const GridCustom: React.FC<GridProps> = ({
   body,
   hasEdit,
   hasDelete,
-  editNav,
+  navigateTo,
 }) => {
   const dispatch = useDispatch();
   const navigator = useNavigate();
   const [modalOpen, setModalOpen] = useState(false); // Estado para controlar el modal
   const [deleteItemId, setDeleteItemId] = useState<number | null>(null); // Estado para rastrear el ID del elemento a eliminar
+  const [showToast, setShowToast] = useState(false);
+  const [toastMsg, setToastMsg] = useState("");
+  const [toastType, setToastType] = useState<ToastType>("success");
 
   const onDelete = async () => {
-    try {
-      deleteMaterial(deleteItemId);
-      dispatch({ type: "DELETE_MATERIAL", payload: deleteItemId});
-    } catch (error) {
-      console.log(error);
+    let response: any;
+    if (navigateTo === "material") {
+      response = await deleteMaterial(deleteItemId);
+      callDispatch("DELETE_MATERIAL", response);
+    } else if (navigateTo === "application_area") {
+      response = await deleteApplicationArea(deleteItemId);
+      callDispatch("DELETE_APPLICATION_AREA", response);
     }
   };
+
+  function callDispatch(type: string, response: any) {
+    if (response.status !== 200) {
+      handleOpenToast(
+        "No se puede eliminar el elemento ya que forma parte de un sistema",
+        "error"
+      );
+    } else {
+      handleOpenToast("Elemento eliminado con éxito", "success");
+      dispatch({ type: type, payload: deleteItemId });
+    }
+  }
 
   const deleteButton = (id: number) => (
     <Button
@@ -65,17 +86,27 @@ export const GridCustom: React.FC<GridProps> = ({
   );
 
   const onEdit = (id: number) => {
-    navigator(`/${editNav}/${id}/update`);
+    navigator(`/${navigateTo}/${id}/update`);
   };
 
   const openDeleteModal = (id: number) => {
-    setDeleteItemId(id); // Establece el ID del elemento a eliminar
-    setModalOpen(true); // Abre el modal
+    setDeleteItemId(id);
+    setModalOpen(true);
   };
 
   const closeDeleteModal = () => {
-    setDeleteItemId(null); // Reinicia el ID del elemento a eliminar
-    setModalOpen(false); // Cierra el modal
+    setDeleteItemId(null);
+    setModalOpen(false);
+  };
+
+  const handleOpenToast = (msg: string, type: ToastType) => {
+    setToastMsg(msg);
+    setToastType(type);
+    setShowToast(true);
+  };
+
+  const handleCloseToast = () => {
+    setShowToast(false);
   };
 
   const editButton = (id: number) => (
@@ -138,6 +169,12 @@ export const GridCustom: React.FC<GridProps> = ({
           }}
         />
       )}
+      <Toast
+        type={toastType}
+        message={toastMsg}
+        open={showToast}
+        onClose={handleCloseToast}
+      />
     </>
   );
 };

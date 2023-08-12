@@ -47,7 +47,7 @@ const ListApplicationArea = () => {
           body={applicationAreas}
           hasEdit
           hasDelete
-          editNav="application_area"
+          navigateTo="application_area"
         />
       </div>
     </MainContainer>
