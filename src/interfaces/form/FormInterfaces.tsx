@@ -55,6 +55,7 @@ interface SystemFormInputs {
   baseConditions: string;
   materialAreaRestrictions: string;
   materialAreaDescription: string;
+  baseMaterialunitPrice: string;
   materials?: SystemMaterialFormInputs[] | any;
   [key: string]: string; //otros complementos - inputs dinámicos
 }
