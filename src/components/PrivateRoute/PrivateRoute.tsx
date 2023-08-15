@@ -4,10 +4,17 @@ import { Navigate } from "react-router-dom";
 
 import { api, fetchHeaders } from "../../services/ApiService";
 import { CustomSkeleton } from "../skeleton/Skeleton";
+import Unauthorized from "../Unauthorized/unautorized";
 
-const PrivateRoute = ({ children }) => {
+type PrivateRouteProps = {
+  children: any,
+  allowRoles?: any,
+}
+
+const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, allowRoles }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const userRole = localStorage.getItem("userRole");
   const dispatch = useDispatch();
   const PING = "/ping";
 
@@ -36,7 +43,12 @@ const PrivateRoute = ({ children }) => {
     return <CustomSkeleton/>;
   }
 
-  return isLoggedIn ? children : <Navigate to="/login" />;
+  if (isLoggedIn && allowRoles.includes(userRole))
+    return children;
+  else if (!isLoggedIn)
+    return <Navigate to="/login" />
+  else if (isLoggedIn && !allowRoles.includes(userRole))
+    return <Unauthorized />
 };
 
 export default PrivateRoute;

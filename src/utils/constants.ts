@@ -19,7 +19,10 @@ export const SYSTEM_CREATE = "/system/create";
 export const SYSTEM_LIST = "/system/list";
 export const SYSTEM_EDIT = "/system/:id/update";
 
-
+// Roles
+export const ADMIN_ROL = "ADMIN";
+export const COMMENTOR_ROL = "COMMENTOR"
+export const READONLY_ROL = "READONLY"
 
 //#endregion
 

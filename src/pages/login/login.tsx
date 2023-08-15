@@ -41,6 +41,8 @@ const Login = () => {
     let response = await login(data);
 
     if(response.data.token) {
+      // localStorage.setItem('userRole', JSON.stringify(response.data.userRole));
+      localStorage.setItem('userRole', 'adsfads');
       localStorage.setItem('credentials', JSON.stringify(response.data.token));
       dispatch({ type: "LOGIN", payload: true });
       navigator(MATERIAL_LIST);
