@@ -4,6 +4,7 @@ import CustomTextField from "../../../components/TextField";
 import CustomSelectField from "../../../components/customSelectField";
 import CustomDivider from "../../../components/divider";
 import MaterialData from "../../system/materialData/materialData";
+import Toast from "../../../components/toast";
 
 import { useForm } from "react-hook-form";
 import "./systemForm.css";
@@ -37,8 +38,6 @@ import {
   ConstructionSystem,
 } from "../../../interfaces/form/FormInterfaces";
 import { getUnitPrice } from "../../../utils/mathUtils";
-import Toast from "../../../components/toast";
-import { JsxElement } from "typescript";
 
 export const SystemForm: React.FC<SystemFormProps> = ({
   data,

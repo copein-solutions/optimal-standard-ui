@@ -4,7 +4,7 @@ import { ResponseApi } from "../interfaces/service/ApiInterfaces";
 const API_BASE_URL = "http://localhost:8080";
 let config: AxiosRequestConfig = {
   headers: {
-    'Content-Type': 'Application/json'
+    "Content-Type": "Application/json",
   },
 };
 
@@ -13,14 +13,14 @@ export const api = axios.create({
 });
 
 export const fetchHeaders = () => {
-  const credentials = localStorage.getItem('credentials');
-  if(credentials && config.headers) {
+  const credentials = localStorage.getItem("credentials");
+  if (credentials && config.headers) {
     config.headers.Authorization = `Bearer ${JSON.parse(credentials)}`;
   } else if (config.headers) {
     config.headers.Authorization = null;
   }
   return config;
-}
+};
 
 //#region USER
 export const login = async (data: any): Promise<ResponseApi> => {
@@ -53,6 +53,11 @@ export const updateMaterial = async (
 export const getMaterialByID = async (id: number): Promise<ResponseApi> => {
   return get(`/material/${id}`);
 };
+
+export const deleteMaterial = async (id: number | null): Promise<ResponseApi> => {
+  return remove(`/material/${id}`);
+};
+
 //#endregion
 
 // #region CAMPO DE APLICACIÓN
@@ -79,6 +84,10 @@ export const getApplicationAreaByID = async (
   return get(`/application_area/${id}`);
 };
 
+export const deleteApplicationArea = async (id: number | null): Promise<ResponseApi> => {
+  return remove(`/application_area/${id}`);
+};
+
 //#endregion
 
 //#region SISTEMA
@@ -91,9 +100,7 @@ export const getSystems = async (): Promise<ResponseApi> => {
   return get("/construction_system");
 };
 
-export const getSystemByID = async (
-  id: number
-): Promise<ResponseApi> => {
+export const getSystemByID = async (id: number): Promise<ResponseApi> => {
   return get(`/construction_system/${id}`);
 };
 
@@ -123,7 +130,7 @@ const get = async (url: string): Promise<ResponseApi> => {
 
 const put = async (url: string, data: any): Promise<ResponseApi> => {
   try {
-    return await api.put(url, data,fetchHeaders());
+    return await api.put(url, data, fetchHeaders());
   } catch (error: any) {
     return error.response;
   }

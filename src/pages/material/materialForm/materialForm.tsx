@@ -108,20 +108,15 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
     let materialQuantity: number = 0;
     setInputValueNumberFormat(materialPriceWatch);
     if (materialPriceWatch) {
-      materialPrice = Number(
-        materialPriceWatch.replaceAll(".", "").replace(",", ".")
-      );
+      materialPrice = Number(materialPriceWatch);
     }
     if (materialQuantityWatch) {
       materialQuantity = Number(materialQuantityWatch);
     }
-    let formattedPrice = getUnitPrice(materialPrice, materialQuantity).replace(".", ",");
-    setInputValue(formattedPrice);
+    setInputValue(getUnitPrice(materialPrice, materialQuantity));
   }, [data, watchedValues]);
 
   const onSubmit = async (formData: MaterialInputs) => {
-    formData.presentationPrice = formData.presentationPrice.replace(",", ".");
-
     let response: any;
     if (isUpdateForm) {
       response = await updateMaterial(Number(data?.id), formData);
@@ -256,7 +251,7 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
             displayType={"input"}
             fixedDecimalScale={true}
             decimalScale={2}
-            decimalSeparator={","}
+            decimalSeparator={"."}
             inputMode="numeric"
             value={inputValueNumberFormat}
             onChange={handleSelectChange}

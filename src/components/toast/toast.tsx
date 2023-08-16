@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Alert, AlertTitle, Typography } from "@mui/material";
 import "./toast.css";
 
-type ToastType = "error" | "success" | "warning";
+export type ToastType = "error" | "success" | "warning";
 
 type ToastProps = {
   type: ToastType;
@@ -18,18 +18,18 @@ const Toast: React.FC<ToastProps> = ({ type, message, open, onClose }) => {
     setShowToast(open);
   }, [open]);
 
-    useEffect(() => {
-      let timeoutId: NodeJS.Timeout;
-      if (showToast) {
-        timeoutId = setTimeout(() => {
-          setShowToast(false);
-          onClose();
-        }, 5000);
-      }
-      return () => {
-        clearTimeout(timeoutId);
-      };
-    }, [showToast, onClose]);
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    if (showToast) {
+      timeoutId = setTimeout(() => {
+        setShowToast(false);
+        onClose();
+      }, 5000);
+    }
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [showToast, onClose]);
 
   const handleCloseToast = () => {
     setShowToast(false);
@@ -55,7 +55,9 @@ const Toast: React.FC<ToastProps> = ({ type, message, open, onClose }) => {
         <div className="toast-container">
           <div className="toast-content">
             <Alert severity={getAlertSeverity()} onClose={handleCloseToast}>
-              <Typography variant="subtitle1">{message}</Typography>
+              <Typography fontWeight="bold" variant="subtitle1">
+                {message}
+              </Typography>
             </Alert>
           </div>
         </div>

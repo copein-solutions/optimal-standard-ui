@@ -2,10 +2,10 @@ import initialState from "../store/initialState";
 
 const rootReducer = (state = initialState, action: any) => {
   switch (action.type) {
-    case 'LOGIN':
-			return { ...state, logged: true }
-      case 'LOGOUT':
-        return { ...state, logged: false }      
+    case "LOGIN":
+      return { ...state, logged: true };
+    case "LOGOUT":
+      return { ...state, logged: false };
     case "SET_MATERIALS":
       return { ...state, materials: action.payload };
     case "SAVE_MATERIAL":
@@ -25,7 +25,7 @@ const rootReducer = (state = initialState, action: any) => {
     case "DELETE_APPLICATION_AREA":
       return {
         ...state,
-        materials: state.applicationAreas.filter(
+        applicationAreas: state.applicationAreas.filter(
           (t: any) => t.id !== action.payload
         ),
       };
