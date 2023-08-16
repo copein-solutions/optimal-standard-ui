@@ -1,20 +1,85 @@
+import { SystemFormInputs } from "../interfaces/form/FormInterfaces";
+
+/**
+ * Calcula el precio unitario en base a la información de presentación.
+ *
+ * @param presentationPrice - El precio total de la presentación.
+ * @param presentationQuantity - Cantidad de presentación.
+ * @param presentationUnit - (Opcional) La unidad de medida de la presentación.
+ * @param withSufix - (Opcional) Si se debe incluir el sufijo de unidad en el resultado.
+ * @returns El precio unitario calculado como una cadena formateada.
+ */
 export const getUnitPrice = (
   presentationPrice: number,
   presentationQuantity: number,
   presentationUnit?: string,
-  withSubfix?: boolean
+  withSufix?: boolean
 ) => {
   let unitPrice =
     presentationPrice / (presentationQuantity === 0 ? 1 : presentationQuantity);
-  if (withSubfix) {
-    return `${String(truncarDecimales(unitPrice, 2))} $/${presentationUnit}`;
+  if (withSufix) {
+    return `${String(truncateDecimals(unitPrice, 2))} $/${presentationUnit}`;
   } else {
-    return `${String(truncarDecimales(unitPrice, 2))}`;
+    return `${String(truncateDecimals(unitPrice, 2))}`;
   }
 };
 
-export const truncarDecimales = (numero: number, cantidadDecimales: number) => {
+/**
+ * Trunca un número decimal a una cantidad específica de decimales.
+ *
+ * @param numero El número decimal que se va a truncar.
+ * @param cantidadDecimales El número de decimales a los que se quiere truncar.
+ * @returns El número truncado con la cantidad de decimales especificada.
+ */
+export const truncateDecimals = (
+  numero: number,
+  cantidadDecimales: number
+): number => {
   const multiplicador = Math.pow(10, cantidadDecimales);
   const numeroTruncado = Math.floor(numero * multiplicador) / multiplicador;
   return numeroTruncado;
 };
+
+
+export function getUnitPriceBaseMaterialSystem(
+  formValues: SystemFormInputs,
+  baseMaterialUnitPrice: string,
+  selectedTotalMeshPrice: string,
+  selectedPartialMeshPrice: string,
+  selectedPluginMaterialDetail1: string,
+  selectedPluginMaterialDetail2: string,
+  selectedPluginMaterialDetail3: string
+): number {
+  const parcialMeshCoefficient =
+    formValues.systemParcialMeshCoefficient !== undefined
+      ? Number(formValues.systemParcialMeshCoefficient)
+      : 0;
+
+  const pluginMaterialCoefficient1 =
+    formValues.systemOthersPluginsMaterialCoefficient0 !== undefined
+      ? Number(formValues.systemOthersPluginsMaterialCoefficient0)
+      : 0;
+
+  const pluginMaterialCoefficient2 =
+    formValues.systemOthersPluginsMaterialCoefficient1 !== undefined
+      ? Number(formValues.systemOthersPluginsMaterialCoefficient1)
+      : 0;
+
+  const pluginMaterialCoefficient3 =
+    formValues.systemOthersPluginsMaterialCoefficient2 !== undefined
+      ? Number(formValues.systemOthersPluginsMaterialCoefficient2)
+      : 0;
+
+  const systemUnitPrice =
+    Number(baseMaterialUnitPrice) * Number(formValues.totalConsumption) +
+    Number(selectedTotalMeshPrice) +
+    Number(selectedPartialMeshPrice) * parcialMeshCoefficient +
+    Number(selectedPluginMaterialDetail1) * pluginMaterialCoefficient1 +
+    Number(selectedPluginMaterialDetail2) * pluginMaterialCoefficient2 +
+    Number(selectedPluginMaterialDetail3) * pluginMaterialCoefficient3;
+
+  const formatSystemUnitPrice =
+    systemUnitPrice !== undefined ? truncateDecimals(systemUnitPrice, 2) : 0;
+  
+  return formatSystemUnitPrice;
+}
