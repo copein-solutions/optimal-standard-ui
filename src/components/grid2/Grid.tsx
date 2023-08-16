@@ -152,7 +152,7 @@ export const GridCustom: React.FC<GridProps> = ({
 
   const columns: GridColDef[] = header?.map((col) => ({
     field: col.name,
-    headerName: col.value,
+    headerName: col.name,
     width: 150,
   })) || [];
 
