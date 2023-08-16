@@ -76,7 +76,7 @@ const ListMaterial = () => {
         body={materials}
         hasEdit
         hasDelete
-        editNav="material"
+        navigateTo="material"
       />
     </MainContainer>
   );
