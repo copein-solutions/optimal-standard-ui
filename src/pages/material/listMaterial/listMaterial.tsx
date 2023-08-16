@@ -3,7 +3,7 @@ import { Button } from "@mui/material";
 import "./listMaterial.css";
 import { getMaterials } from "../../../services/ApiService";
 import { MainContainer } from "../../../components/mainContainer/MainContainer";
-import { GridCustom } from "../../../components/grid/Grid";
+import { GridCustom } from "../../../components/grid2/Grid";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../redux/reducers/reducer";
 import { useNavigate } from "react-router-dom";
