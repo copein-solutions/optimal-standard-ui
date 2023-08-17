@@ -1,3 +1,4 @@
+import React from "react";
 import { Button } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -12,9 +13,17 @@ import {
 import { useDispatch } from "react-redux";
 import Toast, { ToastType } from "../toast/toast";
 
+import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+
 type Header = {
   name: string;
   value: string;
+};
+
+type RowData = {
+  id: number;
+  [key: string]: any;
+  actions: React.ReactNode;
 };
 
 type GridProps = {
@@ -124,30 +133,43 @@ export const GridCustom: React.FC<GridProps> = ({
     </Button>
   );
 
+  const formatRows: RowData[] = [];
+  body?.forEach((item, index) => {
+    const rowData: RowData = { id: index + 1, actions: <></> };
+    header?.forEach((col) => {
+      rowData[col.name] = item[col.value];
+    });
+    if (hasEdit || hasDelete) {
+      rowData.actions = (
+        <>
+          {hasEdit && <>{editButton(item.id)}</>}
+          {hasDelete && <>{deleteButton(item.id)}</>}
+        </>
+      );
+    }
+    formatRows.push(rowData);
+  });
+
+  const columns: GridColDef[] = header?.map((col) => ({
+    field: col.name,
+    headerName: col.name,
+    width: 150,
+  })) || [];
+
+  if (hasEdit || hasDelete) {
+    columns.push({
+      field: "actions",
+      headerName: "Actions",
+      width: 150,
+      sortable: false,
+      renderCell: (params) => params.value,
+    });
+  }
+
   return (
-    <>
-      <table className="table">
-        <thead>
-          <tr>
-            {header?.map((item, index) => (
-              <th key={index}>{item.name}</th>
-            ))}
-            {hasEdit && <th></th>}
-            {hasDelete && <th></th>}
-          </tr>
-        </thead>
-        <tbody>
-          {body?.map((item, index) => (
-            <tr key={index}>
-              {header?.map((col, index) => (
-                <td key={index}>{item[col.value]}</td>
-              ))}
-              {hasEdit && <td>{editButton(item.id)}</td>}
-              {hasDelete && <td>{deleteButton(item.id)}</td>}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div style={{ height: 400, width: "100%" }}>
+      <DataGrid rows={formatRows} columns={columns} 
+      slots={ {toolbar: GridToolbar} }/>
       {modalOpen && (
         <CustomModal
           open={modalOpen}
@@ -166,6 +188,6 @@ export const GridCustom: React.FC<GridProps> = ({
         open={showToast}
         onClose={handleCloseToast}
       />
-    </>
+    </div>
   );
 };

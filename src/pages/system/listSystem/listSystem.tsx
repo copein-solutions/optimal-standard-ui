@@ -59,7 +59,7 @@ const ListSystem = () => {
           body={systems}
           hasEdit
           hasDelete
-          editNav="system"
+          navigateTo="system"
         />
       </div>
     </MainContainer>

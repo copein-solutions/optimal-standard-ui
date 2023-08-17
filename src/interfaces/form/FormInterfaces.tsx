@@ -32,6 +32,7 @@ interface BaseMaterial {
   presentationPrice: string;
   presentationQuantity: string;
   presentationUnit: string;
+  unitPrice: string;
   type: string;
   priceDate: string;
   potLife: string;
@@ -55,6 +56,7 @@ interface SystemFormInputs {
   baseConditions: string;
   materialAreaRestrictions: string;
   materialAreaDescription: string;
+  baseMaterialunitPrice: string;
   materials?: SystemMaterialFormInputs[] | any;
   [key: string]: string; //otros complementos - inputs dinámicos
 }
@@ -77,6 +79,7 @@ interface Material {
   presentationQuantity: string,
   presentationUnit: string,
   presentationPrice: string,
+  unitPrice: string,
   priceDate: string,
   currency: string,
   type: string,
