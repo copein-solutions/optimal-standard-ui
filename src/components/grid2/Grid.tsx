@@ -142,8 +142,8 @@ export const GridCustom: React.FC<GridProps> = ({
     if (hasEdit || hasDelete) {
       rowData.actions = (
         <>
-          {hasEdit && <td>{editButton(item.id)}</td>}
-          {hasDelete && <td>{deleteButton(item.id)}</td>}
+          {hasEdit && <>{editButton(item.id)}</>}
+          {hasDelete && <>{deleteButton(item.id)}</>}
         </>
       );
     }
