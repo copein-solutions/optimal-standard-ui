@@ -244,9 +244,10 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       } else {
         response = await createSystem(processFormData(formData));
       }
-
+      
       if (response.status !== 200) {
         handleOpenToast("Failure");
+        console.log(response);
       } else {
         handleOpenToast("Success");
         navigator(SYSTEM_LIST);

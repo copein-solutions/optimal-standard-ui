@@ -3,40 +3,39 @@ import { Button } from "@mui/material";
 import "./listSystem.css";
 import { getSystems } from "../../../services/ApiService";
 import { MainContainer } from "../../../components/mainContainer/MainContainer";
-import { GridCustom } from "../../../components/grid/Grid";
+import { GridCustom } from "../../../components/grid2/Grid";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../redux/reducers/reducer";
 import { useNavigate } from "react-router-dom";
 import { SYSTEM_CREATE } from "../../../utils/constants";
 
 const ListSystem = () => {
-  const systems = useSelector(
-    (state: RootState) => state.systems
-  );
+  const systems = useSelector((state: RootState) => state.systems);
 
   const dispatch = useDispatch();
   const navigator = useNavigate();
 
   const header = [
     // TODO: Ver que campos mostrar
-    // { name: "Id", value: "id" },
+    { name: "Id", value: "id" },
     { name: "Campo de aplicacion", value: "applicationAreaName" },
     { name: "Curado", value: "cured" },
     { name: "Manos", value: "layers" },
     { name: "Consumo total", value: "totalConsumption" },
+    { name: "Condiciones de base", value: "baseConditions" },
+    { name: "Condiciones de soporte", value: "supportConditions" },
   ];
-
   useEffect(() => {
     async function fetchData() {
       const response = await getSystems();
       
-      if(response && response.data !== "") {
+      if (response && response.data !== "") {
         let listSystems: any = response.data;
-        listSystems.map((system: {cured: any}) => {
-          system.cured = system.cured ? 'si' : 'no';
+        listSystems.map((system: { cured: any }) => {
+          system.cured = system.cured ? "si" : "no";
         });
         dispatch({ type: "SET_SYSTEM", payload: response.data });
-      }      
+      }
     }
     fetchData();
   }, [dispatch]);
