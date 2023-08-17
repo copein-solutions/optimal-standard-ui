@@ -7,6 +7,7 @@ import {
   APPLICATION_AREA_EDIT,
   APPLICATION_AREA_LIST,
   COMMENTOR_ROL,
+  HOME,
   LOGIN,
   MATERIAL_CREATE,
   MATERIAL_EDIT,
@@ -28,8 +29,14 @@ import AddSystem from "./pages/system/addSystem";
 import ListSystem from "./pages/system/listSystem";
 import EditSystem from "./pages/system/editSystem";
 import Unauthorized from "./components/Unauthorized/unautorized";
+import PageWrapper from "./components/pageWrapper";
 
 const privateRoutes = [
+  {
+    path: HOME,
+    component: <PageWrapper />,
+    allowRoles: [ADMIN_ROL, COMMENTOR_ROL, READONLY_ROL],
+  },
   {
     path: MATERIAL_CREATE,
     component: <AddMaterial />,

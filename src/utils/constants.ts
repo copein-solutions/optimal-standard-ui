@@ -1,5 +1,8 @@
 //# routes constants
 
+// Home
+export const HOME = "/";
+
 // Login
 export const LOGIN = "/login";
 
