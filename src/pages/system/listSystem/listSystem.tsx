@@ -7,18 +7,16 @@ import { GridCustom } from "../../../components/grid2/Grid";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../redux/reducers/reducer";
 import { useNavigate } from "react-router-dom";
-import { SYSTEM_CREATE } from "../../../utils/constants";
+import { ADMIN_ROL, SYSTEM_CREATE } from "../../../utils/constants";
 
 const ListSystem = () => {
-  const systems = useSelector(
-    (state: RootState) => state.systems
-  );
+  const systems = useSelector((state: RootState) => state.systems);
 
   const dispatch = useDispatch();
   const navigator = useNavigate();
 
   const header = [
-    { name: "Id", value: "id" },
+    // { name: "Id", value: "id" },
     { name: "Campo de aplicacion", value: "applicationAreaName" },
     { name: "Curado", value: "cured" },
     { name: "Manos", value: "layers" },
@@ -30,16 +28,14 @@ const ListSystem = () => {
   useEffect(() => {
     async function fetchData() {
       const response = await getSystems();
-      console.log(response);
-      
-      
-      if(response && response.data !== "") {
+
+      if (response && response.data !== "") {
         let listSystems: any = response.data;
-        listSystems.map((system: {cured: any}) => {
-          system.cured = system.cured ? 'si' : 'no';
+        listSystems.map((system: { cured: any }) => {
+          system.cured = system.cured ? "si" : "no";
         });
         dispatch({ type: "SET_SYSTEM", payload: response.data });
-      }      
+      }
     }
     fetchData();
   }, [dispatch]);
@@ -48,17 +44,21 @@ const ListSystem = () => {
     navigator(SYSTEM_CREATE);
   };
 
+  const userRole = localStorage.getItem("userRole");
+
   return (
     <MainContainer cardTitle="Sistema">
       <div>
-        <Button variant="text" color="success" onClick={handleOpenForm}>
-          Agregar sistema
-        </Button>
+        {userRole === ADMIN_ROL && (
+          <Button variant="text" color="success" onClick={handleOpenForm}>
+            Agregar sistema
+          </Button>
+        )}
         <GridCustom
           header={header}
           body={systems}
-          hasEdit
-          hasDelete
+          hasEdit={userRole === ADMIN_ROL}
+          hasDelete={userRole === ADMIN_ROL}
           navigateTo="system"
         />
       </div>

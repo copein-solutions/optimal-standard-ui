@@ -39,10 +39,11 @@ const Login = () => {
   const onSubmit = async (data: LoginInputs) => {
     localStorage.clear();
     let response = await login(data);
+    console.log(response);
+    
 
     if(response.data.token) {
-      // localStorage.setItem('userRole', JSON.stringify(response.data.userRole));
-      localStorage.setItem('userRole', 'ADMIN');
+      localStorage.setItem('userRole', response.data.rol);
       localStorage.setItem('credentials', JSON.stringify(response.data.token));
       dispatch({ type: "LOGIN", payload: true });
       navigator(HOME);

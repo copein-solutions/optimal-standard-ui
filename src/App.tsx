@@ -28,13 +28,12 @@ import EditApplicationArea from "./pages/applicationArea/editApplicationArea";
 import AddSystem from "./pages/system/addSystem";
 import ListSystem from "./pages/system/listSystem";
 import EditSystem from "./pages/system/editSystem";
-import Unauthorized from "./components/Unauthorized/unautorized";
-import PageWrapper from "./components/pageWrapper";
+import Unauthorized from "./components/Unauthorized/unauthorized";
 
 const privateRoutes = [
   {
     path: HOME,
-    component: <PageWrapper />,
+    component: <ListSystem />,
     allowRoles: [ADMIN_ROL, COMMENTOR_ROL, READONLY_ROL],
   },
   {

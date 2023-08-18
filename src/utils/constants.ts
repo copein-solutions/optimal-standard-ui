@@ -6,7 +6,6 @@ export const HOME = "/";
 // Login
 export const LOGIN = "/login";
 
-
 // Material
 export const MATERIAL_CREATE = "/material/create";
 export const MATERIAL_LIST = "/material/list";
@@ -23,9 +22,9 @@ export const SYSTEM_LIST = "/system/list";
 export const SYSTEM_EDIT = "/system/:id/update";
 
 // Roles
-export const ADMIN_ROL = "ADMIN";
-export const COMMENTOR_ROL = "COMMENTOR"
-export const READONLY_ROL = "READONLY"
+export const ADMIN_ROL = "ROLE_ADMIN";
+export const COMMENTOR_ROL = "ROLE_COMMENTOR"
+export const READONLY_ROL = "ROLE_READONLY"
 
 //#endregion
 
