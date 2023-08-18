@@ -150,11 +150,13 @@ export const GridCustom: React.FC<GridProps> = ({
     formatRows.push(rowData);
   });
 
-  const columns: GridColDef[] = header?.map((col) => ({
-    field: col.name,
-    headerName: col.name,
-    width: 150,
-  })) || [];
+  const columns: GridColDef[] =
+    header?.map((col) => ({
+      field: col.name,
+      headerName: col.name,
+      width: 150,
+      resizable: true,
+    })) || [];
 
   if (hasEdit || hasDelete) {
     columns.push({
@@ -162,14 +164,18 @@ export const GridCustom: React.FC<GridProps> = ({
       headerName: "Actions",
       width: 150,
       sortable: false,
+      filterable: false,
       renderCell: (params) => params.value,
     });
   }
 
   return (
-    <div style={{ height: 400, width: "100%" }}>
-      <DataGrid rows={formatRows} columns={columns} 
-      slots={ {toolbar: GridToolbar} }/>
+    <div style={{ height: 500, width: "100%" }}>
+      <DataGrid
+        rows={formatRows}
+        columns={columns}
+        slots={{ toolbar: GridToolbar }}
+      />
       {modalOpen && (
         <CustomModal
           open={modalOpen}

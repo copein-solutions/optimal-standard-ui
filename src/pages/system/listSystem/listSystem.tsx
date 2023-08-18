@@ -24,11 +24,9 @@ const ListSystem = () => {
     { name: "Condiciones de base", value: "baseConditions" },
     { name: "Condiciones de soporte", value: "supportConditions" },
   ];
-
   useEffect(() => {
     async function fetchData() {
       const response = await getSystems();
-
       if (response && response.data !== "") {
         let listSystems: any = response.data;
         listSystems.map((system: { cured: any }) => {
