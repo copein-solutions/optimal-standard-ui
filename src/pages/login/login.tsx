@@ -15,7 +15,7 @@ import { Typography } from "@mui/material";
 
 // Services
 import { login }  from "../../services/ApiService";
-import {MATERIAL_LIST} from "../../utils/constants";
+import { HOME } from "../../utils/constants";
 
 const Login = () => {
   const {
@@ -39,13 +39,14 @@ const Login = () => {
   const onSubmit = async (data: LoginInputs) => {
     localStorage.clear();
     let response = await login(data);
+    console.log(response);
+    
 
     if(response.data.token) {
-      // localStorage.setItem('userRole', JSON.stringify(response.data.userRole));
-      localStorage.setItem('userRole', 'ADMIN');
+      localStorage.setItem('userRole', response.data.rol);
       localStorage.setItem('credentials', JSON.stringify(response.data.token));
       dispatch({ type: "LOGIN", payload: true });
-      navigator(MATERIAL_LIST);
+      navigator(HOME);
     }
     setShowToast(true);
   };
@@ -92,7 +93,7 @@ const Login = () => {
             </Button>
           </div>
           <div className="col-lg-12 col-sm-6 mt-5 text-buttons">
-            <Button
+            {/* <Button
               // onClick={handleSubmit(onSubmit)}
               type="submit"
               variant="text"
@@ -105,7 +106,7 @@ const Login = () => {
               variant="text"
             >
               Olvidaste tu contraseña?
-            </Button>
+            </Button> */}
           </div>
         </form>
       </div>

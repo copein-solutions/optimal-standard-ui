@@ -19,6 +19,7 @@
     "axios": "^1.4.0",
     "bootstrap-css-only": "^4.4.1",
     "date-fns": "^2.30.0",
+    "jsonwebtoken": "^9.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.45.0",
@@ -64,5 +65,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.2"
   }
 }

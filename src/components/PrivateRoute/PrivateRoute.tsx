@@ -4,19 +4,21 @@ import { Navigate } from "react-router-dom";
 
 import { api, fetchHeaders } from "../../services/ApiService";
 import { CustomSkeleton } from "../skeleton/Skeleton";
-import Unauthorized from "../Unauthorized/unautorized";
+import Unauthorized from "../Unauthorized/unauthorized";
 
 type PrivateRouteProps = {
-  children: any,
-  allowRoles?: any,
-}
+  children: any;
+  allowRoles?: any;
+};
 
-const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, allowRoles }) => {
+const PrivateRoute: React.FC<PrivateRouteProps> = ({
+  children,
+  allowRoles,
+}) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const userRole = localStorage.getItem("userRole");
   const dispatch = useDispatch();
-  const PING = "/ping";
+  const PING = "/user/ping";
 
   useEffect(() => {
     const headers = fetchHeaders();
@@ -28,6 +30,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, allowRoles }) => 
           dispatch({ type: "LOGIN", payload: true });
         })
         .catch((error) => {
+          localStorage.clear();
           setIsLoggedIn(false);
         })
         .finally(() => {
@@ -40,15 +43,18 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, allowRoles }) => 
   }, []);
 
   if (isLoading) {
-    return <CustomSkeleton/>;
+    return <CustomSkeleton />;
   }
 
-  if (isLoggedIn && allowRoles.includes(userRole))
-    return children;
-  else if (!isLoggedIn)
-    return <Navigate to="/login" />
-  else if (isLoggedIn && !allowRoles.includes(userRole))
-    return <Unauthorized />
+  const userRole = localStorage.getItem("userRole");
+  if (isLoggedIn && allowRoles.includes(userRole)) return children;
+  else if (!isLoggedIn) return <Navigate to="/login" />;
+  else if (isLoggedIn && !allowRoles.includes(userRole)) {
+    console.log(allowRoles);
+    console.log(userRole);
+    console.log(allowRoles.includes(userRole?.toString()));
+    return <Unauthorized />;
+  }
 };
 
 export default PrivateRoute;
