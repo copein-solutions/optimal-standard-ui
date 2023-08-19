@@ -94,6 +94,7 @@ interface ConstructionSystem {
   applicationMode: string,
   cured: boolean,
   applicationAreaId: string,
+  totalPrice: any,
   baseConditions: string,
   supportConditions: string,
   materialAreaRestrictions: string | null,

@@ -18,14 +18,6 @@ const ListSystem = () => {
 
   const columnGroupingModel: GridColumnGroupingModel = [
     {
-      groupId: "Campo de aplicación",
-      description: "",
-      children: [
-        { field: "applicationAreaName" },
-        { field: "systemUnitPrice" },
-      ],
-    },
-    {
       groupId: "Base",
       children: [
         { field: "materialBaseName" },
@@ -89,8 +81,8 @@ const ListSystem = () => {
   ];
 
   const header = [
-    { name: "", value: "applicationAreaName", width: 350 },
-    { name: "Precio unitario", value: "systemUnitPrice", width: 150 },
+    { name: "Campo de aplicación", value: "applicationAreaName", width: 450 },
+    { name: "Precio", value: "totalPrice", width: 150 },
     // Material base
     { name: "Material", value: "materialBaseName", width: 250 },
     {
@@ -100,7 +92,7 @@ const ListSystem = () => {
       width: 250,
     },
     {
-      name: "Precio unitario base",
+      name: "Precio unitario",
       value: "materialBaseUnitPrice",
       width: 150,
     },
@@ -113,7 +105,7 @@ const ListSystem = () => {
     // Malla 100%
     { name: "Malla 100%", value: "materialMeshName", width: 350 },
     {
-      name: "Precio unitario malla",
+      name: "Precio unitario",
       value: "materialMeshUnitPrice",
       width: 150,
     },
@@ -176,6 +168,7 @@ const ListSystem = () => {
             applicationArea: any;
             materials: any;
             cured: any;
+            totalPrice: any;
             applicationAreaName: string;
             materialBaseName: string;
             materialBaseType: string;
@@ -206,6 +199,7 @@ const ListSystem = () => {
           }) => {
             system.applicationAreaName = system.applicationArea?.name;
             system.cured = system.cured ? "Si" : "No";
+            system.totalPrice = `${system.totalPrice.toFixed(2)} $/m2`
             let components: number = 0;
             system.materials.map(
               (material: {

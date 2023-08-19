@@ -178,6 +178,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
 
   const processFormData = (data: SystemFormInputs) => {
     let constructionSystem: ConstructionSystem = {
+      totalPrice: data.baseMaterialunitPrice,
       totalConsumption: data.totalConsumption,
       layers: data.layers,
       applicationMode: data.applicationMode,
@@ -235,7 +236,8 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   const onSubmit = async (formData: SystemFormInputs) => {
     if (formData) {
       let response: any;
-
+      console.log(formData);
+      
       if (isUpdateForm) {
         response = await updateSystem(
           Number(data?.id),
