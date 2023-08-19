@@ -192,7 +192,7 @@ export const GridCustom: React.FC<GridProps> = ({
   }
 
   return (
-    <div className="data-grid">
+    <div className="data-grid-wrapper">
       <DataGrid
         rows={formatRows}
         columns={columns}
