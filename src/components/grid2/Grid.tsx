@@ -14,7 +14,9 @@ import { useDispatch } from "react-redux";
 import Toast, { ToastType } from "../toast/toast";
 
 import { DataGrid, GridColDef, GridToolbar, esES } from "@mui/x-data-grid";
-import { Description } from "@mui/icons-material";
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import SortIcon from '@mui/icons-material/Sort';
 
 type Header = {
   name: string;
@@ -178,13 +180,30 @@ export const GridCustom: React.FC<GridProps> = ({
     setShowToast(true);
   };
 
+  function SortedDescendingIcon() {
+    return <ExpandMoreIcon className="icon" />;
+  }
+  
+  function SortedAscendingIcon() {
+    return <ExpandLessIcon className="icon" />;
+  }
+  
+  function UnsortedIcon() {
+    return <SortIcon className="icon" />;
+  }
+
   return (
     <div style={{ height: 500, width: "100%" }}>
       <DataGrid
         rows={formatRows}
         columns={columns}
         experimentalFeatures={{ columnGrouping: true }}
-        slots={{ toolbar: GridToolbar }}
+        slots={{ 
+          toolbar: GridToolbar,
+          columnSortedDescendingIcon: SortedDescendingIcon,
+          columnSortedAscendingIcon: SortedAscendingIcon,
+          columnUnsortedIcon: UnsortedIcon,
+        }}
         slotProps={{ toolbar: { showQuickFilter: true } }}
         disableDensitySelector
         disableRowSelectionOnClick
