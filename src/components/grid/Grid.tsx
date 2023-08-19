@@ -77,7 +77,7 @@ export const GridCustom: React.FC<GridProps> = ({
         minWidth: 0,
       }}
       color="error"
-      variant="contained"
+      variant="text"
       onClick={() => openDeleteModal(id)} // Abre el modal al hacer clic en el botón de eliminar
     >
       <DeleteIcon />
@@ -117,7 +117,7 @@ export const GridCustom: React.FC<GridProps> = ({
         minWidth: 0,
       }}
       color="success"
-      variant="contained"
+      variant="text"
       onClick={() => onEdit(id)}
     >
       <EditIcon />

@@ -954,6 +954,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
                 label="Coef. m2"
                 variant="outlined"
                 fullWidth
+                type="number"
                 rules={{ required: "Coeficiente requerido." }}
                 error={errors[`systemOthersPluginsMaterialCoefficient${index}`]}
                 helperText={

@@ -13,11 +13,14 @@ import {
 import { useDispatch } from "react-redux";
 import Toast, { ToastType } from "../toast/toast";
 
-import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridToolbar, esES } from "@mui/x-data-grid";
+import { Description } from "@mui/icons-material";
 
 type Header = {
   name: string;
   value: string;
+  width?: number;
+  description?: string;
 };
 
 type RowData = {
@@ -86,7 +89,7 @@ export const GridCustom: React.FC<GridProps> = ({
         minWidth: 0,
       }}
       color="error"
-      variant="contained"
+      variant="text"
       onClick={() => openDeleteModal(id)} // Abre el modal al hacer clic en el botón de eliminar
     >
       <DeleteIcon />
@@ -126,7 +129,7 @@ export const GridCustom: React.FC<GridProps> = ({
         minWidth: 0,
       }}
       color="success"
-      variant="contained"
+      variant="text"
       onClick={() => onEdit(id)}
     >
       <EditIcon />
@@ -147,6 +150,7 @@ export const GridCustom: React.FC<GridProps> = ({
         </>
       );
     }
+
     formatRows.push(rowData);
   });
 
@@ -154,14 +158,14 @@ export const GridCustom: React.FC<GridProps> = ({
     header?.map((col) => ({
       field: col.name,
       headerName: col.name,
-      width: 150,
-      resizable: true,
+      width: col.width ? col.width : 150,
+      description: col.description,
     })) || [];
 
   if (hasEdit || hasDelete) {
     columns.push({
       field: "actions",
-      headerName: "Actions",
+      headerName: "",
       width: 150,
       sortable: false,
       filterable: false,
@@ -169,12 +173,24 @@ export const GridCustom: React.FC<GridProps> = ({
     });
   }
 
+  const onCellClick = () => {
+    setToastMsg("Row clicked, not implemented.");
+    setShowToast(true);
+  };
+
   return (
     <div style={{ height: 500, width: "100%" }}>
       <DataGrid
         rows={formatRows}
         columns={columns}
+        experimentalFeatures={{ columnGrouping: true }}
         slots={{ toolbar: GridToolbar }}
+        slotProps={{ toolbar: { showQuickFilter: true } }}
+        disableDensitySelector
+        disableRowSelectionOnClick
+        hideFooter
+        onCellDoubleClick={onCellClick}
+        localeText={esES.components.MuiDataGrid.defaultProps.localeText}
       />
       {modalOpen && (
         <CustomModal

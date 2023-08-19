@@ -43,7 +43,7 @@ const Login = () => {
     
 
     if(response.data.token) {
-      localStorage.setItem('userRole', response.data.rol);
+      localStorage.setItem('userRole', response.data.authorities);
       localStorage.setItem('credentials', JSON.stringify(response.data.token));
       dispatch({ type: "LOGIN", payload: true });
       navigator(HOME);
