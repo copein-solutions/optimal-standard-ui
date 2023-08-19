@@ -101,7 +101,7 @@ export const MATERIAL_UNIT = [
     label: "Litros",
   },
   {
-    value: "m2",
+    value: "m²",
     label: "Metros cuadrados",
   },
   {

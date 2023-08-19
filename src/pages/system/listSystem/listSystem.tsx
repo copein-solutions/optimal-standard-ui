@@ -24,7 +24,7 @@ const ListSystem = () => {
     { name: "Curado", value: "cured", width: 75 },
     { name: "Condiciones de base", value: "baseConditions", width: 225 },
     { name: "Condiciones de soporte", value: "supportConditions", width: 225 },
-    { name: "Por área m2", value: "materialAreaRestrictions", width: 225 },
+    { name: "Por área m²", value: "materialAreaRestrictions", width: 225 },
     {
       name: "Otras restricciones",
       value: "materialAreaDescription",

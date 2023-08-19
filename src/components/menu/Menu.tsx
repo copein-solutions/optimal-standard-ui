@@ -25,47 +25,47 @@ type MenuProps = {
   setOpen: CallableFunction;
 };
 
-let menuOptions = [
-  {
-    name: "Listado de sistemas",
-    icon: <ArrowRightIcon />,
-    path: SYSTEM_LIST,
-  },
-];
-
-const userRole = localStorage.getItem("userRole");
-if (userRole === ADMIN_ROL) {
-  menuOptions.push(
-    {
-      name: "Agregar material",
-      icon: <ArrowRightIcon />,
-      path: MATERIAL_CREATE,
-    },
-    {
-      name: "Agregar sistema",
-      icon: <ArrowRightIcon />,
-      path: SYSTEM_CREATE,
-    },
-    {
-      name: "Agregar campo de aplicación",
-      icon: <ArrowRightIcon />,
-      path: APPLICATION_AREA_CREATE,
-    },
-
-    {
-      name: "Listado de materiales",
-      icon: <ArrowRightIcon />,
-      path: MATERIAL_LIST,
-    },
-    {
-      name: "Listado de campo de aplicación",
-      icon: <ArrowRightIcon />,
-      path: APPLICATION_AREA_LIST,
-    },
-  );
-}
-
 export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
+  let menuOptions = [
+    {
+      name: "Listado de sistemas",
+      icon: <ArrowRightIcon />,
+      path: SYSTEM_LIST,
+    },
+  ];
+
+  const userRole = localStorage.getItem("userRole");
+  if (userRole === ADMIN_ROL) {
+    menuOptions.push(
+      {
+        name: "Agregar material",
+        icon: <ArrowRightIcon />,
+        path: MATERIAL_CREATE,
+      },
+      {
+        name: "Agregar sistema",
+        icon: <ArrowRightIcon />,
+        path: SYSTEM_CREATE,
+      },
+      {
+        name: "Agregar campo de aplicación",
+        icon: <ArrowRightIcon />,
+        path: APPLICATION_AREA_CREATE,
+      },
+
+      {
+        name: "Listado de materiales",
+        icon: <ArrowRightIcon />,
+        path: MATERIAL_LIST,
+      },
+      {
+        name: "Listado de campo de aplicación",
+        icon: <ArrowRightIcon />,
+        path: APPLICATION_AREA_LIST,
+      }
+    );
+  }
+
   const toggleDrawer =
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
       if (

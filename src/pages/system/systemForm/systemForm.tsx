@@ -48,6 +48,7 @@ import {
   ConstructionSystem,
 } from "../../../interfaces/form/FormInterfaces";
 import {
+  calculatePricePerCoefficientParcialMesh,
   getUnitPriceBaseMaterialSystem,
   truncateDecimals,
 } from "../../../utils/mathUtils";
@@ -96,17 +97,32 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     });
   // MALLA 100%
   const [totalMeshUnityPriceVisible, setTotalMeshUnityPriceVisible] =
-    useState<boolean>(false);
-  const [selectedTotalMeshPrice, setSelectedTotalMeshPrice] =
-    useState<string>("");
+    useState(false);
+  const [selectedTotalMeshPrice, setSelectedTotalMeshPrice] = useState("");
   // MALLA PARCIAL
   const [partialMeshUnityPriceVisible, setPartialMeshUnityPriceVisible] =
-    useState<boolean>(false);
+    useState(false);
   const [selectedPartialMeshPrice, setSelectedPartialMeshPrice] =
     useState<string>("");
+  const [
+    selectedPartialMeshPricePerCoefficient,
+    setSelectedPartialMeshPricePerCoefficient,
+  ] = useState("");
   // OTROS COMPLEMENTOS
   const [pluginMaterialDataVisible, setPluginMaterialDataVisible] =
-    useState<boolean>(false);
+    useState(false);
+  const [
+    selectedPluginMaterialPricePerCoefficient0,
+    setSelectedPluginMaterialPricePerCoefficient0,
+  ] = useState("");
+  const [
+    selectedPluginMaterialPricePerCoefficient1,
+    setSelectedPluginMaterialPricePerCoefficient1,
+  ] = useState("");
+  const [
+    selectedPluginMaterialPricePerCoefficient2,
+    setSelectedPluginMaterialPricePerCoefficient2,
+  ] = useState("");
   const [selectedPluginMaterialDetail1, setSelectedPluginMaterialDetail1] =
     useState<BaseMaterial>({
       brand: "",
@@ -515,15 +531,15 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   }
 
   function renderPluginMaterialDetails(index: number): ReactNode {
-    let retorno;
+    let materialData;
     if (index === 0) {
-      retorno = selectedPluginMaterialDetail1;
+      materialData = selectedPluginMaterialDetail1;
     } else if (index === 1) {
-      retorno = selectedPluginMaterialDetail2;
+      materialData = selectedPluginMaterialDetail2;
     } else if (index === 2) {
-      retorno = selectedPluginMaterialDetail3;
+      materialData = selectedPluginMaterialDetail3;
     }
-    return <MaterialData material={retorno} />;
+    return <MaterialData material={materialData} />;
   }
 
   // Obtengo precio unitario malla 100 %
@@ -596,7 +612,8 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     setShowRestrictions(watchedRestriction === "si" ? true : false);
   }, [watchedRestriction]);
 
-  // Cuando cambia un input implicado en el precio unitario del sistema, vuelve a 0 el systemUnitPrice
+  // Cuando cambia un input implicado en el precio unitario del sistema,
+  // vuelve a 0 el systemUnitPrice
   useEffect(() => {
     const watchedFields = [
       "totalConsumption",
@@ -618,6 +635,56 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     watch("systemOthersPluginsMaterialCoefficient1"),
     watch("systemOthersPluginsMaterialCoefficient2"),
   ]);
+
+  // Precio por m² de malla parcial
+  const systemParcialMeshCoefficientValue = watch(
+    "systemParcialMeshCoefficient"
+  );
+  useEffect(() => {
+    const price = calculatePricePerCoefficientParcialMesh(
+      Number(systemParcialMeshCoefficientValue),
+      Number(selectedPartialMeshPrice)
+    );
+    setSelectedPartialMeshPricePerCoefficient(String(price));
+  }, [systemParcialMeshCoefficientValue]);
+
+  // Precio por m² de material complementario 1
+  const pluginMaterial1CoefficientValue = watch(
+    "systemOthersPluginsMaterialCoefficient0"
+  );
+  useEffect(() => {
+    console.log(selectedPluginMaterialPricePerCoefficient0);
+
+    const price = calculatePricePerCoefficientParcialMesh(
+      Number(pluginMaterial1CoefficientValue),
+      Number(selectedPluginMaterialDetail1.unitPrice)
+    );
+    setSelectedPluginMaterialPricePerCoefficient0(String(price));
+  }, [pluginMaterial1CoefficientValue]);
+
+  // Precio por m² de material complementario 2
+  const pluginMaterial2CoefficientValue = watch(
+    "systemOthersPluginsMaterialCoefficient1"
+  );
+  useEffect(() => {
+    const price = calculatePricePerCoefficientParcialMesh(
+      Number(pluginMaterial2CoefficientValue),
+      Number(selectedPluginMaterialDetail2.unitPrice)
+    );
+    setSelectedPluginMaterialPricePerCoefficient1(String(price));
+  }, [pluginMaterial2CoefficientValue]);
+
+  // Precio por m² de material complementario 3
+  const pluginMaterial3CoefficientValue = watch(
+    "systemOthersPluginsMaterialCoefficient2"
+  );
+  useEffect(() => {
+    const price = calculatePricePerCoefficientParcialMesh(
+      Number(pluginMaterial3CoefficientValue),
+      Number(selectedPluginMaterialDetail3.unitPrice)
+    );
+    setSelectedPluginMaterialPricePerCoefficient2(String(price));
+  }, [pluginMaterial3CoefficientValue]);
 
   function handleCalculateSystemUnitPrice() {
     const formValues = getValues();
@@ -644,6 +711,9 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     } else {
       setMaterialCount((prevCount) => prevCount + 1);
     }
+    if (materialCount === 0) setSelectedPluginMaterialPricePerCoefficient0("0");
+    if (materialCount === 1) setSelectedPluginMaterialPricePerCoefficient1("0");
+    if (materialCount === 2) setSelectedPluginMaterialPricePerCoefficient2("0");
   };
 
   // Evento de botón eliminar - otros complementos
@@ -678,11 +748,11 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             </li>
             <li>
               Especificar si lleva malla parcial. En caso afirmativo especificar
-              cual e ingresar el coef m2.
+              cual e ingresar el coef m².
             </li>
             <li>
               En caso de que lleve otros complementos, especificar cuales e
-              ingresar sus respectivos coef m2.
+              ingresar sus respectivos coef m².
             </li>
             <li>Presionar el botón CALCULAR</li>
           </ul>
@@ -760,7 +830,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             name="totalConsumption"
             control={control}
             rules={{ required: "Consumo total requerido." }}
-            label="Consumo total k/m2"
+            label="Consumo total kg/m²"
             variant="outlined"
             fullWidth
             type="number"
@@ -876,13 +946,13 @@ export const SystemForm: React.FC<SystemFormProps> = ({
                 onSelectOption={(value) => handlePartialMesh(value)}
               />
             </div>
-            {/* ------------- Coeficiente por m2 ------------- */}
+            {/* ------------- Coeficiente por m² ------------- */}
             <div className="col-lg-2 col-sm-6">
               <CustomTextField
                 name="systemParcialMeshCoefficient"
                 control={control}
                 rules={{ required: "Coeficiente requerido." }}
-                label="Coef. m2"
+                label="Coef. m²"
                 variant="outlined"
                 fullWidth
                 type="number"
@@ -899,12 +969,18 @@ export const SystemForm: React.FC<SystemFormProps> = ({
                       {`Precio unitario: $${selectedPartialMeshPrice}`}
                     </Typography>
                   </div>
+                  <div className="data-div ml-2">
+                    <Typography fontWeight="700" variant="body1">
+                      {`Precio por m²: $${selectedPartialMeshPricePerCoefficient}`}
+                    </Typography>
+                  </div>
                 </div>
               </div>
             )}
           </>
         )}
       </div>
+      {/* ------------- descripción coef malla parcial ------------- */}
       {showParcialMeshInputs && (
         <div className="row mt-3">
           <div className="col-lg-12 col-sm-6">
@@ -913,7 +989,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
               minRows={2}
               name="systemPartialMeshDescription"
               control={control}
-              label="Descripción"
+              label="Descripción coef. m²"
               variant="outlined"
               fullWidth
             />
@@ -945,12 +1021,12 @@ export const SystemForm: React.FC<SystemFormProps> = ({
                 }
               />
             </div>
-            {/* ------------- Coeficiente por m2 (otros complementos) ------------- */}
+            {/* ------------- Coeficiente por m² (otros complementos) ------------- */}
             <div className="col-lg-2 col-sm-6">
               <CustomTextField
                 name={`systemOthersPluginsMaterialCoefficient${index}`}
                 control={control}
-                label="Coef. m2"
+                label="Coef. m²"
                 variant="outlined"
                 fullWidth
                 type="number"
@@ -961,6 +1037,20 @@ export const SystemForm: React.FC<SystemFormProps> = ({
                     ?.message
                 }
               />
+            </div>
+            <div className="col-lg-3 col-sm-4">
+              <div className="material-data-container">
+                <div className="data-div ml-2">
+                  <Typography variant="body1">Precio por m²: $</Typography>
+                  <Typography fontWeight="700" variant="body1">
+                    {index === 0
+                      ? selectedPluginMaterialPricePerCoefficient0
+                      : index === 1
+                      ? selectedPluginMaterialPricePerCoefficient1
+                      : selectedPluginMaterialPricePerCoefficient2}
+                  </Typography>
+                </div>
+              </div>
             </div>
             {/* ------------- Descripción complemento (otros complementos) ------------- */}
             <div className="col-lg-6 col-sm-6 mt-3">
@@ -974,14 +1064,14 @@ export const SystemForm: React.FC<SystemFormProps> = ({
                 fullWidth
               />
             </div>
-            {/* ------------- Descripción coef m2 (otros complementos) ------------- */}
+            {/* ------------- Descripción coef m² (otros complementos) ------------- */}
             <div className="col-lg-6 col-sm-6 mt-3">
               <CustomTextField
                 multiline
                 minRows={3}
                 name={`systemOthersPluginsMaterialCoefficientDescription${index}`}
                 control={control}
-                label="Descripción coeficiente m2"
+                label="Descripción coeficiente m²"
                 variant="outlined"
                 fullWidth
               />
@@ -1044,7 +1134,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
               name="materialAreaRestrictionValue"
               control={control}
               rules={{ required: "Restricción por área requerida." }}
-              label="Por área m2"
+              label="Por área m²"
               variant="outlined"
               fullWidth
               type="number"
