@@ -23,6 +23,7 @@ interface MaterialInputs {
   component: string;
   potLife?: string;
   minApplicableTemp?: string;
+  fileNames?: string[];
 }
 
 // SystemForm
