@@ -13,7 +13,7 @@ import {
 import { useDispatch } from "react-redux";
 import Toast, { ToastType } from "../toast/toast";
 
-import { DataGrid, GridColDef, GridToolbar, esES } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridToolbar, GridColumnGroupingModel, esES } from "@mui/x-data-grid";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
@@ -33,6 +33,8 @@ type RowData = {
 type GridProps = {
   /** Titulos de columna.  */
   header?: Header[];
+  /** Titulos de columna agrupados.  */
+  columnGroupingModel?: GridColumnGroupingModel;
   /** Datos que se desplegaran en la lista. */
   body?: { id: number; [key: string]: any }[];
   /** Si es true, se renderizará el botón de editar elemento. */
@@ -49,6 +51,7 @@ export const GridCustom: React.FC<GridProps> = ({
   hasEdit,
   hasDelete,
   navigateTo,
+  columnGroupingModel,
 }) => {
   const dispatch = useDispatch();
   const navigator = useNavigate();
@@ -207,6 +210,8 @@ export const GridCustom: React.FC<GridProps> = ({
         hideFooter
         onCellDoubleClick={onCellClick}
         localeText={esES.components.MuiDataGrid.defaultProps.localeText}
+        experimentalFeatures={{ columnGrouping: true }}
+        columnGroupingModel={columnGroupingModel}
       />
       {modalOpen && (
         <CustomModal
