@@ -9,11 +9,11 @@ type MainContainerProps = {
   cardTitle?: string;
   /** Elemento renderizado dentro de la card*/
   children: ReactNode;
-  /** Si es true, se mostrarán botones subit y cancel */
+  /** Si es true, se mostrarán botones submit y cancel */
   hasFooterButons?: boolean;
-  /** Función para capturar evento botón cancelar */
+  /** Función que dispara evento botón cancelar */
   onCancel?: () => void;
-  /** Función para capturar evento botón aceptar */
+  /** Función que dispara evento botón aceptar */
   onAccept?: () => void;
 };
 

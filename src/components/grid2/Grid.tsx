@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate } from "react-router-dom";
@@ -14,9 +14,8 @@ import { useDispatch } from "react-redux";
 import Toast, { ToastType } from "../toast/toast";
 
 import { DataGrid, GridColDef, GridToolbar, esES } from "@mui/x-data-grid";
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import SortIcon from '@mui/icons-material/Sort';
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 type Header = {
   name: string;
@@ -53,8 +52,8 @@ export const GridCustom: React.FC<GridProps> = ({
 }) => {
   const dispatch = useDispatch();
   const navigator = useNavigate();
-  const [modalOpen, setModalOpen] = useState(false); // Estado para controlar el modal
-  const [deleteItemId, setDeleteItemId] = useState<number | null>(null); // Estado para rastrear el ID del elemento a eliminar
+  const [modalOpen, setModalOpen] = useState(false);
+  const [deleteItemId, setDeleteItemId] = useState<number | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
   const [toastType, setToastType] = useState<ToastType>("success");
@@ -83,19 +82,21 @@ export const GridCustom: React.FC<GridProps> = ({
   }
 
   const deleteButton = (id: number) => (
-    <Button
-      sx={{
-        borderRadius: "50%",
-        height: "40px",
-        width: "40px",
-        minWidth: 0,
-      }}
-      color="error"
-      variant="text"
-      onClick={() => openDeleteModal(id)} // Abre el modal al hacer clic en el botón de eliminar
-    >
-      <DeleteIcon />
-    </Button>
+    <Tooltip title="Eliminar" placement="top">
+      <Button
+        sx={{
+          borderRadius: "50%",
+          height: "40px",
+          width: "40px",
+          minWidth: 0,
+        }}
+        color="error"
+        variant="contained"
+        onClick={() => openDeleteModal(id)}
+      >
+        <DeleteIcon />
+      </Button>
+    </Tooltip>
   );
 
   const onEdit = (id: number) => {
@@ -123,19 +124,22 @@ export const GridCustom: React.FC<GridProps> = ({
   };
 
   const editButton = (id: number) => (
-    <Button
-      sx={{
-        borderRadius: "50%",
-        height: "40px",
-        width: "40px",
-        minWidth: 0,
-      }}
-      color="success"
-      variant="text"
-      onClick={() => onEdit(id)}
-    >
-      <EditIcon />
-    </Button>
+    <Tooltip title="Editar" placement="top">
+      <Button
+        sx={{
+          borderRadius: "50%",
+          height: "40px",
+          width: "40px",
+          minWidth: 0,
+          marginRight: "20px",
+        }}
+        color="success"
+        variant="contained"
+        onClick={() => onEdit(id)}
+      >
+        <EditIcon />
+      </Button>
+    </Tooltip>
   );
 
   const formatRows: RowData[] = [];
@@ -152,7 +156,6 @@ export const GridCustom: React.FC<GridProps> = ({
         </>
       );
     }
-
     formatRows.push(rowData);
   });
 
@@ -183,26 +186,21 @@ export const GridCustom: React.FC<GridProps> = ({
   function SortedDescendingIcon() {
     return <ExpandMoreIcon className="icon" />;
   }
-  
+
   function SortedAscendingIcon() {
     return <ExpandLessIcon className="icon" />;
   }
-  
-  function UnsortedIcon() {
-    return <SortIcon className="icon" />;
-  }
 
   return (
-    <div style={{ height: 500, width: "100%" }}>
+    <div className="data-grid">
       <DataGrid
         rows={formatRows}
         columns={columns}
         experimentalFeatures={{ columnGrouping: true }}
-        slots={{ 
+        slots={{
           toolbar: GridToolbar,
           columnSortedDescendingIcon: SortedDescendingIcon,
           columnSortedAscendingIcon: SortedAscendingIcon,
-          columnUnsortedIcon: UnsortedIcon,
         }}
         slotProps={{ toolbar: { showQuickFilter: true } }}
         disableDensitySelector

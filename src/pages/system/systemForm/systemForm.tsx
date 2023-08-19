@@ -244,10 +244,9 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       } else {
         response = await createSystem(processFormData(formData));
       }
-      
+
       if (response.status !== 200) {
         handleOpenToast("Failure");
-        console.log(response);
       } else {
         handleOpenToast("Success");
         navigator(SYSTEM_LIST);
@@ -999,6 +998,8 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         <div className="col-lg-12 col-sm-6">
           <CustomTextField
             name="baseConditions"
+            multiline
+            minRows={2}
             control={control}
             rules={{ required: "Condiciones de base requeridas." }}
             label="Condiciones de base"
@@ -1011,6 +1012,8 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         <div className="col-lg-12 col-sm-6 mt-3">
           <CustomTextField
             name="supportConditions"
+            multiline
+            minRows={2}
             control={control}
             rules={{ required: "Condiciones como soporte requeridas." }}
             label="Condiciones como soporte"

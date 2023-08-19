@@ -14,7 +14,7 @@ import CustomPasswordField from "../../components/passwordField";
 import { Typography } from "@mui/material";
 
 // Services
-import { login }  from "../../services/ApiService";
+import { login } from "../../services/ApiService";
 import { HOME } from "../../utils/constants";
 
 const Login = () => {
@@ -39,12 +39,10 @@ const Login = () => {
   const onSubmit = async (data: LoginInputs) => {
     localStorage.clear();
     let response = await login(data);
-    console.log(response);
-    
 
-    if(response.data.token) {
-      localStorage.setItem('userRole', response.data.authorities);
-      localStorage.setItem('credentials', JSON.stringify(response.data.token));
+    if (response.data.token) {
+      localStorage.setItem("userRole", response.data.authorities);
+      localStorage.setItem("credentials", JSON.stringify(response.data.token));
       dispatch({ type: "LOGIN", payload: true });
       navigator(HOME);
     }

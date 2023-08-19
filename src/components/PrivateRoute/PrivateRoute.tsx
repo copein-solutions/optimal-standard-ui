@@ -50,9 +50,6 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({
   if (isLoggedIn && allowRoles.includes(userRole)) return children;
   else if (!isLoggedIn) return <Navigate to="/login" />;
   else if (isLoggedIn && !allowRoles.includes(userRole)) {
-    console.log(allowRoles);
-    console.log(userRole);
-    console.log(allowRoles.includes(userRole?.toString()));
     return <Unauthorized />;
   }
 };

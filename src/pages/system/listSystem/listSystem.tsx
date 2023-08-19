@@ -25,16 +25,33 @@ const ListSystem = () => {
     { name: "Condiciones de base", value: "baseConditions", width: 225 },
     { name: "Condiciones de soporte", value: "supportConditions", width: 225 },
     { name: "Por área m2", value: "materialAreaRestrictions", width: 225 },
-    { name: "Otras restricciones", value: "materialAreaDescription", width: 225, },
+    {
+      name: "Otras restricciones",
+      value: "materialAreaDescription",
+      width: 225,
+    },
     // Material base
     { name: "Material base", value: "materialBaseName", width: 250 },
-    { name: "Tipo", value: "materialBaseType", description: "(Acrílicos, siliconados, cementosos, poliuretánicos)", width: 250, },
-    { name: "Precio unitario base", value: "materialBaseUnitPrice", width: 150 },
+    {
+      name: "Tipo",
+      value: "materialBaseType",
+      description: "(Acrílicos, siliconados, cementosos, poliuretánicos)",
+      width: 250,
+    },
+    {
+      name: "Precio unitario base",
+      value: "materialBaseUnitPrice",
+      width: 150,
+    },
     { name: "Composición", value: "materialBaseComponent", width: 150 },
     // Malla 100%
     { name: "Malla 100%", value: "materialPartialName", width: 150 },
     { name: "Tipo", value: "materialPartialType", width: 150 },
-    { name: "Precio unitario malla", value: "materialPartialUnitPrice", width: 150 },
+    {
+      name: "Precio unitario malla",
+      value: "materialPartialUnitPrice",
+      width: 150,
+    },
     { name: "Composición", value: "materialPartialComponent", width: 150 },
   ];
 
@@ -60,30 +77,29 @@ const ListSystem = () => {
           }) => {
             system.applicationAreaName = system.applicationArea?.name;
             system.cured = system.cured ? "Si" : "No";
-            system.materials.map((material: {
-              typeOfUse: string,
-              material: any,
-            }) => {
-              if (material.typeOfUse === "BASE") {
-                // Material base
-                system.materialBaseName = material.material.product;
-                system.materialBaseUnitPrice = `${material.material.unitPrice} ${material.material.currency}/${material.material.presentationUnit}`;
-                system.materialBaseType = material.material.type;
-                system.materialBaseComponent = material.material.component;
-              } else if (material.typeOfUse === "TOTAL_MESH"){
-                // Malla
-                system.materialPartialName = material.material.product;
-                system.materialPartialUnitPrice = `${material.material.unitPrice} ${material.material.currency}/${material.material.presentationUnit}`;
-                system.materialPartialType = material.material.type;
-                system.materialPartialComponent = material.material.component;
-              } else if (material.typeOfUse === "PARTIAL_MESH"){
-                // Malla 50%
-              } else if (material.typeOfUse === "PLUGIN_MATERIAL"){
-                // Material comp 1
-                // Material comp 2
-                // Material comp 3
+            system.materials.map(
+              (material: { typeOfUse: string; material: any }) => {
+                if (material.typeOfUse === "BASE") {
+                  // Material base
+                  system.materialBaseName = material.material.product;
+                  system.materialBaseUnitPrice = `${material.material.unitPrice} ${material.material.currency}/${material.material.presentationUnit}`;
+                  system.materialBaseType = material.material.type;
+                  system.materialBaseComponent = material.material.component;
+                } else if (material.typeOfUse === "TOTAL_MESH") {
+                  // Malla
+                  system.materialPartialName = material.material.product;
+                  system.materialPartialUnitPrice = `${material.material.unitPrice} ${material.material.currency}/${material.material.presentationUnit}`;
+                  system.materialPartialType = material.material.type;
+                  system.materialPartialComponent = material.material.component;
+                } else if (material.typeOfUse === "PARTIAL_MESH") {
+                  // Malla 50%
+                } else if (material.typeOfUse === "PLUGIN_MATERIAL") {
+                  // Material comp 1
+                  // Material comp 2
+                  // Material comp 3
+                }
               }
-            });
+            );
           }
         );
         dispatch({ type: "SET_SYSTEM", payload: response.data });
@@ -92,7 +108,7 @@ const ListSystem = () => {
     fetchData();
   }, [dispatch]);
 
-  const handleOpenForm = () => {
+  const handleAddSystem = () => {
     navigator(SYSTEM_CREATE);
   };
 
@@ -102,7 +118,7 @@ const ListSystem = () => {
     <MainContainer cardTitle="Sistema">
       <div>
         {userRole === ADMIN_ROL && (
-          <Button variant="text" color="success" onClick={handleOpenForm}>
+          <Button variant="text" color="success" onClick={handleAddSystem}>
             Agregar sistema
           </Button>
         )}
