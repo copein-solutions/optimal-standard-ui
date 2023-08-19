@@ -45,14 +45,35 @@ const ListSystem = () => {
     },
     { name: "Composición", value: "materialBaseComponent", width: 150 },
     // Malla 100%
-    { name: "Malla 100%", value: "materialPartialName", width: 150 },
-    { name: "Tipo", value: "materialPartialType", width: 150 },
+    { name: "Malla 100%", value: "materialMeshName", width: 350 },
     {
       name: "Precio unitario malla",
-      value: "materialPartialUnitPrice",
+      value: "materialMeshUnitPrice",
       width: 150,
     },
-    { name: "Composición", value: "materialPartialComponent", width: 150 },
+    // Malla 50%
+    { name: "Malla Parcial", value: "materialPartialMeshName", width: 350 },
+    {
+      name: "Precio unitario",
+      value: "materialPartialMeshUnitPrice",
+      width: 150,
+    },
+    { name: "Coef. por m2", value: "materialPartialMeshCoef", width: 150 },
+    // Material complementario 1
+    { name: "Complemento del sistema", value: "materialPlugin1Name", width: 350 },
+    { name: "Descripción", value: "materialPlugin1Description", width: 150 },
+    { name: "Precio unitario", value: "materialPlugin1UnitPrice", width: 150 },
+    { name: "Coef. por m2", value: "materialPlugin1Coef", width: 150 },
+    // Material complementario 2
+    { name: "Complemento del sistema 2", value: "materialPlugin2Name", width: 350 },
+    { name: "Descripción", value: "materialPlugin2Description", width: 150 },
+    { name: "Precio unitario", value: "materialPlugin2UnitPrice", width: 150 },
+    { name: "Coef. por m2", value: "materialPlugin2Coef", width: 150 },
+    // Material complementario 3
+    { name: "Complemento del sistema 3", value: "materialPlugin3Name", width: 350 },
+    { name: "Descripción", value: "materialPlugin3Description", width: 150 },
+    { name: "Precio unitario", value: "materialPlugin3UnitPrice", width: 150 },
+    { name: "Coef. por m2", value: "materialPlugin3Coef", width: 150 },
   ];
 
   useEffect(() => {
@@ -70,15 +91,32 @@ const ListSystem = () => {
             materialBaseType: string;
             materialBaseUnitPrice: any;
             materialBaseComponent: string;
-            materialPartialName: string;
-            materialPartialType: string;
-            materialPartialUnitPrice: any;
-            materialPartialComponent: string;
+            materialMeshName: string;
+            materialMeshUnitPrice: any;
+            materialMeshType: string;
+            materialMeshComponent: string;
+            materialPartialMeshName: string;
+            materialPartialMeshUnitPrice: any;
+            materialPartialMeshType: string;
+            materialPartialMeshCoef: string;
+            materialPlugin1Name: string;
+            materialPlugin1UnitPrice: any;
+            materialPlugin1Description: string;
+            materialPlugin1Coef: string;
+            materialPlugin2Name: string;
+            materialPlugin2UnitPrice: any;
+            materialPlugin2Description: string;
+            materialPlugin2Coef: string;
+            materialPlugin3Name: string;
+            materialPlugin3UnitPrice: any;
+            materialPlugin3Description: string;
+            materialPlugin3Coef: string;
           }) => {
             system.applicationAreaName = system.applicationArea?.name;
             system.cured = system.cured ? "Si" : "No";
+            let components: number = 0;
             system.materials.map(
-              (material: { typeOfUse: string; material: any }) => {
+              (material: { typeOfUse: string; coefficient: any; material: any; materialDescription: any }) => {
                 if (material.typeOfUse === "BASE") {
                   // Material base
                   system.materialBaseName = material.material.product;
@@ -87,16 +125,40 @@ const ListSystem = () => {
                   system.materialBaseComponent = material.material.component;
                 } else if (material.typeOfUse === "TOTAL_MESH") {
                   // Malla
-                  system.materialPartialName = material.material.product;
-                  system.materialPartialUnitPrice = `${material.material.unitPrice} ${material.material.currency}/${material.material.presentationUnit}`;
-                  system.materialPartialType = material.material.type;
-                  system.materialPartialComponent = material.material.component;
+                  system.materialMeshName = material.material.product;
+                  system.materialMeshUnitPrice = `${material.material.unitPrice} ${material.material.currency}/${material.material.presentationUnit}`;
+                  system.materialMeshType = material.material.type;
+                  system.materialMeshComponent = material.material.component;
                 } else if (material.typeOfUse === "PARTIAL_MESH") {
                   // Malla 50%
+                  system.materialPartialMeshName = material.material.product;
+                  system.materialPartialMeshUnitPrice = `${material.material.unitPrice} ${material.material.currency}/${material.material.presentationUnit}`;
+                  system.materialPartialMeshType = material.material.type;
+                  system.materialPartialMeshCoef = material.coefficient;
                 } else if (material.typeOfUse === "PLUGIN_MATERIAL") {
-                  // Material comp 1
-                  // Material comp 2
-                  // Material comp 3
+                  if (components === 0) {
+                    // Material comp 1
+                    system.materialPlugin1Name = material.material.product;
+                    system.materialPlugin1UnitPrice = `${material.material.unitPrice} ${material.material.currency}/${material.material.presentationUnit}`;
+                    system.materialPlugin1Description = material.materialDescription;
+                    system.materialPlugin1Coef =
+                      material.coefficient;
+                  } else if (components === 1) {
+                    // Material comp 2
+                    system.materialPlugin2Name = material.material.product;
+                    system.materialPlugin2UnitPrice = `${material.material.unitPrice} ${material.material.currency}/${material.material.presentationUnit}`;
+                    system.materialPlugin2Description = material.materialDescription;
+                    system.materialPlugin2Coef =
+                      material.coefficient;
+                  } else if (components === 2) {
+                    // Material comp 3
+                    system.materialPlugin3Name = material.material.product;
+                    system.materialPlugin3UnitPrice = `${material.material.unitPrice} ${material.material.currency}/${material.material.presentationUnit}`;
+                    system.materialPlugin3Description = material.materialDescription;
+                    system.materialPlugin3Coef =
+                      material.coefficient;
+                  }
+                  components++;
                 }
               }
             );
