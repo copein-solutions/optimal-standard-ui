@@ -146,7 +146,7 @@ export const GridCustom: React.FC<GridProps> = ({
   body?.forEach((item, index) => {
     const rowData: RowData = { id: index + 1, actions: <></> };
     header?.forEach((col) => {
-      rowData[col.name] = item[col.value];
+      rowData[col.value] = item[col.value];
     });
     if (hasEdit || hasDelete) {
       rowData.actions = (
@@ -161,7 +161,7 @@ export const GridCustom: React.FC<GridProps> = ({
 
   const columns: GridColDef[] =
     header?.map((col) => ({
-      field: col.name,
+      field: col.value,
       headerName: col.name,
       width: col.width ? col.width : 150,
       description: col.description,
@@ -196,7 +196,6 @@ export const GridCustom: React.FC<GridProps> = ({
       <DataGrid
         rows={formatRows}
         columns={columns}
-        experimentalFeatures={{ columnGrouping: true }}
         slots={{
           toolbar: GridToolbar,
           columnSortedDescendingIcon: SortedDescendingIcon,
