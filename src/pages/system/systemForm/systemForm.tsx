@@ -8,7 +8,6 @@ import {
   TooltipProps,
   tooltipClasses,
   styled,
-  TextField,
 } from "@mui/material";
 import CustomTextField from "../../../components/TextField";
 import CustomSelectField from "../../../components/customSelectField";
@@ -617,12 +616,8 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     setShowRestrictions(watchedRestriction === "si" ? true : false);
   }, [watchedRestriction]);
 
-<<<<<<< HEAD
-  // Cuando cambia un input implicado en el precio unitario del sistema, vuelve a 0 el systemTotalPrice
-=======
   // Cuando cambia un input implicado en el precio unitario del sistema,
   // vuelve a 0 el systemUnitPrice
->>>>>>> 5701e83cd6225fe1e0fae34dc3f49760f4617e60
   useEffect(() => {
     const watchedFields = [
       "totalConsumption",
@@ -645,9 +640,6 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     watch("systemOthersPluginsMaterialCoefficient2"),
   ]);
 
-<<<<<<< HEAD
-  function handleCalculateSystemTotalPrice() {
-=======
   // Precio por m² de malla parcial
   const systemParcialMeshCoefficientValue = watch(
     "systemParcialMeshCoefficient"
@@ -698,8 +690,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     setSelectedPluginMaterialPricePerCoefficient2(String(price));
   }, [pluginMaterial3CoefficientValue]);
 
-  function handleCalculateSystemUnitPrice() {
->>>>>>> 5701e83cd6225fe1e0fae34dc3f49760f4617e60
+  function handleCalculateSystemTotalPrice() {
     const formValues = getValues();
 
     const price = getUnitPriceBaseMaterialSystem(
@@ -825,13 +816,8 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             }}
           />
         </div>
-<<<<<<< HEAD
         <div className="col-lg-2 col-sm-6 mb-3">
           <Button onClick={handleCalculateSystemTotalPrice}>Calcular</Button>
-=======
-        <div className="col-lg-2 col-sm-3 mb-3">
-          <Button onClick={handleCalculateSystemUnitPrice}>Calcular</Button>
->>>>>>> 5701e83cd6225fe1e0fae34dc3f49760f4617e60
         </div>
       </div>
       {/* ------------- Info del material seleccionado ------------- */}
