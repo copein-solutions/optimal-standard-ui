@@ -40,7 +40,9 @@ export const truncateDecimals = (
   return numeroTruncado;
 };
 
-
+/**
+ * Calcula el precio unitario de del material base del sistema
+ */
 export function getUnitPriceBaseMaterialSystem(
   formValues: SystemFormInputs,
   baseMaterialUnitPrice: string,
@@ -80,6 +82,19 @@ export function getUnitPriceBaseMaterialSystem(
 
   const formatSystemUnitPrice =
     systemUnitPrice !== undefined ? truncateDecimals(systemUnitPrice, 2) : 0;
-  
+
   return formatSystemUnitPrice;
+}
+
+/**
+ * Calcula el precio por m²
+ * @param coefficient El coeficiente por m² ingresado por el usuario.
+ * @param unitPrice El precio unitario del material.
+ * @returns precio por m² del material
+ */
+export function calculatePricePerCoefficientParcialMesh(
+  coefficient: number,
+  unitPrice: number
+): number {
+  return truncateDecimals(coefficient * unitPrice, 2);
 }

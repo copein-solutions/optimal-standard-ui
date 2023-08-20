@@ -238,7 +238,7 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
           />
         </div>
         {/* ------------- Precio ------------- */}
-        <div className="col-lg-3 col-sm-6">
+        <div className="col-lg-3 col-sm-3 mt-16">
           <NumberFormat
             size="small"
             label="Precio"
@@ -259,7 +259,7 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
           />
         </div>
         {/* ------------- Moneda ------------- */}
-        <div className="col-lg-3 col-sm-6">
+        <div className="col-lg-3 col-sm-4 mt-16">
           <FormControl>
             <FormLabel id="material-currency-label">Moneda</FormLabel>
             <Controller
