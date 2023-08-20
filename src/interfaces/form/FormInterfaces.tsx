@@ -50,6 +50,7 @@ interface SystemFormInputs {
   applicationArea: SystemMaterialApplicationAreaFormInputs | any;
   applicationMode: string;
   cured: boolean | string | any;
+  systemTotalPrice: number | any;
   layers: string;
   totalConsumption: string;
   supportConditions: string;
