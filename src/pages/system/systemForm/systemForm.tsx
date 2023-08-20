@@ -769,7 +769,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     <form onSubmit={handleSubmit(onSubmit)}>
       {/* ------------- Campo de aplicación ------------- */}
       <div className="row mb-3">
-        <div className="col-lg-8 col-sm-6">
+        <div className="col-lg-8 col-sm-9">
           <CustomSelectField
             name="applicationAreaId"
             control={control}
@@ -793,7 +793,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             onSelectOption={(value) => handleBaseMaterial(value, "select")}
           />
         </div>
-        <div className="col-lg-3 col-sm-6 mb-3">
+        <div className="col-lg-2 col-sm-3 mb-3">
           <CustomTextField
             name="baseMaterialunitPrice"
             control={control}
@@ -812,7 +812,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             }}
           />
         </div>
-        <div className="col-lg-2 col-sm-6 mb-3">
+        <div className="col-lg-2 col-sm-3 mb-3">
           <Button onClick={handleCalculateSystemUnitPrice}>Calcular</Button>
         </div>
       </div>
@@ -853,7 +853,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
           />
         </div>
         {/* ------------- Modo de aplicación ------------- */}
-        <div className="col-lg-3 col-sm-6">
+        <div className="col-lg-3 col-sm-6 mt-16">
           <CustomSelectField
             name="applicationMode"
             control={control}
@@ -864,7 +864,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
           />
         </div>
         {/* ------------- Curado ------------- */}
-        <div className="col-lg-3 col-sm-6">
+        <div className="col-lg-3 col-sm-6 mt-16">
           <CustomSelectField
             name="cured"
             control={control}
@@ -910,8 +910,11 @@ export const SystemForm: React.FC<SystemFormProps> = ({
           <div className="col-lg-3 col-sm-4">
             <div className="material-data-container">
               <div className="data-div ml-2">
+                <Typography fontWeight="500" mr={1} variant="body1">
+                  Precio: $/ml
+                </Typography>
                 <Typography fontWeight="700" variant="body1">
-                  {`Precio unitario: $${selectedTotalMeshPrice}`}
+                  {selectedTotalMeshPrice}
                 </Typography>
               </div>
             </div>
@@ -947,7 +950,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
               />
             </div>
             {/* ------------- Coeficiente por m² ------------- */}
-            <div className="col-lg-2 col-sm-6">
+            <div className="col-lg-2 col-sm-2 mt-16">
               <CustomTextField
                 name="systemParcialMeshCoefficient"
                 control={control}
@@ -962,16 +965,22 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             </div>
             {/* ------------- Info malla parcial seleccionada ------------- */}
             {partialMeshUnityPriceVisible && showParcialMeshInputs && (
-              <div className="col-lg-3 col-sm-4">
+              <div className="col-lg-3 col-sm-4 mt-16">
                 <div className="material-data-container">
                   <div className="data-div ml-2">
+                    <Typography fontWeight="500" mr={1} variant="body1">
+                      Precio: $/ml
+                    </Typography>
                     <Typography fontWeight="700" variant="body1">
-                      {`Precio unitario: $${selectedPartialMeshPrice}`}
+                      {selectedPartialMeshPrice}
                     </Typography>
                   </div>
                   <div className="data-div ml-2">
+                    <Typography fontWeight="500" mr={1} variant="body1">
+                      Precio: $/m²
+                    </Typography>
                     <Typography fontWeight="700" variant="body1">
-                      {`Precio por m²: $${selectedPartialMeshPricePerCoefficient}`}
+                      {selectedPartialMeshPricePerCoefficient}
                     </Typography>
                   </div>
                 </div>
@@ -983,7 +992,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       {/* ------------- descripción coef malla parcial ------------- */}
       {showParcialMeshInputs && (
         <div className="row mt-3">
-          <div className="col-lg-12 col-sm-6">
+          <div className="col-lg-12 col-sm-12">
             <CustomTextField
               multiline
               minRows={2}
@@ -1022,7 +1031,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
               />
             </div>
             {/* ------------- Coeficiente por m² (otros complementos) ------------- */}
-            <div className="col-lg-2 col-sm-6">
+            <div className="col-lg-2 col-sm-2">
               <CustomTextField
                 name={`systemOthersPluginsMaterialCoefficient${index}`}
                 control={control}
@@ -1085,7 +1094,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       ))}
       <CustomDivider text="Sistema de capas" />
       <div className="row mt-3">
-        <div className="col-lg-12 col-sm-6">
+        <div className="col-lg-12 col-sm-12">
           <CustomTextField
             name="baseConditions"
             multiline
@@ -1099,7 +1108,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             helperText={errors.baseConditions?.message}
           />
         </div>
-        <div className="col-lg-12 col-sm-6 mt-3">
+        <div className="col-lg-12 col-sm-12 mt-3">
           <CustomTextField
             name="supportConditions"
             multiline
@@ -1117,7 +1126,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       <CustomDivider text="Restricciones" />
       {/* ------------- Si | No | N/E ------------- */}
       <div className="row mt-3">
-        <div className="col-lg-2 col-sm-6">
+        <div className="col-lg-3 col-sm-3">
           <CustomSelectField
             name="materialAreaRestrictions"
             control={control}

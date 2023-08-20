@@ -43,7 +43,7 @@ export const MaterialData: React.FC<materialDataProps> = ({ material }) => {
 
         <div className="col-lg-2 col-sm-2 data-div">
           <Typography fontWeight="500" mr={1} variant="body1">
-            Precio de presentación:
+            Precio presentación:
           </Typography>
           <Typography fontWeight="700" variant="body1">
             {`$ ${material?.presentationPrice}`}
@@ -52,19 +52,19 @@ export const MaterialData: React.FC<materialDataProps> = ({ material }) => {
 
         <div className="col-lg-2 col-sm-2 data-div">
           <Typography fontWeight="500" mr={1} variant="body1">
-            Cantidad de presentación:
+            Cantidad presentación:
           </Typography>
           <Typography fontWeight="700" variant="body1">
-            {material?.presentationQuantity}
+            {`${material?.presentationQuantity} ${material?.presentationUnit}`}
           </Typography>
         </div>
 
         <div className="col-lg-2 col-sm-2 data-div">
           <Typography fontWeight="500" mr={1} variant="body1">
-            Precio unitario:
+            {`Precio: ${unitPricePrefix}`}
           </Typography>
           <Typography fontWeight="700" variant="body1">
-            {`${unitPricePrefix} ${unitPrice}`}
+            {unitPrice}
           </Typography>
         </div>
 
@@ -79,16 +79,16 @@ export const MaterialData: React.FC<materialDataProps> = ({ material }) => {
 
         <div className="col-lg-2 col-sm-2 data-div">
           <Typography fontWeight="500" mr={1} variant="body1">
-            Vida útil:
+            Pot life:
           </Typography>
           <Typography fontWeight="700" variant="body1">
-            {`${material?.potLife} horas`}
+            {`${material?.potLife} hrs`}
           </Typography>
         </div>
 
         <div className="col-lg-2 col-sm-2 data-div">
           <Typography fontWeight="500" mr={1} variant="body1">
-            Temp min aplicable:
+            Temp min de aplicación:
           </Typography>
           <Typography fontWeight="700" variant="body1">
             {`${material?.minApplicableTemp} °C`}

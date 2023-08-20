@@ -28,7 +28,7 @@ type MenuProps = {
 export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
   let menuOptions = [
     {
-      name: "Listado de sistemas",
+      name: "Sistemas",
       icon: <ArrowRightIcon />,
       path: SYSTEM_LIST,
     },
@@ -38,30 +38,29 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
   if (userRole === ADMIN_ROL) {
     menuOptions.push(
       {
-        name: "Agregar material",
-        icon: <ArrowRightIcon />,
-        path: MATERIAL_CREATE,
-      },
-      {
         name: "Agregar sistema",
         icon: <ArrowRightIcon />,
         path: SYSTEM_CREATE,
       },
       {
-        name: "Agregar campo de aplicación",
-        icon: <ArrowRightIcon />,
-        path: APPLICATION_AREA_CREATE,
-      },
-
-      {
-        name: "Listado de materiales",
+        name: "Materiales",
         icon: <ArrowRightIcon />,
         path: MATERIAL_LIST,
       },
       {
-        name: "Listado de campo de aplicación",
+        name: "Agregar material",
+        icon: <ArrowRightIcon />,
+        path: MATERIAL_CREATE,
+      },
+      {
+        name: "Campos de aplicación",
         icon: <ArrowRightIcon />,
         path: APPLICATION_AREA_LIST,
+      },
+      {
+        name: "Agregar campo de aplicación",
+        icon: <ArrowRightIcon />,
+        path: APPLICATION_AREA_CREATE,
       }
     );
   }
@@ -75,13 +74,12 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
       ) {
         return;
       }
-
       setOpen(open);
     };
 
   const getList = () => (
     <Box
-      sx={{ width: 250 }}
+      sx={{ width: 250, paddingTop: "60px" }}
       role="presentation"
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
