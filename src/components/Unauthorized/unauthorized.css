@@ -1,0 +1,20 @@
+.containerStyle {
+  display: "flex";
+  flexdirection: "column";
+  alignitems: "center";
+  justifycontent: "center";
+  minheight: "100vh";
+  fontfamily: "Arial; sans-serif";
+  textalign: "center";
+  background: "#f4f4f4";
+}
+
+.headingStyle {
+  fontsize: "3rem";
+  marginbottom: "1rem";
+}
+
+.constmessageStyle {
+  fontsize: "1.2rem";
+  color: "#666";
+}

@@ -1,8 +1,10 @@
 //# routes constants
 
+// Home
+export const HOME = "/";
+
 // Login
 export const LOGIN = "/login";
-
 
 // Material
 export const MATERIAL_CREATE = "/material/create";
@@ -19,7 +21,10 @@ export const SYSTEM_CREATE = "/system/create";
 export const SYSTEM_LIST = "/system/list";
 export const SYSTEM_EDIT = "/system/:id/update";
 
-
+// Roles
+export const ADMIN_ROL = "ROLE_ADMIN";
+export const COMMENTOR_ROL = "ROLE_COMMENTOR"
+export const READONLY_ROL = "ROLE_READONLY"
 
 //#endregion
 
@@ -96,7 +101,7 @@ export const MATERIAL_UNIT = [
     label: "Litros",
   },
   {
-    value: "m2",
+    value: "m²",
     label: "Metros cuadrados",
   },
   {

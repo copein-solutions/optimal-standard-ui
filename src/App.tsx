@@ -2,13 +2,17 @@ import "./App.css";
 import { BrowserRouter as Router, Navigate, Route, Routes } from "react-router-dom";
 
 import {
+  ADMIN_ROL,
   APPLICATION_AREA_CREATE,
   APPLICATION_AREA_EDIT,
   APPLICATION_AREA_LIST,
+  COMMENTOR_ROL,
+  HOME,
   LOGIN,
   MATERIAL_CREATE,
   MATERIAL_EDIT,
   MATERIAL_LIST,
+  READONLY_ROL,
   SYSTEM_CREATE,
   SYSTEM_EDIT,
   SYSTEM_LIST,
@@ -24,43 +28,58 @@ import EditApplicationArea from "./pages/applicationArea/editApplicationArea";
 import AddSystem from "./pages/system/addSystem";
 import ListSystem from "./pages/system/listSystem";
 import EditSystem from "./pages/system/editSystem";
+import Unauthorized from "./components/Unauthorized/unauthorized";
 
 const privateRoutes = [
   {
+    path: HOME,
+    component: <ListSystem />,
+    allowRoles: [ADMIN_ROL, COMMENTOR_ROL, READONLY_ROL],
+  },
+  {
     path: MATERIAL_CREATE,
     component: <AddMaterial />,
+    allowRoles: [ADMIN_ROL],
   },
   {
     path: MATERIAL_LIST,
     component: <ListMaterial />,
+    allowRoles: [ADMIN_ROL],
   },
   {
     path: MATERIAL_EDIT,
     component: <EditMaterial />,
+    allowRoles: [ADMIN_ROL],
   },
   {
     path: APPLICATION_AREA_CREATE,
     component: <AddApplicationArea />,
+    allowRoles: [ADMIN_ROL],
   },
   {
     path: APPLICATION_AREA_LIST,
     component: <ListApplicationArea />,
+    allowRoles: [ADMIN_ROL],
   },
   {
     path: APPLICATION_AREA_EDIT,
     component: <EditApplicationArea />,
+    allowRoles: [ADMIN_ROL],
   },
   {
     path: SYSTEM_CREATE,
     component: <AddSystem />,
+    allowRoles: [ADMIN_ROL],
   },
   {
     path: SYSTEM_EDIT,
     component: <EditSystem />,
+    allowRoles: [ADMIN_ROL],
   },
   {
     path: SYSTEM_LIST,
     component: <ListSystem />,
+    allowRoles: [ADMIN_ROL, COMMENTOR_ROL, READONLY_ROL],
   },
 ];
 
@@ -77,9 +96,11 @@ export default function App() {
             <Route
               key={index}
               path={option.path}
-              element={<PrivateRoute>{option.component}</PrivateRoute>}
+              element={<PrivateRoute allowRoles={option.allowRoles}>{option.component}</PrivateRoute>}
             />
           ))}
+          {/* Route for unauthorized access */}
+          <Route path="/unauthorized" element={<Unauthorized />} />
         </Routes>
       </Router>
     </div>

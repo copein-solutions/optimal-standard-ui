@@ -4,12 +4,21 @@ import { Navigate } from "react-router-dom";
 
 import { api, fetchHeaders } from "../../services/ApiService";
 import { CustomSkeleton } from "../skeleton/Skeleton";
+import Unauthorized from "../Unauthorized/unauthorized";
 
-const PrivateRoute = ({ children }) => {
+type PrivateRouteProps = {
+  children: any;
+  allowRoles?: any;
+};
+
+const PrivateRoute: React.FC<PrivateRouteProps> = ({
+  children,
+  allowRoles,
+}) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const dispatch = useDispatch();
-  const PING = "/ping";
+  const PING = "/user/ping";
 
   useEffect(() => {
     const headers = fetchHeaders();
@@ -21,6 +30,7 @@ const PrivateRoute = ({ children }) => {
           dispatch({ type: "LOGIN", payload: true });
         })
         .catch((error) => {
+          localStorage.clear();
           setIsLoggedIn(false);
         })
         .finally(() => {
@@ -33,10 +43,15 @@ const PrivateRoute = ({ children }) => {
   }, []);
 
   if (isLoading) {
-    return <CustomSkeleton/>;
+    return <CustomSkeleton />;
   }
 
-  return isLoggedIn ? children : <Navigate to="/login" />;
+  const userRole = localStorage.getItem("userRole");
+  if (isLoggedIn && allowRoles.includes(userRole)) return children;
+  else if (!isLoggedIn) return <Navigate to="/login" />;
+  else if (isLoggedIn && !allowRoles.includes(userRole)) {
+    return <Unauthorized />;
+  }
 };
 
 export default PrivateRoute;

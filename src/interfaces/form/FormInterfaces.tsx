@@ -58,6 +58,7 @@ interface SystemFormInputs {
   applicationArea: SystemMaterialApplicationAreaFormInputs | any;
   applicationMode: string;
   cured: boolean | string | any;
+  systemTotalPrice: number | any;
   layers: string;
   totalConsumption: string;
   supportConditions: string;
@@ -102,6 +103,7 @@ interface ConstructionSystem {
   applicationMode: string,
   cured: boolean,
   applicationAreaId: string,
+  totalPrice: any,
   baseConditions: string,
   supportConditions: string,
   materialAreaRestrictions: string | null,

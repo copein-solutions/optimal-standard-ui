@@ -1,4 +1,6 @@
+import React from "react";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import { Link } from "react-router-dom";
 import {
   Box,
   Drawer,
@@ -8,51 +10,61 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import React from "react";
-import { Link } from "react-router-dom";
-
-import {APPLICATION_AREA_CREATE, APPLICATION_AREA_LIST, LOGIN, MATERIAL_CREATE, MATERIAL_LIST, SYSTEM_CREATE, SYSTEM_LIST} from "../../utils/constants";
+import {
+  ADMIN_ROL,
+  APPLICATION_AREA_CREATE,
+  APPLICATION_AREA_LIST,
+  MATERIAL_CREATE,
+  MATERIAL_LIST,
+  SYSTEM_CREATE,
+  SYSTEM_LIST,
+} from "../../utils/constants";
 
 type MenuProps = {
   isOpen: boolean;
   setOpen: CallableFunction;
 };
 
-const menuOptions = [
-  {
-    name: "Agregar material",
-    icon: <ArrowRightIcon />,
-    path: MATERIAL_CREATE,
-  },
-  {
-    name: "Agregar sistema",
-    icon: <ArrowRightIcon />,
-    path: SYSTEM_CREATE,
-  },
-  {
-    name: "Agregar campo de aplicación",
-    icon: <ArrowRightIcon />,
-    path: APPLICATION_AREA_CREATE,
-  },
-
-  {
-    name: "Listado de materiales",
-    icon: <ArrowRightIcon />,
-    path: MATERIAL_LIST,
-  },
-  {
-    name: "Listado de campo de aplicación",
-    icon: <ArrowRightIcon />,
-    path: APPLICATION_AREA_LIST,
-  },
-  {
-    name: "Listado de sistemas",
-    icon: <ArrowRightIcon />,
-    path: SYSTEM_LIST,
-  },
-];
-
 export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
+  let menuOptions = [
+    {
+      name: "Sistemas",
+      icon: <ArrowRightIcon />,
+      path: SYSTEM_LIST,
+    },
+  ];
+
+  const userRole = localStorage.getItem("userRole");
+  if (userRole === ADMIN_ROL) {
+    menuOptions.push(
+      {
+        name: "Agregar sistema",
+        icon: <ArrowRightIcon />,
+        path: SYSTEM_CREATE,
+      },
+      {
+        name: "Materiales",
+        icon: <ArrowRightIcon />,
+        path: MATERIAL_LIST,
+      },
+      {
+        name: "Agregar material",
+        icon: <ArrowRightIcon />,
+        path: MATERIAL_CREATE,
+      },
+      {
+        name: "Campos de aplicación",
+        icon: <ArrowRightIcon />,
+        path: APPLICATION_AREA_LIST,
+      },
+      {
+        name: "Agregar campo de aplicación",
+        icon: <ArrowRightIcon />,
+        path: APPLICATION_AREA_CREATE,
+      }
+    );
+  }
+
   const toggleDrawer =
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
       if (
@@ -62,13 +74,12 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
       ) {
         return;
       }
-
       setOpen(open);
     };
 
   const getList = () => (
     <Box
-      sx={{ width: 250 }}
+      sx={{ width: 250, paddingTop: "60px" }}
       role="presentation"
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
