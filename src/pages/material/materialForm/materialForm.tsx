@@ -27,12 +27,13 @@ import {
   MATERIAL_LIST,
 } from "../../../utils/constants";
 
-import { MaterialInputs } from "../../../interfaces/form/FormInterfaces";
+import { MaterialInputs, Files } from "../../../interfaces/form/FormInterfaces";
 import { createMaterial, updateMaterial, API_BASE_URL } from "../../../services/ApiService";
 import CustomTextField from "../../../components/TextField";
 import { useNavigate } from "react-router-dom";
 import CustomSelectField from "../../../components/customSelectField";
 import { getUnitPrice } from "../../../utils/mathUtils";
+import { type } from "@testing-library/user-event/dist/type";
 
 type MaterialFromProps = {
   data?: MaterialInputs;
@@ -53,12 +54,46 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
   const [inputValueNumberFormat, setInputValueNumberFormat] = useState("");
   const [files, setFiles] = useState<any[]>([]);
   const [headers, setHeaders] = useState<any>({});
+  const navigator = useNavigate();
   
   const validateFile = (file: File) => {
     return file.type === 'application/pdf';
   };
 
-  const navigator = useNavigate();
+  const loadFiles = (files: Files[]) => {
+      return files.map(file => {
+        return {
+          source: file.id,
+          options: {
+            type: "local",
+            file: {
+              name: file.name,
+              size: file.size,
+              type: file.type           
+            }
+          }
+        }
+      });
+  };
+
+  const getMaterialFiles = () :Files[] => {
+    return files.map(item => {
+      let serverEntity = { id: undefined };
+      if(typeof item.serverId === 'string') {
+        serverEntity = JSON.parse(item.serverId);
+      } else {
+        serverEntity.id = item.serverId
+      }   
+      return {
+        id: serverEntity.id,
+        name: item.file.name,
+        size: item.file.size,
+        type: item.file.type
+      }
+    });
+  };
+
+  
 
   useEffect(() => {
     if (data) {
@@ -73,16 +108,19 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
       setValue("priceDate", data.priceDate);
       setValue("potLife", data.potLife);
       setValue("minApplicableTemp", data.minApplicableTemp);
+      setFiles(loadFiles(data.files ? data.files : []))
     } else {
       setValue("priceDate", loadTodayDate());
     }
-    const credencials = localStorage.getItem("credentials");
+    const credencials = localStorage.getItem("credentials");    
     if (credencials) {
+      console.log(`Bearer ${JSON.parse(credencials)}`);
       setHeaders({
         Authorization: `Bearer ${JSON.parse(credencials)}`,
       });
     }
   }, [setValue, data]);
+  
 
   const loadTodayDate = (): string => {
     const currentDate = new Date();
@@ -99,7 +137,6 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
   }
 
   const handleUpdateFiles = (fileItems: any[]) => {
-    console.log(fileItems);
     setFiles(fileItems);
   };
 
@@ -114,12 +151,6 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
   //función que se ejecuta cuando presiona el botón cancelar
   const handleCancel = () => {
     navigator(MATERIAL_LIST);
-  };
-
-  const getFileNames = () :string[] => {
-    return files.map(file => {
-      return file.file.name
-    });
   };
 
   // Obtengo el prefijo del precio unitario
@@ -144,7 +175,7 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
 
   const onSubmit = async (formData: MaterialInputs) => {
     let response: any;
-    formData.fileNames = getFileNames();
+    formData.files = getMaterialFiles();
     if (isUpdateForm) {
       response = await updateMaterial(Number(data?.id), formData);
     } else {
@@ -385,40 +416,36 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
       <div className="App">
         {/* ------------- File upload ------------- */}
         <FilePond
-          // files={files}
-          files={[{
-            source: "5",
-            options: {
-              type: "local"
-            }
-          }]}
+          files={files}
           onupdatefiles={handleUpdateFiles}
           allowMultiple={true}
-          maxFiles={3}
+          maxFiles={4}
           name="files"
           ignoredFiles={['.ds_store', 'thumbs.db', 'desktop.ini']}
           acceptedFileTypes={['application/pdf']}
-          labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+          labelIdle='Arrastrar y soltar o <span class="filepond--label-action">Explorar</span>'
           server={{
-            url: API_BASE_URL,
+            url: API_BASE_URL + '/file',
             process: {
-              url: `/material/upload/files${
-                isUpdateForm ? "?material_id=" + data?.id : ''
+              url: `/upload${
+                isUpdateForm ? `?material_id=${data?.id}` : ''
               }`,
               headers: headers,
               method: "POST",
               withCredentials: false,
+              onload: (res) => res
             },
             revert: {
-              url: `/material/delete/files${
-                isUpdateForm ? "?material_id=" + data?.id : ''
-              }`,
-              headers: headers,
+              url: '/delete',
+              headers: {
+                ...headers,
+                "Content-type": "application/json"
+              },
               method: "DELETE",
               withCredentials: false,
             },
             load: {
-              url: '/material/load/files?file_id=',
+              url: '/load?file_id=',
               headers: headers,
               method: "GET",
               withCredentials: false,
