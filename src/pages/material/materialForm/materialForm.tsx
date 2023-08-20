@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import NumberFormat, { NumberFormatValues } from "react-number-format";
+import { FilePond, registerPlugin } from "react-filepond";
 
 import "./materialForm.css";
+// Import FilePond styles
+import "filepond/dist/filepond.min.css";
 import {
   Button,
   FormControlLabel,
@@ -24,12 +27,13 @@ import {
   MATERIAL_LIST,
 } from "../../../utils/constants";
 
-import { MaterialInputs } from "../../../interfaces/form/FormInterfaces";
-import { createMaterial, updateMaterial } from "../../../services/ApiService";
+import { MaterialInputs, Files } from "../../../interfaces/form/FormInterfaces";
+import { createMaterial, updateMaterial, API_BASE_URL } from "../../../services/ApiService";
 import CustomTextField from "../../../components/TextField";
 import { useNavigate } from "react-router-dom";
 import CustomSelectField from "../../../components/customSelectField";
 import { getUnitPrice } from "../../../utils/mathUtils";
+import { type } from "@testing-library/user-event/dist/type";
 
 type MaterialFromProps = {
   data?: MaterialInputs;
@@ -48,8 +52,48 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
 
   const [inputValue, setInputValue] = useState<string | undefined>("0,00");
   const [inputValueNumberFormat, setInputValueNumberFormat] = useState("");
-
+  const [files, setFiles] = useState<any[]>([]);
+  const [headers, setHeaders] = useState<any>({});
   const navigator = useNavigate();
+  
+  const validateFile = (file: File) => {
+    return file.type === 'application/pdf';
+  };
+
+  const loadFiles = (files: Files[]) => {
+      return files.map(file => {
+        return {
+          source: file.id,
+          options: {
+            type: "local",
+            file: {
+              name: file.name,
+              size: file.size,
+              type: file.type           
+            }
+          }
+        }
+      });
+  };
+
+  const getMaterialFiles = () :Files[] => {
+    return files.map(item => {
+      let serverEntity = { id: undefined };
+      if(typeof item.serverId === 'string') {
+        serverEntity = JSON.parse(item.serverId);
+      } else {
+        serverEntity.id = item.serverId
+      }   
+      return {
+        id: serverEntity.id,
+        name: item.file.name,
+        size: item.file.size,
+        type: item.file.type
+      }
+    });
+  };
+
+  
 
   useEffect(() => {
     if (data) {
@@ -64,10 +108,19 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
       setValue("priceDate", data.priceDate);
       setValue("potLife", data.potLife);
       setValue("minApplicableTemp", data.minApplicableTemp);
+      setFiles(loadFiles(data.files ? data.files : []))
     } else {
       setValue("priceDate", loadTodayDate());
     }
+    const credencials = localStorage.getItem("credentials");    
+    if (credencials) {
+      console.log(`Bearer ${JSON.parse(credencials)}`);
+      setHeaders({
+        Authorization: `Bearer ${JSON.parse(credencials)}`,
+      });
+    }
   }, [setValue, data]);
+  
 
   const loadTodayDate = (): string => {
     const currentDate = new Date();
@@ -82,6 +135,10 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
     const { formattedValue } = values;
     setInputValueNumberFormat(formattedValue);
   }
+
+  const handleUpdateFiles = (fileItems: any[]) => {
+    setFiles(fileItems);
+  };
 
   const handleSelectChange = (e: any) => {
     if (e.target.name === "presentationPrice") {
@@ -118,6 +175,7 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
 
   const onSubmit = async (formData: MaterialInputs) => {
     let response: any;
+    formData.files = getMaterialFiles();
     if (isUpdateForm) {
       response = await updateMaterial(Number(data?.id), formData);
     } else {
@@ -355,19 +413,45 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
         Ficha Técnica
       </Typography>
       <Divider />
-      <div className="row">
+      <div className="App">
         {/* ------------- File upload ------------- */}
-        <div className="col-lg-6 col-sm-6 mt-3">
-          <TextField
-            multiline
-            minRows={5}
-            type="number"
-            fullWidth
-            inputProps={{ min: 0 }}
-            label="File upload"
-            variant="outlined"
-          />
-        </div>
+        <FilePond
+          files={files}
+          onupdatefiles={handleUpdateFiles}
+          allowMultiple={true}
+          maxFiles={4}
+          name="files"
+          ignoredFiles={['.ds_store', 'thumbs.db', 'desktop.ini']}
+          acceptedFileTypes={['application/pdf']}
+          labelIdle='Arrastrar y soltar o <span class="filepond--label-action">Explorar</span>'
+          server={{
+            url: API_BASE_URL + '/file',
+            process: {
+              url: `/upload${
+                isUpdateForm ? `?material_id=${data?.id}` : ''
+              }`,
+              headers: headers,
+              method: "POST",
+              withCredentials: false,
+              onload: (res) => res
+            },
+            revert: {
+              url: '/delete',
+              headers: {
+                ...headers,
+                "Content-type": "application/json"
+              },
+              method: "DELETE",
+              withCredentials: false,
+            },
+            load: {
+              url: '/load?file_id=',
+              headers: headers,
+              method: "GET",
+              withCredentials: false,
+            },
+          }}       
+        />
       </div>
       <div className="card-footer text-body-secondary align-right">
         <Button onClick={handleCancel} variant="text">

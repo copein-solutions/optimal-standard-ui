@@ -23,6 +23,14 @@ interface MaterialInputs {
   component: string;
   potLife?: string;
   minApplicableTemp?: string;
+  files?: Files[] | undefined;
+}
+
+interface Files {
+  id?: number;
+  name: string;
+  size: number;
+  type: string;
 }
 
 // SystemForm
@@ -144,6 +152,7 @@ export type {
   SystemFormInputs,
   SystemMaterialFormInputs,
   Material,
+  Files,
   Options,
   BaseMaterial,
   SystemFormProps,
