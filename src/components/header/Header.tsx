@@ -37,7 +37,7 @@ export const CustomHeader: React.FC<HeaderProps> = ({ onMenuOpen }) => {
           <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
             CEAOSA
           </Typography>
-          <Button onClick={logout} color="inherit">Logout</Button>
+          <Button onClick={logout} color="inherit">Cerrar sesión</Button>
         </Toolbar>
       </AppBar>
     </Box>

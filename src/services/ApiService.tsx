@@ -30,32 +30,32 @@ export const login = async (data: any): Promise<ResponseApi> => {
 
 //#region MATERIAL
 export const createMaterial = async (data: any): Promise<ResponseApi> => {
-  return post("/material", data);
+  return post("/admin/material", data);
 };
 
 export const getMaterials = async (): Promise<ResponseApi> => {
-  return get("/material");
+  return get("/admin/material");
 };
 
 export const getMaterialsByType = async (
   type: string
 ): Promise<ResponseApi> => {
-  return get(`/material/search?type=${type}`);
+  return get(`/admin/material/search?type=${type}`);
 };
 
 export const updateMaterial = async (
   id: number,
   data: any
 ): Promise<ResponseApi> => {
-  return put(`/material/${id}`, data);
+  return put(`/admin/material/${id}`, data);
 };
 
 export const getMaterialByID = async (id: number): Promise<ResponseApi> => {
-  return get(`/material/${id}`);
+  return get(`/admin/material/${id}`);
 };
 
 export const deleteMaterial = async (id: number | null): Promise<ResponseApi> => {
-  return remove(`/material/${id}`);
+  return remove(`/admin/material/${id}`);
 };
 
 //#endregion
@@ -64,28 +64,28 @@ export const deleteMaterial = async (id: number | null): Promise<ResponseApi> =>
 export const createApplicationArea = async (
   data: any
 ): Promise<ResponseApi> => {
-  return post("/application_area", data);
+  return post("/admin/application_area", data);
 };
 
 export const getApplicationArea = async (): Promise<ResponseApi> => {
-  return get("/application_area");
+  return get("/admin/application_area");
 };
 
 export const updateApplicationArea = async (
   id: number,
   data: any
 ): Promise<ResponseApi> => {
-  return put(`/application_area/${id}`, data);
+  return put(`/admin/application_area/${id}`, data);
 };
 
 export const getApplicationAreaByID = async (
   id: number
 ): Promise<ResponseApi> => {
-  return get(`/application_area/${id}`);
+  return get(`/admin/application_area/${id}`);
 };
 
 export const deleteApplicationArea = async (id: number | null): Promise<ResponseApi> => {
-  return remove(`/application_area/${id}`);
+  return remove(`/admin/application_area/${id}`);
 };
 
 //#endregion
@@ -93,22 +93,22 @@ export const deleteApplicationArea = async (id: number | null): Promise<Response
 //#region SISTEMA
 
 export const createSystem = async (data: any): Promise<ResponseApi> => {
-  return post("/construction_system", data);
+  return post("/admin/construction_system", data);
 };
 
 export const getSystems = async (): Promise<ResponseApi> => {
-  return get("/construction_system");
+  return get("/user/construction_system");
 };
 
 export const getSystemByID = async (id: number): Promise<ResponseApi> => {
-  return get(`/construction_system/${id}`);
+  return get(`/admin/construction_system/${id}`);
 };
 
 export const updateSystem = async (
   id: number,
   data: any
 ): Promise<ResponseApi> => {
-  return put(`/construction_system/${id}`, data);
+  return put(`/admin/construction_system/${id}`, data);
 };
 
 //#endregion

@@ -14,8 +14,8 @@ import CustomPasswordField from "../../components/passwordField";
 import { Typography } from "@mui/material";
 
 // Services
-import { login }  from "../../services/ApiService";
-import {MATERIAL_LIST} from "../../utils/constants";
+import { login } from "../../services/ApiService";
+import { HOME } from "../../utils/constants";
 
 const Login = () => {
   const {
@@ -40,10 +40,11 @@ const Login = () => {
     localStorage.clear();
     let response = await login(data);
 
-    if(response.data.token) {
-      localStorage.setItem('credentials', JSON.stringify(response.data.token));
+    if (response.data.token) {
+      localStorage.setItem("userRole", response.data.authorities);
+      localStorage.setItem("credentials", JSON.stringify(response.data.token));
       dispatch({ type: "LOGIN", payload: true });
-      navigator(MATERIAL_LIST);
+      navigator(HOME);
     }
     setShowToast(true);
   };
@@ -90,7 +91,7 @@ const Login = () => {
             </Button>
           </div>
           <div className="col-lg-12 col-sm-6 mt-5 text-buttons">
-            <Button
+            {/* <Button
               // onClick={handleSubmit(onSubmit)}
               type="submit"
               variant="text"
@@ -103,7 +104,7 @@ const Login = () => {
               variant="text"
             >
               Olvidaste tu contraseña?
-            </Button>
+            </Button> */}
           </div>
         </form>
       </div>

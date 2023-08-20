@@ -6,18 +6,24 @@ import { Button } from "@mui/material";
 import { ApplicationAreaInputs } from "../../../interfaces/form/FormInterfaces";
 
 // Services
-import { updateApplicationArea, createApplicationArea } from "../../../services/ApiService";
+import {
+  updateApplicationArea,
+  createApplicationArea,
+} from "../../../services/ApiService";
 
 // Redux
 import { useDispatch } from "react-redux";
 import { APPLICATION_AREA_LIST } from "../../../utils/constants";
 
 type ApplicationAreaFormProps = {
-    data?: ApplicationAreaInputs | undefined;
-    isUpdateForm: boolean;
-}
+  data?: ApplicationAreaInputs | undefined;
+  isUpdateForm: boolean;
+};
 
-const ApplicationAreaForm: React.FC<ApplicationAreaFormProps> = ({ data, isUpdateForm }) => {
+const ApplicationAreaForm: React.FC<ApplicationAreaFormProps> = ({
+  data,
+  isUpdateForm,
+}) => {
   const {
     handleSubmit,
     setValue,
@@ -37,9 +43,8 @@ const ApplicationAreaForm: React.FC<ApplicationAreaFormProps> = ({ data, isUpdat
 
   const onSubmit = async (formData: ApplicationAreaInputs) => {
     let response: any;
-    if(isUpdateForm) {
+    if (isUpdateForm) {
       response = await updateApplicationArea(Number(data?.id), formData);
-      console.log(response);
     } else {
       response = await createApplicationArea(formData);
     }
@@ -47,9 +52,9 @@ const ApplicationAreaForm: React.FC<ApplicationAreaFormProps> = ({ data, isUpdat
     if (response.status !== 200) {
       alert("Error: " + response.data.details.join(" "));
     } else {
-      if(!isUpdateForm) { 
+      if (!isUpdateForm) {
         dispatch({ type: "SAVE_APPLICATION_AREA", payload: response.data });
-      }      
+      }
       alert("Formulario enviado con éxito");
       navigator(APPLICATION_AREA_LIST);
     }

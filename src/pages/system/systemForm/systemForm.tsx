@@ -8,6 +8,7 @@ import {
   TooltipProps,
   tooltipClasses,
   styled,
+  TextField,
 } from "@mui/material";
 import CustomTextField from "../../../components/TextField";
 import CustomSelectField from "../../../components/customSelectField";
@@ -77,7 +78,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   const [showParcialMeshInputs, setShowParcialMeshInputs] = useState(false);
   const [showRestrictions, setShowRestrictions] = useState(false);
   const [materialCount, setMaterialCount] = useState(0);
-  const [systemUnitPrice, setSystemUnitPrice] = useState(0);
+  const [systemTotalPrice, setSystemTotalPrice] = useState(0);
   // MATERIAL BASE
   const [baseMaterialUnitPrice, setBaseMaterialUnitPrice] = useState("");
   const [materialDataVisible, setMaterialDataVisible] = useState(false);
@@ -178,6 +179,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
 
   const processFormData = (data: SystemFormInputs) => {
     let constructionSystem: ConstructionSystem = {
+      totalPrice: systemTotalPrice,
       totalConsumption: data.totalConsumption,
       layers: data.layers,
       applicationMode: data.applicationMode,
@@ -235,7 +237,8 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   const onSubmit = async (formData: SystemFormInputs) => {
     if (formData) {
       let response: any;
-
+      
+      handleCalculateSystemTotalPrice();
       if (isUpdateForm) {
         response = await updateSystem(
           Number(data?.id),
@@ -261,6 +264,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       setValue("applicationMode", data.applicationMode);
       setValue("cured", data.cured ? "si" : "no");
       setValue("layers", data.layers);
+      setSystemTotalPrice(Number(data.totalPrice));
       setValue("totalConsumption", data.totalConsumption);
       setValue("supportConditions", data.supportConditions);
       setValue("baseConditions", data.baseConditions);
@@ -468,7 +472,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
 
   function handleBaseMaterial(value: number, origin: string) {
     setMaterialDataVisible(true);
-    setSystemUnitPrice(0);
+    // setSystemTotalPrice(0);
     if (isUpdateForm) {
       // pre cuando se llama desde el backend sin recorrer todos los materiales
       if (origin !== "select") {
@@ -486,11 +490,12 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     } else {
       findFromGlobalMaterialsAndSetDetails(value);
     }
+    handleCalculateSystemTotalPrice();
   }
 
   function handlePluginsMaterial(value: number, index: number, origin: string) {
     setPluginMaterialDataVisible(true);
-    setSystemUnitPrice(0);
+    setSystemTotalPrice(0);
     if (isUpdateForm) {
       if (origin !== "select") {
         const typeOfUseMaterial = data?.materials.find(
@@ -529,7 +534,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   // Obtengo precio unitario malla 100 %
   function handleTotalMesh(value: number, origin: string) {
     setTotalMeshUnityPriceVisible(true);
-    setSystemUnitPrice(0);
+    setSystemTotalPrice(0);
     const selectedMesh = materialsTypeMesh.find((item) => item.id === value);
     if (selectedMesh) {
       const price = truncateDecimals(Number(selectedMesh.unitPrice), 2);
@@ -540,7 +545,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   // Obtengo precio unitario malla parcial
   function handlePartialMesh(value: number) {
     setPartialMeshUnityPriceVisible(true);
-    setSystemUnitPrice(0);
+    setSystemTotalPrice(0);
     const selectedMesh = materialsTypeMesh.find((item) => item.id === value);
     if (selectedMesh) {
       const price = truncateDecimals(Number(selectedMesh.unitPrice), 2);
@@ -596,7 +601,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     setShowRestrictions(watchedRestriction === "si" ? true : false);
   }, [watchedRestriction]);
 
-  // Cuando cambia un input implicado en el precio unitario del sistema, vuelve a 0 el systemUnitPrice
+  // Cuando cambia un input implicado en el precio unitario del sistema, vuelve a 0 el systemTotalPrice
   useEffect(() => {
     const watchedFields = [
       "totalConsumption",
@@ -609,7 +614,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     const shouldReset = watchedFields.some((field) => watch(field));
 
     if (shouldReset) {
-      setSystemUnitPrice(0);
+      setSystemTotalPrice(0);
     }
   }, [
     watch("totalConsumption"),
@@ -619,7 +624,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     watch("systemOthersPluginsMaterialCoefficient2"),
   ]);
 
-  function handleCalculateSystemUnitPrice() {
+  function handleCalculateSystemTotalPrice() {
     const formValues = getValues();
 
     const price = getUnitPriceBaseMaterialSystem(
@@ -632,7 +637,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       selectedPluginMaterialDetail3.unitPrice
     );
 
-    setSystemUnitPrice(price);
+    setSystemTotalPrice(price);
   }
 
   // Evento de botón agregar - otros complementos
@@ -664,7 +669,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     },
   });
 
-  const baseMaterialUnitPriceTooltip = (
+  const systemTotalPriceTooltip = (
     <CustomWidthTooltip
       title={
         <span style={{ fontSize: "1rem", maxWidth: "600px" }}>
@@ -725,10 +730,10 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         </div>
         <div className="col-lg-3 col-sm-6 mb-3">
           <CustomTextField
-            name="baseMaterialunitPrice"
+            name="systemTotalPrice"
             control={control}
             label="Precio unitario sistema"
-            value={systemUnitPrice}
+            value={systemTotalPrice}
             variant="outlined"
             fullWidth
             InputProps={{
@@ -736,14 +741,14 @@ export const SystemForm: React.FC<SystemFormProps> = ({
               startAdornment: "$",
               endAdornment: (
                 <InputAdornment sx={{ marginRight: "5px" }} position="end">
-                  {baseMaterialUnitPriceTooltip}
+                  {systemTotalPriceTooltip}
                 </InputAdornment>
               ),
             }}
           />
         </div>
         <div className="col-lg-2 col-sm-6 mb-3">
-          <Button onClick={handleCalculateSystemUnitPrice}>Calcular</Button>
+          <Button onClick={handleCalculateSystemTotalPrice}>Calcular</Button>
         </div>
       </div>
       {/* ------------- Info del material seleccionado ------------- */}
@@ -953,6 +958,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
                 label="Coef. m2"
                 variant="outlined"
                 fullWidth
+                type="number"
                 rules={{ required: "Coeficiente requerido." }}
                 error={errors[`systemOthersPluginsMaterialCoefficient${index}`]}
                 helperText={
@@ -997,6 +1003,8 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         <div className="col-lg-12 col-sm-6">
           <CustomTextField
             name="baseConditions"
+            multiline
+            minRows={2}
             control={control}
             rules={{ required: "Condiciones de base requeridas." }}
             label="Condiciones de base"
@@ -1009,6 +1017,8 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         <div className="col-lg-12 col-sm-6 mt-3">
           <CustomTextField
             name="supportConditions"
+            multiline
+            minRows={2}
             control={control}
             rules={{ required: "Condiciones como soporte requeridas." }}
             label="Condiciones como soporte"

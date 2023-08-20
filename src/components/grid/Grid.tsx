@@ -3,7 +3,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate } from "react-router-dom";
 import "./Grid.css";
-import { Check } from "@mui/icons-material";
 import CustomModal from "../modal/customModal";
 import { useState } from "react";
 import {
@@ -78,7 +77,7 @@ export const GridCustom: React.FC<GridProps> = ({
         minWidth: 0,
       }}
       color="error"
-      variant="contained"
+      variant="text"
       onClick={() => openDeleteModal(id)} // Abre el modal al hacer clic en el botón de eliminar
     >
       <DeleteIcon />
@@ -118,7 +117,7 @@ export const GridCustom: React.FC<GridProps> = ({
         minWidth: 0,
       }}
       color="success"
-      variant="contained"
+      variant="text"
       onClick={() => onEdit(id)}
     >
       <EditIcon />
@@ -141,15 +140,7 @@ export const GridCustom: React.FC<GridProps> = ({
           {body?.map((item, index) => (
             <tr key={index}>
               {header?.map((col, index) => (
-                <td key={index}>
-                  {item[col.value] === "si" ? (
-                    <Check />
-                  ) : item[col.value] === "no" ? (
-                    ""
-                  ) : (
-                    item[col.value]
-                  )}
-                </td>
+                <td key={index}>{item[col.value]}</td>
               ))}
               {hasEdit && <td>{editButton(item.id)}</td>}
               {hasDelete && <td>{deleteButton(item.id)}</td>}
