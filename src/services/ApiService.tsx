@@ -101,7 +101,7 @@ export const getSystems = async (): Promise<ResponseApi> => {
 };
 
 export const getSystemByID = async (id: number): Promise<ResponseApi> => {
-  return get(`/admin/construction_system/${id}`);
+  return get(`/user/construction_system/${id}`);
 };
 
 export const updateSystem = async (
@@ -110,6 +110,10 @@ export const updateSystem = async (
 ): Promise<ResponseApi> => {
   return put(`/admin/construction_system/${id}`, data);
 };
+
+export const createSystemComment = async (id: number, data: any): Promise<ResponseApi> => {
+  return post(`/user/construction_system/${id}/comment`, data);
+}
 
 //#endregion
 const post = async (url: string, data: any): Promise<ResponseApi> => {

@@ -6,14 +6,16 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  TextField,
 } from "@mui/material";
 
 interface ModalProps {
   open: boolean;
   onClose: () => void;
   title: string;
-  description: string;
+  description?: string;
   onConfirm: () => void;
+  hasTextInput?: boolean;
 }
 
 const CustomModal: React.FC<ModalProps> = ({
@@ -22,12 +24,26 @@ const CustomModal: React.FC<ModalProps> = ({
   title,
   description,
   onConfirm,
+  hasTextInput,
 }) => {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <DialogContentText>{description}</DialogContentText>
+        <DialogContentText>
+          <>
+            {description && { description }}
+            {hasTextInput && (
+              <TextField
+                sx={{ width: "700px" }}
+                multiline
+                minRows={5}
+                fullWidth
+                variant="outlined"
+              />
+            )}
+          </>
+        </DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="primary">

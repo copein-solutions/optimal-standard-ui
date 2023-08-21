@@ -7,7 +7,7 @@ import { GridCustom } from "../../../components/grid2/Grid";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../redux/reducers/reducer";
 import { useNavigate } from "react-router-dom";
-import { ADMIN_ROL, SYSTEM_CREATE } from "../../../utils/constants";
+import { ADMIN_ROL, COMMENTOR_ROL, SYSTEM_CREATE } from "../../../utils/constants";
 import { columnGroupingModel, header } from "../listSystemUtils/listSystemUtils";
 
 const ListSystem = () => {
@@ -141,6 +141,7 @@ const ListSystem = () => {
           body={systems}
           hasEdit={userRole === ADMIN_ROL}
           hasDelete={userRole === ADMIN_ROL}
+          hasComment={userRole === COMMENTOR_ROL}
           navigateTo="system"
           columnGroupingModel={columnGroupingModel}
         />

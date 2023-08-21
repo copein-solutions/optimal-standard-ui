@@ -2,11 +2,13 @@ import React from "react";
 import { Button, Tooltip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import CommentIcon from '@mui/icons-material/Comment';
 import { useNavigate } from "react-router-dom";
 import "./Grid.css";
 import CustomModal from "../modal/customModal";
 import { useState } from "react";
 import {
+  createSystemComment,
   deleteApplicationArea,
   deleteMaterial,
 } from "../../services/ApiService";
@@ -39,8 +41,10 @@ type GridProps = {
   body?: { id: number; [key: string]: any }[];
   /** Si es true, se renderizará el botón de editar elemento. */
   hasEdit?: boolean;
-  /** Si es false, se renderizará el botón de eliminar elemento. */
+  /** Si es true, se renderizará el botón de eliminar elemento. */
   hasDelete?: boolean;
+  /** Si es true, se renderizará el botón de comentar elemento. */
+  hasComment?: boolean;
   /** String que indica la url a la cual redireccionará el botón de edit. */
   navigateTo?: string;
 };
@@ -50,6 +54,7 @@ export const GridCustom: React.FC<GridProps> = ({
   body,
   hasEdit,
   hasDelete,
+  hasComment,
   navigateTo,
   columnGroupingModel,
 }) => {
@@ -57,6 +62,8 @@ export const GridCustom: React.FC<GridProps> = ({
   const navigator = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState<number | null>(null);
+  const [commentModalOpen, setCommentModalOpen] = useState(false);
+  const [commentItemId, setCommentItemId] = useState<number | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
   const [toastType, setToastType] = useState<ToastType>("success");
@@ -102,6 +109,35 @@ export const GridCustom: React.FC<GridProps> = ({
     </Tooltip>
   );
 
+  const onComment = async (comment: string) => {
+    const data = {
+      "comment": comment,
+    };
+    if (commentItemId) {
+      let response = createSystemComment(commentItemId, data);
+    }
+  };
+
+
+  const commentButton = (id: number) => (
+    <Tooltip title="Dejar un comentario" placement="top">
+      <Button
+        sx={{
+          borderRadius: "50%",
+          height: "40px",
+          width: "40px",
+          minWidth: 0,
+          marginRight: "20px",
+        }}
+        color="success"
+        variant="contained"
+        onClick={() => openCommentModal(id)}
+      >
+        <CommentIcon />
+      </Button>
+    </Tooltip>
+  );
+
   const onEdit = (id: number) => {
     navigator(`/${navigateTo}/${id}/update`);
   };
@@ -114,6 +150,16 @@ export const GridCustom: React.FC<GridProps> = ({
   const closeDeleteModal = () => {
     setDeleteItemId(null);
     setModalOpen(false);
+  };
+
+  const openCommentModal = (id: number) => {
+    setCommentItemId(id);
+    setCommentModalOpen(true);
+  };
+
+  const closeCommentModal = () => {
+    setCommentItemId(null);
+    setCommentModalOpen(false);
   };
 
   const handleOpenToast = (msg: string, type: ToastType) => {
@@ -151,9 +197,10 @@ export const GridCustom: React.FC<GridProps> = ({
     header?.forEach((col) => {
       rowData[col.value] = item[col.value];
     });
-    if (hasEdit || hasDelete) {
+    if (hasEdit || hasDelete || hasComment) {
       rowData.actions = (
         <>
+          {hasComment && <>{commentButton(item.id)}</>}
           {hasEdit && <>{editButton(item.id)}</>}
           {hasDelete && <>{deleteButton(item.id)}</>}
         </>
@@ -170,7 +217,7 @@ export const GridCustom: React.FC<GridProps> = ({
       description: col.description,
     })) || [];
 
-  if (hasEdit || hasDelete) {
+  if (hasEdit || hasDelete || hasComment) {
     columns.push({
       field: "actions",
       headerName: "",
@@ -222,6 +269,18 @@ export const GridCustom: React.FC<GridProps> = ({
           onConfirm={() => {
             onDelete();
             closeDeleteModal();
+          }}
+        />
+      )}
+      {commentModalOpen && (
+        <CustomModal
+          open={commentModalOpen}
+          onClose={closeCommentModal}
+          title="Comentar"
+          hasTextInput
+          onConfirm={() => {
+            onComment('');
+            closeCommentModal();
           }}
         />
       )}
