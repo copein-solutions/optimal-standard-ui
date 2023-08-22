@@ -80,7 +80,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   const [materialCount, setMaterialCount] = useState(0);
   const [systemTotalPrice, setSystemTotalPrice] = useState(0);
   // MATERIAL BASE
-  const [baseMaterialUnitPrice, setBaseMaterialUnitPrice] = useState("");
+  // const [baseMaterialUnitPrice, setBaseMaterialUnitPrice] = useState("");
   const [materialDataVisible, setMaterialDataVisible] = useState(false);
   const [selectedBaseMaterialDetail, setSelectedBaseMaterialDetail] =
     useState<BaseMaterial>({
@@ -252,8 +252,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   const onSubmit = async (formData: SystemFormInputs) => {
     if (formData) {
       let response: any;
-      
-      handleCalculateSystemTotalPrice();
+
       if (isUpdateForm) {
         response = await updateSystem(
           Number(data?.id),
@@ -283,7 +282,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       setValue("totalConsumption", data.totalConsumption);
       setValue("supportConditions", data.supportConditions);
       setValue("baseConditions", data.baseConditions);
-      setBaseMaterialUnitPrice(String(data.materials[0].material.unitPrice));
+      setSelectedBaseMaterialDetail(data.materials[0].material);
       if (
         data.materialAreaRestrictions !== null &&
         data.materialAreaRestrictions !== "n/e"
@@ -467,10 +466,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     const material = globalMaterials.find(
       (item: Material) => item.id === value
     );
-
     if (material) {
-      const price = truncateDecimals(Number(material.unitPrice), 2);
-      setSelectedPartialMeshPrice(String(price));
       if (index === undefined) {
         setBaseMaterialDetail(material);
       } else {
@@ -487,7 +483,6 @@ export const SystemForm: React.FC<SystemFormProps> = ({
 
   function handleBaseMaterial(value: number, origin: string) {
     setMaterialDataVisible(true);
-    // setSystemTotalPrice(0);
     if (isUpdateForm) {
       // pre cuando se llama desde el backend sin recorrer todos los materiales
       if (origin !== "select") {
@@ -505,7 +500,31 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     } else {
       findFromGlobalMaterialsAndSetDetails(value);
     }
-    handleCalculateSystemTotalPrice();
+  }
+
+  // Obtengo precio unitario malla 100 %
+  function handleTotalMesh(value: number, origin: string) {
+    setTotalMeshUnityPriceVisible(true);
+    const selectedMesh = materialsTypeMesh.find((item) => item.id === value);
+    if (selectedMesh) {
+      const price = truncateDecimals(Number(selectedMesh.unitPrice), 2);
+      setSelectedTotalMeshPrice(String(price));
+    }
+  }
+
+  // Obtengo precio unitario malla parcial
+  function handlePartialMesh(value: number) {
+    setPartialMeshUnityPriceVisible(true);
+    const selectedMesh = materialsTypeMesh.find((item) => item.id === value);
+    if (selectedMesh) {
+      const unitPrice = truncateDecimals(Number(selectedMesh.unitPrice), 2);
+      setSelectedPartialMeshPrice(String(unitPrice));
+      const pricePerCoefficient = calculatePricePerCoefficientParcialMesh(
+        Number(systemParcialMeshCoefficientValue),
+        unitPrice
+      );
+      setSelectedPartialMeshPricePerCoefficient(String(pricePerCoefficient));
+    }
   }
 
   function handlePluginsMaterial(value: number, index: number, origin: string) {
@@ -544,28 +563,6 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       materialData = selectedPluginMaterialDetail3;
     }
     return <MaterialData material={materialData} />;
-  }
-
-  // Obtengo precio unitario malla 100 %
-  function handleTotalMesh(value: number, origin: string) {
-    setTotalMeshUnityPriceVisible(true);
-    setSystemTotalPrice(0);
-    const selectedMesh = materialsTypeMesh.find((item) => item.id === value);
-    if (selectedMesh) {
-      const price = truncateDecimals(Number(selectedMesh.unitPrice), 2);
-      setSelectedTotalMeshPrice(String(price));
-    }
-  }
-
-  // Obtengo precio unitario malla parcial
-  function handlePartialMesh(value: number) {
-    setPartialMeshUnityPriceVisible(true);
-    setSystemTotalPrice(0);
-    const selectedMesh = materialsTypeMesh.find((item) => item.id === value);
-    if (selectedMesh) {
-      const price = truncateDecimals(Number(selectedMesh.unitPrice), 2);
-      setSelectedPartialMeshPrice(String(price));
-    }
   }
 
   // Obtengo materiales type=malla del back
@@ -630,7 +627,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     const shouldReset = watchedFields.some((field) => watch(field));
 
     if (shouldReset) {
-      setSystemTotalPrice(0);
+      calculateSystemTotalPrice();
     }
   }, [
     watch("totalConsumption"),
@@ -690,12 +687,37 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     setSelectedPluginMaterialPricePerCoefficient2(String(price));
   }, [pluginMaterial3CoefficientValue]);
 
-  function handleCalculateSystemTotalPrice() {
+  // Cada vez que modifico uno de los componentes del precio del sistema,
+  // ejecuto la operación con los precios actualizados
+  useEffect(() => {
     const formValues = getValues();
 
     const price = getUnitPriceBaseMaterialSystem(
       formValues,
-      baseMaterialUnitPrice,
+      selectedBaseMaterialDetail.unitPrice,
+      selectedTotalMeshPrice,
+      selectedPartialMeshPrice,
+      selectedPluginMaterialDetail1.unitPrice,
+      selectedPluginMaterialDetail2.unitPrice,
+      selectedPluginMaterialDetail3.unitPrice
+    );
+
+    setSystemTotalPrice(price);
+  }, [
+    selectedBaseMaterialDetail,
+    selectedTotalMeshPrice,
+    selectedPartialMeshPrice,
+    selectedPluginMaterialDetail1,
+    selectedPluginMaterialDetail2,
+    selectedPluginMaterialDetail3,
+  ]);
+
+  function calculateSystemTotalPrice() {
+    const formValues = getValues();
+
+    const price = getUnitPriceBaseMaterialSystem(
+      formValues,
+      selectedBaseMaterialDetail.unitPrice,
       selectedTotalMeshPrice,
       selectedPartialMeshPrice,
       selectedPluginMaterialDetail1.unitPrice,
@@ -742,24 +764,21 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     <CustomWidthTooltip
       title={
         <span style={{ fontSize: "1rem", maxWidth: "600px" }}>
-          Para obtener el precio unitario debe:
+          El cálculo del precio se realiza en base a:
           <ul>
-            <li>Elegir un material base,</li>
-            <li>Ingresar el consumo total,</li>
+            <li>Precio de material base</li>
+            <li>Consumo total</li>
+            <li>Precio de malla 100 %</li>
+            <li>Precio de malla parcial y su coeficiente por m²</li>
             <li>
-              Especificar si lleva malla 100 %. En caso afirmativo especificar
-              cual.
+              Precios de materiales complementarios y sus respectivos
+              coeficientes por m²
             </li>
-            <li>
-              Especificar si lleva malla parcial. En caso afirmativo especificar
-              cual e ingresar el coef m².
-            </li>
-            <li>
-              En caso de que lleve otros complementos, especificar cuales e
-              ingresar sus respectivos coef m².
-            </li>
-            <li>Presionar el botón CALCULAR</li>
           </ul>
+          <span>
+            Si alguno de estos campos no es ingresado por ser opcional, su valor
+            asignado será 0.
+          </span>
         </span>
       }
       placement="bottom"
@@ -797,9 +816,10 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             onSelectOption={(value) => handleBaseMaterial(value, "select")}
           />
         </div>
-        <div className="col-lg-2 col-sm-3 mb-3">
+        <div className="col-lg-2 col-sm-3 mb-3 d-flex">
           <CustomTextField
             name="systemTotalPrice"
+            className="readOnly"
             control={control}
             label="Precio unitario sistema"
             value={systemTotalPrice}
@@ -808,16 +828,12 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             InputProps={{
               readOnly: true,
               startAdornment: "$",
-              endAdornment: (
-                <InputAdornment sx={{ marginRight: "5px" }} position="end">
-                  {systemTotalPriceTooltip}
-                </InputAdornment>
-              ),
+            }}
+            InputLabelProps={{
+              className: "readOnly",
             }}
           />
-        </div>
-        <div className="col-lg-2 col-sm-6 mb-3">
-          <Button onClick={handleCalculateSystemTotalPrice}>Calcular</Button>
+          <div className="tooltip-icon">{systemTotalPriceTooltip}</div>
         </div>
       </div>
       {/* ------------- Info del material seleccionado ------------- */}
