@@ -1,63 +1,97 @@
 import { Typography } from "@mui/material";
+import { BaseMaterial } from "../../../interfaces/form/FormInterfaces";
 import { truncateDecimals } from "../../../utils/mathUtils";
 import "./materialData.css";
 
-const MaterialData = (prop: any) => {
-  const { material } = prop;
+interface materialDataProps {
+  material: BaseMaterial | undefined;
+}
 
-  const unitPrice = truncateDecimals(Number(material.unitPrice), 2)
+export const MaterialData: React.FC<materialDataProps> = ({ material }) => {
+  const unitPrice = truncateDecimals(Number(material?.unitPrice), 2);
+  const unitPricePrefix = `$/${material?.presentationUnit}`;
 
   return (
     <div className="col-lg-12">
       <div className="material-data-container">
         <div className="col-lg-2 col-sm-2 data-div">
-          <Typography fontWeight="700" variant="body1">
-            {`Marca: ${material.brand}`}
+          <Typography fontWeight="500" mr={1} variant="body1">
+            Marca:
+          </Typography>
+          <Typography fontWeight="700" mr={1} variant="body1">
+            {material?.brand}
           </Typography>
         </div>
+
         <div className="col-lg-2 col-sm-2 data-div">
-          <Typography fontWeight="700" variant="body1">
-            {`Tipo: ${material.type}`}
+          <Typography fontWeight="500" mr={1} variant="body1">
+            Tipo:
+          </Typography>
+          <Typography fontWeight="700" mr={1} variant="body1">
+            {material?.type}
           </Typography>
         </div>
+
         <div className="col-lg-2 col-sm-2 data-div">
+          <Typography fontWeight="500" mr={1} variant="body1">
+            Composición:
+          </Typography>
           <Typography fontWeight="700" variant="body1">
-            {`Composición: ${material.component}`}
+            {material?.component}
           </Typography>
         </div>
+
         <div className="col-lg-2 col-sm-2 data-div">
+          <Typography fontWeight="500" mr={1} variant="body1">
+            Precio presentación:
+          </Typography>
           <Typography fontWeight="700" variant="body1">
-            {`Precio de presentación: $${material.presentationPrice}`}
+            {`$ ${material?.presentationPrice}`}
           </Typography>
         </div>
+
         <div className="col-lg-2 col-sm-2 data-div">
+          <Typography fontWeight="500" mr={1} variant="body1">
+            Cantidad presentación:
+          </Typography>
           <Typography fontWeight="700" variant="body1">
-            {`Cantidad de presentación: ${material.presentationQuantity}`}
+            {`${material?.presentationQuantity} ${material?.presentationUnit}`}
           </Typography>
         </div>
+
         <div className="col-lg-2 col-sm-2 data-div">
+          <Typography fontWeight="500" mr={1} variant="body1">
+            {`Precio: ${unitPricePrefix}`}
+          </Typography>
           <Typography fontWeight="700" variant="body1">
-            {`Precio unitario: $${unitPrice}`}
+            {unitPrice}
           </Typography>
         </div>
+
         <div className="col-lg-2 col-sm-2 data-div">
+          <Typography fontWeight="500" mr={1} variant="body1">
+            Fecha del precio:
+          </Typography>
           <Typography fontWeight="700" variant="body1">
-            {`Unidad de presentación: ${material.presentationUnit}`}
+            {material?.priceDate}
           </Typography>
         </div>
+
         <div className="col-lg-2 col-sm-2 data-div">
+          <Typography fontWeight="500" mr={1} variant="body1">
+            Pot life:
+          </Typography>
           <Typography fontWeight="700" variant="body1">
-            {`Fecha del precio: ${material.priceDate}`}
+            {`${material?.potLife} hrs`}
           </Typography>
         </div>
+
         <div className="col-lg-2 col-sm-2 data-div">
-          <Typography fontWeight="700" variant="body1">
-            {`Vida útil: ${material.potLife}`}
+          <Typography fontWeight="500" mr={1} variant="body1">
+            Temp min de aplicación:
           </Typography>
-        </div>
-        <div className="col-lg-2 col-sm-2 data-div">
           <Typography fontWeight="700" variant="body1">
-            {`Temp min aplicable: ${material.minApplicableTemp}`}
+            {`${material?.minApplicableTemp} °C`}
           </Typography>
         </div>
       </div>

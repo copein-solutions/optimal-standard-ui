@@ -1,11 +1,17 @@
 import { MainContainer } from "../../../components/mainContainer/MainContainer";
-import MaterialForm from "../materialForm"
+import MaterialForm from "../materialForm";
 import "./addMaterial.css";
+import WarningNoMobile from "../../warningNoMobile/warningNoMobile";
+import useIsMobile from "../../../utils/hooks";
 
 const AddMaterial = () => {
-  return (
+  const isMobile = useIsMobile();
+
+  return isMobile ? (
+    <WarningNoMobile />
+  ) : (
     <MainContainer cardTitle="Alta de material">
-      <MaterialForm/>
+      <MaterialForm />
     </MainContainer>
   );
 };

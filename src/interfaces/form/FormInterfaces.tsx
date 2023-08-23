@@ -23,6 +23,14 @@ interface MaterialInputs {
   component: string;
   potLife?: string;
   minApplicableTemp?: string;
+  files?: Files[] | undefined;
+}
+
+interface Files {
+  id?: number;
+  name: string;
+  size: number;
+  type: string;
 }
 
 // SystemForm
@@ -50,7 +58,6 @@ interface SystemFormInputs {
   applicationArea: SystemMaterialApplicationAreaFormInputs | any;
   applicationMode: string;
   cured: boolean | string | any;
-  systemTotalPrice: number | any;
   layers: string;
   totalConsumption: string;
   supportConditions: string;
@@ -144,6 +151,7 @@ export type {
   SystemFormInputs,
   SystemMaterialFormInputs,
   Material,
+  Files,
   Options,
   BaseMaterial,
   SystemFormProps,
