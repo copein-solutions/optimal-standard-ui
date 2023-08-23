@@ -168,6 +168,7 @@ const ListSystem = () => {
           body={systems}
           hasEdit={userRole === ADMIN_ROL}
           hasDelete={userRole === ADMIN_ROL}
+          hasCategory={userRole === ADMIN_ROL}
           navigateTo="system"
           columnGroupingModel={columnGroupingModel}
         />

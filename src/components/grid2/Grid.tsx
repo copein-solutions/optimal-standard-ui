@@ -1,7 +1,17 @@
 import React from "react";
-import { Button, Tooltip } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Tooltip,
+} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import StarsIcon from "@mui/icons-material/Stars";
 import { useNavigate } from "react-router-dom";
 import "./Grid.css";
 import CustomModal from "../modal/customModal";
@@ -13,9 +23,16 @@ import {
 import { useDispatch } from "react-redux";
 import Toast, { ToastType } from "../toast/toast";
 
-import { DataGrid, GridColDef, GridToolbar, GridColumnGroupingModel, esES } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridColDef,
+  GridToolbar,
+  GridColumnGroupingModel,
+  esES,
+} from "@mui/x-data-grid";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import CustomSelectField from "../customSelectField";
 
 type Header = {
   name: string;
@@ -39,8 +56,10 @@ type GridProps = {
   body?: { id: number; [key: string]: any }[];
   /** Si es true, se renderizará el botón de editar elemento. */
   hasEdit?: boolean;
-  /** Si es false, se renderizará el botón de eliminar elemento. */
+  /** Si es true, se renderizará el botón de eliminar elemento. */
   hasDelete?: boolean;
+  /** Si es true, se renderizará el botón para categorizar el sistema. */
+  hasCategory?: boolean;
   /** String que indica la url a la cual redireccionará el botón de edit. */
   navigateTo?: string;
 };
@@ -50,16 +69,20 @@ export const GridCustom: React.FC<GridProps> = ({
   body,
   hasEdit,
   hasDelete,
+  hasCategory,
   navigateTo,
   columnGroupingModel,
 }) => {
   const dispatch = useDispatch();
   const navigator = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalWithChildrenOpen, setModalWithChildrenOpen] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState<number | null>(null);
+  const [systemItemId, setSystemItemId] = useState<number | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
   const [toastType, setToastType] = useState<ToastType>("success");
+  const [selectedOption, setSelectedOption] = useState("");
 
   const onDelete = async () => {
     let response: any;
@@ -92,12 +115,12 @@ export const GridCustom: React.FC<GridProps> = ({
           height: "40px",
           width: "40px",
           minWidth: 0,
+          marginRight: "20px",
         }}
         color="error"
-        variant="contained"
         onClick={() => openDeleteModal(id)}
       >
-        <DeleteIcon />
+        <DeleteIcon fontSize="large" />
       </Button>
     </Tooltip>
   );
@@ -137,12 +160,76 @@ export const GridCustom: React.FC<GridProps> = ({
           marginRight: "20px",
         }}
         color="success"
-        variant="contained"
         onClick={() => onEdit(id)}
       >
-        <EditIcon />
+        <EditIcon fontSize="large" color="primary" />
       </Button>
     </Tooltip>
+  );
+
+  const categoryButton = (id: number) => (
+    <Tooltip title="Categorizar" placement="top">
+      <Button
+        sx={{
+          borderRadius: "50%",
+          height: "40px",
+          width: "40px",
+          minWidth: 0,
+        }}
+        color="success"
+        onClick={() => openSetCategoryModal(id)}
+      >
+        <StarsIcon fontSize="large" />
+      </Button>
+    </Tooltip>
+  );
+
+  const openSetCategoryModal = (id: number) => {
+    setSystemItemId(id);
+    setModalWithChildrenOpen(true);
+  };
+
+  const closeCategoryModal = () => {
+    setSystemItemId(null);
+    setModalWithChildrenOpen(false);
+  };
+
+  const handleConfirmCategorization = () => {
+    setModalWithChildrenOpen(false);
+    // TODO: crear llamara a api que setee STDO / STDOA
+    if (selectedOption === "optimalStandard") {
+      console.log("estandar optimo");
+    }
+    if (selectedOption === "alternativeOptimalStandard") {
+      console.log("estandar optimo alternativo");
+    }
+    // response = await setSystemCategory(systemItemId);
+    // callDispatch("DELETE_MATERIAL", response);
+  };
+
+  const handleOptionChange = (event: SelectChangeEvent<string>) => {
+    setSelectedOption(event.target.value);
+  };
+
+  const modalChildren = (
+    <FormControl fullWidth>
+      <InputLabel id="select-label">Selecciona una opción</InputLabel>
+      <Select
+        size="small"
+        labelId="select-label"
+        label="Selecciona una opción"
+        value={selectedOption}
+        onChange={handleOptionChange}
+      >
+        <MenuItem value="">
+          <em>Seleccionar</em>
+        </MenuItem>
+        <MenuItem value="optimalStandard">Estándar Óptimo</MenuItem>
+        <MenuItem value="alternativeOptimalStandard">
+          Estándar Óptimo Alternativo
+        </MenuItem>
+      </Select>
+    </FormControl>
   );
 
   const formatRows: RowData[] = [];
@@ -156,6 +243,7 @@ export const GridCustom: React.FC<GridProps> = ({
         <>
           {hasEdit && <>{editButton(item.id)}</>}
           {hasDelete && <>{deleteButton(item.id)}</>}
+          {hasCategory && <>{categoryButton(item.id)}</>}
         </>
       );
     }
@@ -174,7 +262,7 @@ export const GridCustom: React.FC<GridProps> = ({
     columns.push({
       field: "actions",
       headerName: "",
-      width: 150,
+      width: 200,
       sortable: false,
       filterable: false,
       renderCell: (params) => params.value,
@@ -222,6 +310,18 @@ export const GridCustom: React.FC<GridProps> = ({
           onConfirm={() => {
             onDelete();
             closeDeleteModal();
+          }}
+        />
+      )}
+      {modalWithChildrenOpen && (
+        <CustomModal
+          open={modalWithChildrenOpen}
+          onClose={closeCategoryModal}
+          title="Seleccione la categorización del sistema"
+          children={modalChildren}
+          onConfirm={() => {
+            handleConfirmCategorization();
+            closeCategoryModal();
           }}
         />
       )}
