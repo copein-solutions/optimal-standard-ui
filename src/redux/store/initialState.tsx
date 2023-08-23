@@ -3,6 +3,7 @@ const initialState = {
 	materials: [],
 	applicationAreas: [],
 	systems: [],
+	comments: [],
 }
 
 export default initialState;
