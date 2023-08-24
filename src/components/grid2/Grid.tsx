@@ -212,18 +212,14 @@ export const GridCustom: React.FC<GridProps> = ({
   };
 
   const modalChildren = (
-    <FormControl fullWidth>
-      <InputLabel id="select-label">Selecciona una opción</InputLabel>
+    <FormControl fullWidth size="small">
+      <InputLabel id="select-label">Seleccioná una opción</InputLabel>
       <Select
-        size="small"
         labelId="select-label"
         label="Selecciona una opción"
         value={selectedOption}
         onChange={handleOptionChange}
       >
-        <MenuItem value="">
-          <em>Seleccionar</em>
-        </MenuItem>
         <MenuItem value="optimalStandard">Estándar Óptimo</MenuItem>
         <MenuItem value="alternativeOptimalStandard">
           Estándar Óptimo Alternativo
