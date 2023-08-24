@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactNode } from "react";
 import {
   Button,
   Dialog,
@@ -15,7 +15,7 @@ interface ModalProps {
   title: string;
   description?: string;
   onConfirm: () => void;
-  hasTextInput?: boolean;
+  children?: ReactNode;
 }
 
 const CustomModal: React.FC<ModalProps> = ({
@@ -24,26 +24,14 @@ const CustomModal: React.FC<ModalProps> = ({
   title,
   description,
   onConfirm,
-  hasTextInput,
+  children,
 }) => {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          <>
-            {description && { description }}
-            {hasTextInput && (
-              <TextField
-                sx={{ width: "700px" }}
-                multiline
-                minRows={5}
-                fullWidth
-                variant="outlined"
-              />
-            )}
-          </>
-        </DialogContentText>
+        <DialogContentText>{description}</DialogContentText>
+        <div className="m-3">{children}</div>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="primary">
