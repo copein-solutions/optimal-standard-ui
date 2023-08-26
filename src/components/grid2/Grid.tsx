@@ -1,18 +1,18 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
-  Box,
   Button,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
+  TextField,
   Tooltip,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import StarsIcon from "@mui/icons-material/Stars";
-import CommentIcon from '@mui/icons-material/Comment';
+import CommentIcon from "@mui/icons-material/Comment";
 import { useNavigate } from "react-router-dom";
 import "./Grid.css";
 import CustomModal from "../modal/customModal";
@@ -34,7 +34,6 @@ import {
 } from "@mui/x-data-grid";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import CustomSelectField from "../customSelectField";
 
 type Header = {
   name: string;
@@ -82,10 +81,11 @@ export const GridCustom: React.FC<GridProps> = ({
   const navigator = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
   const [modalWithChildrenOpen, setModalWithChildrenOpen] = useState(false);
+  const [commentModalOpen, setCommentModalOpen] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState<number | null>(null);
   const [systemItemId, setSystemItemId] = useState<number | null>(null);
-  const [commentModalOpen, setCommentModalOpen] = useState(false);
   const [commentItemId, setCommentItemId] = useState<number | null>(null);
+  const [commentValue, setCommentValue] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
   const [toastType, setToastType] = useState<ToastType>("success");
@@ -132,15 +132,23 @@ export const GridCustom: React.FC<GridProps> = ({
     </Tooltip>
   );
 
-  const onComment = async (comment: string) => {
+  const onComment = async () => {
     const data = {
-      "comment": comment,
+      comment: commentValue,
     };
     if (commentItemId) {
-      let response = createSystemComment(commentItemId, data);
+      let response: any = await createSystemComment(commentItemId, data);
+      if (response.status !== 200) {
+        handleOpenToast(
+          "Algo salió mal al enviar tu comentario.",
+          "error"
+        );
+      } else {
+        handleOpenToast("Comentario registrado con éxito.", "success");
+      }
     }
+    setCommentValue("");
   };
-
 
   const commentButton = (id: number) => (
     <Tooltip title="Dejar un comentario" placement="top">
@@ -153,7 +161,6 @@ export const GridCustom: React.FC<GridProps> = ({
           marginRight: "20px",
         }}
         color="success"
-        variant="contained"
         onClick={() => openCommentModal(id)}
       >
         <CommentIcon />
@@ -240,17 +247,17 @@ export const GridCustom: React.FC<GridProps> = ({
     setModalWithChildrenOpen(false);
   };
 
-  const handleConfirmCategorization = () => {
+  const handleConfirmCategorization = async () => {
     setModalWithChildrenOpen(false);
-    // TODO: crear llamara a api que setee STDO / STDOA
-    if (selectedOption === "optimalStandard") {
-      console.log("estandar optimo");
+    if (systemItemId) {
+      // TODO: crear llamara a api que setee STDO / STDOA
+      if (selectedOption === "optimalStandard") {
+        console.log("estandar optimo");
+      }
+      if (selectedOption === "alternativeOptimalStandard") {
+        console.log("estandar optimo alternativo");
+      }
     }
-    if (selectedOption === "alternativeOptimalStandard") {
-      console.log("estandar optimo alternativo");
-    }
-    // response = await setSystemCategory(systemItemId);
-    // callDispatch("DELETE_MATERIAL", response);
   };
 
   const handleOptionChange = (event: SelectChangeEvent<string>) => {
@@ -274,19 +281,39 @@ export const GridCustom: React.FC<GridProps> = ({
     </FormControl>
   );
 
+  const handleCommentChanged = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    setCommentValue(event.target.value);
+  };
+
+  const modalCommentChildren = (
+    <div style={{ height: "150px", width: "600px" }}>
+      <FormControl fullWidth size="small">
+        <TextField
+          name="Comentario"
+          value={commentValue}
+          onChange={handleCommentChanged}
+          minRows={5}
+          multiline
+        ></TextField>
+      </FormControl>
+    </div>
+  );
+
   const formatRows: RowData[] = [];
   body?.forEach((item, index) => {
     const rowData: RowData = { id: index + 1, actions: <></> };
     header?.forEach((col) => {
       rowData[col.value] = item[col.value];
     });
-    if (hasEdit || hasDelete || hasComment) {
+    if (hasEdit || hasDelete || hasComment || hasCategory) {
       rowData.actions = (
         <>
-          {hasComment && <>{commentButton(item.id)}</>}
           {hasEdit && <>{editButton(item.id)}</>}
           {hasDelete && <>{deleteButton(item.id)}</>}
           {hasCategory && <>{categoryButton(item.id)}</>}
+          {hasComment && <>{commentButton(item.id)}</>}
         </>
       );
     }
@@ -301,7 +328,7 @@ export const GridCustom: React.FC<GridProps> = ({
       description: col.description,
     })) || [];
 
-  if (hasEdit || hasDelete || hasComment) {
+  if (hasEdit || hasDelete || hasComment || hasCategory) {
     columns.push({
       field: "actions",
       headerName: "",
@@ -373,8 +400,9 @@ export const GridCustom: React.FC<GridProps> = ({
           open={commentModalOpen}
           onClose={closeCommentModal}
           title="Comentar"
+          children={modalCommentChildren}
           onConfirm={() => {
-            onComment('');
+            onComment();
             closeCommentModal();
           }}
         />
