@@ -19,6 +19,7 @@ import { useState } from "react";
 import {
   deleteApplicationArea,
   deleteMaterial,
+  setSystemCategory,
 } from "../../services/ApiService";
 import { useDispatch } from "react-redux";
 import Toast, { ToastType } from "../toast/toast";
@@ -194,17 +195,20 @@ export const GridCustom: React.FC<GridProps> = ({
     setModalWithChildrenOpen(false);
   };
 
-  const handleConfirmCategorization = () => {
+  const handleConfirmCategorization = async () => {
     setModalWithChildrenOpen(false);
-    // TODO: crear llamara a api que setee STDO / STDOA
-    if (selectedOption === "optimalStandard") {
-      console.log("estandar optimo");
+    const type = { type: selectedOption };
+    if (systemItemId) {
+      const response: any = await setSystemCategory(systemItemId, type);
+      if (response.status !== 200) {
+        handleOpenToast(
+          "Algo salio mal al definir el estandar optimo.",
+          "error"
+        );
+      } else {
+        handleOpenToast("Nuevo estandar optimo definido.", "success");
+      }
     }
-    if (selectedOption === "alternativeOptimalStandard") {
-      console.log("estandar optimo alternativo");
-    }
-    // response = await setSystemCategory(systemItemId);
-    // callDispatch("DELETE_MATERIAL", response);
   };
 
   const handleOptionChange = (event: SelectChangeEvent<string>) => {
@@ -220,10 +224,11 @@ export const GridCustom: React.FC<GridProps> = ({
         value={selectedOption}
         onChange={handleOptionChange}
       >
-        <MenuItem value="optimalStandard">Estándar Óptimo</MenuItem>
-        <MenuItem value="alternativeOptimalStandard">
+        <MenuItem value="OPTIMAL_STANDARD">Estándar Óptimo</MenuItem>
+        <MenuItem value="ALTERNATIVE_OPTIMAL_STANDARD">
           Estándar Óptimo Alternativo
         </MenuItem>
+        <MenuItem value="DELETE_CATEGORIZATION">Quitar categorización</MenuItem>
       </Select>
     </FormControl>
   );
