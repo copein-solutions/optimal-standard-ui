@@ -58,6 +58,10 @@ export const deleteMaterial = async (id: number | null): Promise<ResponseApi> =>
   return remove(`/admin/material/${id}`);
 };
 
+export const getMaterialFileById = async (id: number) => {
+  return get(`/file/load?file_id=${id}`);
+}
+
 //#endregion
 
 // #region CAMPO DE APLICACIÓN

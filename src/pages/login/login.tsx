@@ -40,7 +40,7 @@ const Login = () => {
     localStorage.clear();
     let response = await login(data);
 
-    if (response.data.token) {
+    if (response && response.data.token) {
       localStorage.setItem("userRole", response.data.authorities);
       localStorage.setItem("credentials", JSON.stringify(response.data.token));
       dispatch({ type: "LOGIN", payload: true });

@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import NumberFormat, { NumberFormatValues } from "react-number-format";
 import { FilePond, registerPlugin } from "react-filepond";
+import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
+
 
 import "./materialForm.css";
 // Import FilePond styles
@@ -28,12 +30,13 @@ import {
 } from "../../../utils/constants";
 
 import { MaterialInputs, Files } from "../../../interfaces/form/FormInterfaces";
-import { createMaterial, updateMaterial, API_BASE_URL } from "../../../services/ApiService";
+import { createMaterial, updateMaterial, getMaterialFileById, API_BASE_URL } from "../../../services/ApiService";
 import CustomTextField from "../../../components/TextField";
 import { useNavigate } from "react-router-dom";
 import CustomSelectField from "../../../components/customSelectField";
 import { getUnitPrice } from "../../../utils/mathUtils";
-import { type } from "@testing-library/user-event/dist/type";
+import { FilePondFile } from "filepond";
+// import axios from "axios";
 
 type MaterialFromProps = {
   data?: MaterialInputs;
@@ -49,16 +52,12 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
     control,
     formState: { errors },
   } = useForm<MaterialInputs>();
-
+  registerPlugin(FilePondPluginFileValidateType);
   const [inputValue, setInputValue] = useState<string | undefined>("0,00");
   const [inputValueNumberFormat, setInputValueNumberFormat] = useState("");
   const [files, setFiles] = useState<any[]>([]);
   const [headers, setHeaders] = useState<any>({});
   const navigator = useNavigate();
-  
-  const validateFile = (file: File) => {
-    return file.type === 'application/pdf';
-  };
 
   const loadFiles = (files: Files[]) => {
       return files.map(file => {
@@ -93,7 +92,19 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
     });
   };
 
-  
+  const handleFileClick = async (file: FilePondFile) => {
+    try {
+      const response = await getMaterialFileById(Number(file.serverId));
+      // Crea una URL de objeto Blob
+      const blob = new Blob([response.data], { type: response.headers['content-type'] });  
+      const blobUrl = URL.createObjectURL(blob);
+
+      // Abre la URL de Blob en una nueva pestaña
+      window.open(blobUrl, '_blank');
+    } catch (error) {
+      console.error('Error al obtener el archivo:', error);
+    }
+  };
 
   useEffect(() => {
     if (data) {
@@ -117,6 +128,7 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
       console.log(`Bearer ${JSON.parse(credencials)}`);
       setHeaders({
         Authorization: `Bearer ${JSON.parse(credencials)}`,
+        "Accept": "*/*"
       });
     }
   }, [setValue, data]);
@@ -450,7 +462,8 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
               method: "GET",
               withCredentials: false,
             },
-          }}       
+          }}
+          onactivatefile={(file) => handleFileClick(file)}
         />
       </div>
       <div className="card-footer text-body-secondary align-right">
