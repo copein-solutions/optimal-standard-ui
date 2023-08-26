@@ -80,6 +80,7 @@ export const GridCustom: React.FC<GridProps> = ({
   const [modalWithChildrenOpen, setModalWithChildrenOpen] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState<number | null>(null);
   const [systemItemId, setSystemItemId] = useState<number | null>(null);
+  const [applicationAreaName, setApplicationAreaName] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
   const [toastType, setToastType] = useState<ToastType>("success");
@@ -168,7 +169,7 @@ export const GridCustom: React.FC<GridProps> = ({
     </Tooltip>
   );
 
-  const categoryButton = (id: number) => (
+  const categoryButton = (system: any) => (
     <Tooltip title="Categorizar" placement="top">
       <Button
         sx={{
@@ -178,20 +179,23 @@ export const GridCustom: React.FC<GridProps> = ({
           minWidth: 0,
         }}
         color="success"
-        onClick={() => openSetCategoryModal(id)}
+        onClick={() => openSetCategoryModal(system)}
       >
         <StarsIcon fontSize="large" />
       </Button>
     </Tooltip>
   );
 
-  const openSetCategoryModal = (id: number) => {
-    setSystemItemId(id);
+  const openSetCategoryModal = (system: any) => {
+    setSystemItemId(system.id);
+    setApplicationAreaName(system.applicationAreaName);
     setModalWithChildrenOpen(true);
   };
 
   const closeCategoryModal = () => {
     setSystemItemId(null);
+    setApplicationAreaName('');
+    setSelectedOption('');
     setModalWithChildrenOpen(false);
   };
 
@@ -209,6 +213,7 @@ export const GridCustom: React.FC<GridProps> = ({
         handleOpenToast("Nuevo estandar optimo definido.", "success");
       }
     }
+    setSelectedOption("");
   };
 
   const handleOptionChange = (event: SelectChangeEvent<string>) => {
@@ -228,7 +233,6 @@ export const GridCustom: React.FC<GridProps> = ({
         <MenuItem value="ALTERNATIVE_OPTIMAL_STANDARD">
           Estándar Óptimo Alternativo
         </MenuItem>
-        <MenuItem value="DELETE_CATEGORIZATION">Quitar categorización</MenuItem>
       </Select>
     </FormControl>
   );
@@ -244,7 +248,7 @@ export const GridCustom: React.FC<GridProps> = ({
         <>
           {hasEdit && <>{editButton(item.id)}</>}
           {hasDelete && <>{deleteButton(item.id)}</>}
-          {hasCategory && <>{categoryButton(item.id)}</>}
+          {hasCategory && <>{categoryButton(item)}</>}
         </>
       );
     }
@@ -319,6 +323,7 @@ export const GridCustom: React.FC<GridProps> = ({
           open={modalWithChildrenOpen}
           onClose={closeCategoryModal}
           title="Seleccione la categorización del sistema"
+          description={`Campo de aplicacion: ${applicationAreaName}`}
           children={modalChildren}
           onConfirm={() => {
             handleConfirmCategorization();
