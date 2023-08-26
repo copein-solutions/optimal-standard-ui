@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import NumberFormat, { NumberFormatValues } from "react-number-format";
 import { FilePond, registerPlugin } from "react-filepond";
+import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
+
 
 import "./materialForm.css";
 // Import FilePond styles
@@ -50,7 +52,7 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
     control,
     formState: { errors },
   } = useForm<MaterialInputs>();
-
+  registerPlugin(FilePondPluginFileValidateType);
   const [inputValue, setInputValue] = useState<string | undefined>("0,00");
   const [inputValueNumberFormat, setInputValueNumberFormat] = useState("");
   const [files, setFiles] = useState<any[]>([]);
