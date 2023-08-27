@@ -86,7 +86,7 @@ const privateRoutes = [
   {
     path: SYSTEM_COMMENTS,
     component: <ListSystemComments />,
-    allowRoles: [ADMIN_ROL, COMMENTOR_ROL],
+    allowRoles: [ADMIN_ROL, COMMENTOR_ROL, READONLY_ROL],
   },
 ];
 

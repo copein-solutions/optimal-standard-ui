@@ -31,8 +31,13 @@ const rootReducer = (state = initialState, action: any) => {
       };
     case "SET_SYSTEM":
       return { ...state, systems: action.payload };
-      case "SET_COMMENTS":
-        return { ...state, comments: action.payload };
+    case "SET_COMMENTS":
+      return { ...state, comments: action.payload };
+    case "DELETE_COMMENT":
+      return {
+        ...state,
+        comments: state.comments.filter((t: any) => t.id !== action.payload),
+      };
     default:
       return state;
   }

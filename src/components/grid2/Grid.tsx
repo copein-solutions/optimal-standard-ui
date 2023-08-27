@@ -63,6 +63,8 @@ type GridProps = {
   hasCategory?: boolean;
   /** Si es true, se renderizará el botón de comentar elemento. */
   hasComment?: boolean;
+  /** Si es true, se renderizará el botón de visualizar comentarios del elemento. */
+  hasViewComment?: boolean;
   /** String que indica la url a la cual redireccionará el botón de edit. */
   navigateTo?: string;
 };
@@ -74,6 +76,7 @@ export const GridCustom: React.FC<GridProps> = ({
   hasDelete,
   hasCategory,
   hasComment,
+  hasViewComment,
   navigateTo,
   columnGroupingModel,
 }) => {
@@ -167,6 +170,24 @@ export const GridCustom: React.FC<GridProps> = ({
       </Button>
     </Tooltip>
   );
+
+  const viewCommentButton = (id: number) => {
+    <Tooltip title="Ver comentarios" placement="top">
+      <Button
+        sx={{
+          borderRadius: "50%",
+          height: "40px",
+          width: "40px",
+          minWidth: 0,
+          marginRight: "20px",
+        }}
+        color="info"
+        onClick={() => navigator(`/system/${id}/comments`)}
+      >
+        <CommentIcon />
+      </Button>
+    </Tooltip>
+  }
 
   const onEdit = (id: number) => {
     navigator(`/${navigateTo}/${id}/update`);
@@ -307,13 +328,14 @@ export const GridCustom: React.FC<GridProps> = ({
     header?.forEach((col) => {
       rowData[col.value] = item[col.value];
     });
-    if (hasEdit || hasDelete || hasComment || hasCategory) {
+    if (hasEdit || hasDelete || hasComment || hasCategory || hasViewComment) {
       rowData.actions = (
         <>
           {hasEdit && <>{editButton(item.id)}</>}
           {hasDelete && <>{deleteButton(item.id)}</>}
           {hasCategory && <>{categoryButton(item.id)}</>}
           {hasComment && <>{commentButton(item.id)}</>}
+          {hasViewComment && <>{viewCommentButton(item.id)}</>}
         </>
       );
     }
@@ -328,7 +350,7 @@ export const GridCustom: React.FC<GridProps> = ({
       description: col.description,
     })) || [];
 
-  if (hasEdit || hasDelete || hasComment || hasCategory) {
+  if (hasEdit || hasDelete || hasComment || hasCategory || hasViewComment) {
     columns.push({
       field: "actions",
       headerName: "",

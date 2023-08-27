@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, FormControl, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,8 @@ import { useState } from "react";
 import {
   deleteApplicationArea,
   deleteMaterial,
+  deleteSystemComment,
+  updateSystemComment,
 } from "../../services/ApiService";
 import { useDispatch } from "react-redux";
 import Toast, { ToastType } from "../toast/toast";
@@ -44,6 +46,10 @@ export const GridCustom: React.FC<GridProps> = ({
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
   const [toastType, setToastType] = useState<ToastType>("success");
+  const [systemId, setSystemId] = useState<number | null>(null);
+  const [commentItemId, setCommentItemId] = useState<number | null>(null);
+  const [commentModalOpen, setCommentModalOpen] = useState(false);
+  const [commentValue, setCommentValue] = useState("");
 
   const onDelete = async () => {
     let response: any;
@@ -53,6 +59,17 @@ export const GridCustom: React.FC<GridProps> = ({
     } else if (navigateTo === "application_area") {
       response = await deleteApplicationArea(deleteItemId);
       callDispatch("DELETE_APPLICATION_AREA", response);
+    } else if (navigateTo === "comment") {
+      response = await deleteSystemComment(deleteItemId);
+      if (response.status !== 200) {
+        handleOpenToast(
+          response.data.message,
+          "error"
+        );
+      } else {
+        handleOpenToast("Elemento eliminado con éxito", "success");
+        dispatch({ type: "DELETE_COMMENT", payload: deleteItemId });
+      }
     }
   };
 
@@ -84,8 +101,14 @@ export const GridCustom: React.FC<GridProps> = ({
     </Button>
   );
 
-  const onEdit = (id: number) => {
-    navigator(`/${navigateTo}/${id}/update`);
+  const onEdit = (data: any) => {
+    if (navigateTo !== "comment") {
+      navigator(`/${navigateTo}/${data.id}/update`);
+    } else {
+      setCommentItemId(data.id);
+      setSystemId(data.constructionSystemId);
+      setCommentModalOpen(true);
+    }
   };
 
   const openDeleteModal = (id: number) => {
@@ -98,6 +121,53 @@ export const GridCustom: React.FC<GridProps> = ({
     setModalOpen(false);
   };
 
+  const closeCommentModal = () => {
+    setCommentItemId(null);
+    setCommentModalOpen(false);
+  };
+
+  const onComment = async () => {
+    console.log(commentItemId, systemId);
+
+    if (commentItemId && systemId) {
+      const data = {
+        id: commentItemId,
+        comment: commentValue,
+      };
+      let response: any = await updateSystemComment(systemId, data);
+      console.log(response);
+
+      if (response.status !== 200) {
+        let message = "Algo salió mal al enviar tu comentario.";
+        if (response.data.message) message = response.data.message;
+        handleOpenToast(message, "error");
+      } else {
+        handleOpenToast("Comentario registrado con éxito.", "success");
+      }
+    }
+    setCommentValue("");
+  };
+
+  const handleCommentChanged = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    setCommentValue(event.target.value);
+  };
+
+  const modalCommentChildren = (
+    <div style={{ height: "150px", width: "600px" }}>
+      <FormControl fullWidth size="small">
+        <TextField
+          name="Comentario"
+          value={commentValue}
+          onChange={handleCommentChanged}
+          minRows={5}
+          multiline
+        ></TextField>
+      </FormControl>
+    </div>
+  );
+
   const handleOpenToast = (msg: string, type: ToastType) => {
     setToastMsg(msg);
     setToastType(type);
@@ -108,7 +178,7 @@ export const GridCustom: React.FC<GridProps> = ({
     setShowToast(false);
   };
 
-  const editButton = (id: number) => (
+  const editButton = (comment: any) => (
     <Button
       sx={{
         borderRadius: "50%",
@@ -118,7 +188,7 @@ export const GridCustom: React.FC<GridProps> = ({
       }}
       color="success"
       variant="text"
-      onClick={() => onEdit(id)}
+      onClick={() => onEdit(comment)}
     >
       <EditIcon />
     </Button>
@@ -142,7 +212,7 @@ export const GridCustom: React.FC<GridProps> = ({
               {header?.map((col, index) => (
                 <td key={index}>{item[col.value]}</td>
               ))}
-              {hasEdit && <td>{editButton(item.id)}</td>}
+              {hasEdit && <td>{editButton(item)}</td>}
               {hasDelete && <td>{deleteButton(item.id)}</td>}
             </tr>
           ))}
@@ -157,6 +227,18 @@ export const GridCustom: React.FC<GridProps> = ({
           onConfirm={() => {
             onDelete();
             closeDeleteModal();
+          }}
+        />
+      )}
+      {commentModalOpen && (
+        <CustomModal
+          open={commentModalOpen}
+          onClose={closeCommentModal}
+          title="Comentar"
+          children={modalCommentChildren}
+          onConfirm={() => {
+            onComment();
+            closeCommentModal();
           }}
         />
       )}

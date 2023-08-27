@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { GridCustom } from "../../../components/grid/Grid";
 import { format, parseISO } from "date-fns";
 import { Button } from "@mui/material";
@@ -8,6 +8,7 @@ import { getSystemComment } from "../../../services/ApiService";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/reducers/reducer";
 import MainContainer from "../../../components/mainContainer";
+import { ADMIN_ROL, COMMENTOR_ROL } from "../../../utils/constants";
 
 type ListSystemCommentsProps = {
   /** id de sistema, para cargar todos sus comentarios. */
@@ -56,15 +57,29 @@ const ListSystemComments: React.FC<ListSystemCommentsProps> = ({ id }) => {
     navigator(`/system/${id}/comments`);
   };
 
+  const userRole = localStorage.getItem("userRole");
+
   return (
     <>
       {idParm ? (
         <MainContainer cardTitle="Comentarios">
-          <GridCustom header={headers} body={comments} />
+          <GridCustom
+            header={headers}
+            body={comments}
+            hasEdit={userRole === COMMENTOR_ROL || userRole === ADMIN_ROL}
+            hasDelete={userRole === COMMENTOR_ROL || userRole === ADMIN_ROL}
+            navigateTo="comment"
+          />
         </MainContainer>
       ) : (
         <>
-          <GridCustom header={headers} body={comments} />
+          <GridCustom
+            header={headers}
+            body={comments}
+            hasEdit={userRole === COMMENTOR_ROL || userRole === ADMIN_ROL}
+            hasDelete={userRole === COMMENTOR_ROL || userRole === ADMIN_ROL}
+            navigateTo="comment"
+          />
           <Button variant="text" color="success" onClick={openAllComments}>
             Ver más...
           </Button>

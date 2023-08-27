@@ -119,6 +119,17 @@ export const getSystemComment = async (id: number): Promise<ResponseApi> => {
   return get(`/user/construction_system/${id}/comment`);
 }
 
+export const deleteSystemComment = async  (id: number | null): Promise<ResponseApi> => {
+  return remove(`/user/construction_system/comment/${id}`);
+}
+
+export const updateSystemComment = async (
+  id: number,
+  data: any
+): Promise<ResponseApi> => {
+  return put(`/user/construction_system/${id}/comment`, data);
+};
+
 //#endregion
 const post = async (url: string, data: any): Promise<ResponseApi> => {
   try {

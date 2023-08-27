@@ -170,6 +170,7 @@ const ListSystem = () => {
           hasDelete={userRole === ADMIN_ROL}
           hasCategory={userRole === ADMIN_ROL}
           hasComment={userRole === COMMENTOR_ROL}
+          hasViewComment
           navigateTo="system"
           columnGroupingModel={columnGroupingModel}
         />
