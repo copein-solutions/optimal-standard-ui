@@ -1,20 +1,29 @@
 .login-box {
-    box-sizing: border-box;
-    box-shadow: 0 0px 14px rgb(0 0 0 / 50%);
-    border-radius: 10px;
-    margin: 0 auto;
-    min-width: 20rem;
-    overflow: hidden;
-    padding: 1.5rem;
-    transform: translate(0%, 25%);
-    width: 40%;
-  }
+  background-color: #ffffffe0;
+  width: 40%;
+  border-radius: 10px;
+  margin: 0 auto;
+  transform: translate(0%, 35%);
+  box-shadow: 0 0px 14px rgb(0 0 0 / 50%);
+  overflow: hidden;
+}
 
-  .title {
-    /* color: #00b500; */
-  }
+.background-image {
+  background-image: url("/public/images/login_background.jpg");
+  background-size: cover; /* Ajusta la imagen para cubrir todo el elemento */
+  background-repeat: no-repeat;
+  background-position: center center;
+  height: 100vh;
+}
 
-  .text-buttons {
-    display: flex;
-    justify-content: space-evenly;
-  }
+.custom-title {
+  font-family: 'Poppins', sans-serif !important;
+  margin-top: 15px;
+  color: black;
+  font-size: 3rem;
+}
+
+.text-buttons {
+  display: flex;
+  justify-content: space-evenly;
+}
