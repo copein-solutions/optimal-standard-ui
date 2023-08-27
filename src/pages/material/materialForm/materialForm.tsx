@@ -36,7 +36,6 @@ import { useNavigate } from "react-router-dom";
 import CustomSelectField from "../../../components/customSelectField";
 import { getUnitPrice } from "../../../utils/mathUtils";
 import { FilePondFile } from "filepond";
-// import axios from "axios";
 
 type MaterialFromProps = {
   data?: MaterialInputs;
