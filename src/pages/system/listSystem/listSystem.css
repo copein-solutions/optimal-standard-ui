@@ -1,0 +1,22 @@
+.color-explanation {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+
+.optimal-standard {
+  border: 0.5px solid black;
+  margin: 0 5px;
+  height: 20px;
+  width: 40px;
+  background-color: rgb(250, 135, 135);
+}
+
+.alternative-optimal-standard {
+  border: 0.5px solid black;
+  margin-left: 5px;
+  height: 20px;
+  width: 40px;
+  background-color: rgb(247, 165, 73);
+}
+

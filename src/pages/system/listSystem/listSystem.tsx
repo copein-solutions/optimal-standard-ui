@@ -26,6 +26,7 @@ const ListSystem = () => {
         let listSystems: any = response.data;
         listSystems.map(
           (system: {
+            id: any;
             applicationArea: any;
             materials: any;
             cured: any;
@@ -58,6 +59,7 @@ const ListSystem = () => {
             materialPotLife: any;
             materialMinApplicableTemp: any;
           }) => {
+            system.id = system.id;
             system.applicationAreaName = system.applicationArea?.name;
             system.cured = system.cured ? "Si" : "No";
             system.totalPrice = `${system.totalPrice.toFixed(2)} $/m2`;
@@ -155,25 +157,37 @@ const ListSystem = () => {
 
   const userRole = localStorage.getItem("userRole");
 
+  const colorExplanation = (
+    <div className="color-explanation">
+      <text>Estándar óptimo</text>
+      <div className="optimal-standard"></div>
+      <text>Estándar óptimo alternativo</text>
+      <div className="alternative-optimal-standard"></div>
+    </div>
+  );
+
   return (
-    <MainContainer cardTitle="Sistema">
-      <div>
-        {userRole === ADMIN_ROL && (
-          <Button variant="text" color="success" onClick={handleAddSystem}>
-            Agregar sistema
-          </Button>
-        )}
-        <GridCustom
-          header={header}
-          body={systems}
-          hasEdit={userRole === ADMIN_ROL}
-          hasDelete={userRole === ADMIN_ROL}
-          hasCategory={userRole === ADMIN_ROL}
-          navigateTo="system"
-          columnGroupingModel={columnGroupingModel}
-        />
-      </div>
-    </MainContainer>
+    <>
+      <MainContainer cardTitle="Sistemas">
+        <div>{colorExplanation}</div>
+        <div>
+          {userRole === ADMIN_ROL && (
+            <Button variant="text" color="success" onClick={handleAddSystem}>
+              Agregar sistema
+            </Button>
+          )}
+          <GridCustom
+            columnGroupingModel={columnGroupingModel}
+            header={header}
+            body={systems}
+            hasEdit={userRole === ADMIN_ROL}
+            hasDelete={userRole === ADMIN_ROL}
+            hasCategory={userRole === ADMIN_ROL}
+            navigateTo="system"
+          />
+        </div>
+      </MainContainer>
+    </>
   );
 };
 
