@@ -11,7 +11,7 @@ import Toast from "../../components/toast/toast";
 import { useForm } from "react-hook-form";
 import { LoginInputs } from "../../interfaces/form/FormInterfaces";
 import CustomPasswordField from "../../components/passwordField";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 // Services
 import { login } from "../../services/ApiService";
@@ -40,7 +40,7 @@ const Login = () => {
     localStorage.clear();
     let response = await login(data);
 
-    if (response.data.token) {
+    if (response && response.data.token) {
       localStorage.setItem("userRole", response.data.authorities);
       localStorage.setItem("credentials", JSON.stringify(response.data.token));
       dispatch({ type: "LOGIN", payload: true });
@@ -50,25 +50,27 @@ const Login = () => {
   };
 
   return (
-    <div>
+    <div className="background-image">
       <div className="login-box">
-        <Typography variant="h2" fontWeight="500" className="title">
-          STDO App
-        </Typography>
+        <div className="mt-3">
+          <Typography variant="h4" className="title custom-title">
+            Inicia sesión aquí
+          </Typography>
+        </div>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="col-lg-12 col-sm-6 mt-5">
+          <div className="col-lg-12 col-sm-12 mt-5">
             <CustomTextField
               name="username"
               control={control}
               rules={{ required: "Nombre de usuario requerido." }}
               label="Nombre de usuario"
-              variant="outlined"
+              variant="standard"
               fullWidth
               error={errors.username}
               helperText={errors.username?.message}
             />
           </div>
-          <div className="col-lg-12 col-sm-6 mt-4">
+          <div className="col-lg-12 col-sm-12 mt-4">
             <CustomPasswordField
               name="password"
               control={control}
@@ -80,7 +82,7 @@ const Login = () => {
               helperText={errors.password?.message}
             />
           </div>
-          <div className="col-lg-12 col-sm-6 mt-5">
+          <div className="col-lg-12 col-sm-12 mt-5">
             <Button
               onClick={handleSubmit(onSubmit)}
               type="submit"
@@ -90,22 +92,7 @@ const Login = () => {
               Ingresar
             </Button>
           </div>
-          <div className="col-lg-12 col-sm-6 mt-5 text-buttons">
-            {/* <Button
-              // onClick={handleSubmit(onSubmit)}
-              type="submit"
-              variant="text"
-            >
-              No estás registrado?
-            </Button>
-            <Button
-              // onClick={handleSubmit(onSubmit)}
-              type="submit"
-              variant="text"
-            >
-              Olvidaste tu contraseña?
-            </Button> */}
-          </div>
+          <div className="col-lg-12 col-sm-6 mt-5 text-buttons"></div>
         </form>
       </div>
       <Toast

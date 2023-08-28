@@ -1,5 +1,6 @@
-import React, { useRef } from "react";
+import React from "react";
 import {
+  Box,
   Button,
   FormControl,
   InputLabel,
@@ -21,19 +22,22 @@ import {
   createSystemComment,
   deleteApplicationArea,
   deleteMaterial,
+  setSystemCategory,
 } from "../../services/ApiService";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Toast, { ToastType } from "../toast/toast";
 
 import {
-  DataGrid,
   GridColDef,
-  GridToolbar,
   GridColumnGroupingModel,
   esES,
+  DataGrid,
+  GridToolbar,
 } from "@mui/x-data-grid";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import CustomSelectField from "../customSelectField";
+import { RootState } from "../../redux/reducers/reducer";
 
 type Header = {
   name: string;
@@ -89,10 +93,13 @@ export const GridCustom: React.FC<GridProps> = ({
   const [systemItemId, setSystemItemId] = useState<number | null>(null);
   const [commentItemId, setCommentItemId] = useState<number | null>(null);
   const [commentValue, setCommentValue] = useState("");
+  const [applicationAreaName, setApplicationAreaName] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
   const [toastType, setToastType] = useState<ToastType>("success");
   const [selectedOption, setSelectedOption] = useState("");
+
+  const systems = useSelector((state: RootState) => state.systems);
 
   const onDelete = async () => {
     let response: any;
@@ -142,10 +149,7 @@ export const GridCustom: React.FC<GridProps> = ({
     if (commentItemId) {
       let response: any = await createSystemComment(commentItemId, data);
       if (response.status !== 200) {
-        handleOpenToast(
-          "Algo salió mal al enviar tu comentario.",
-          "error"
-        );
+        handleOpenToast("Algo salió mal al enviar tu comentario.", "error");
       } else {
         handleOpenToast("Comentario registrado con éxito.", "success");
       }
@@ -186,8 +190,8 @@ export const GridCustom: React.FC<GridProps> = ({
       >
         <CommentIcon />
       </Button>
-    </Tooltip>
-  }
+    </Tooltip>;
+  };
 
   const onEdit = (id: number) => {
     navigator(`/${navigateTo}/${id}/update`);
@@ -241,7 +245,7 @@ export const GridCustom: React.FC<GridProps> = ({
     </Tooltip>
   );
 
-  const categoryButton = (id: number) => (
+  const categoryButton = (system: any) => (
     <Tooltip title="Categorizar" placement="top">
       <Button
         sx={{
@@ -251,34 +255,55 @@ export const GridCustom: React.FC<GridProps> = ({
           minWidth: 0,
         }}
         color="success"
-        onClick={() => openSetCategoryModal(id)}
+        onClick={() => openSetCategoryModal(system)}
       >
         <StarsIcon fontSize="large" />
       </Button>
     </Tooltip>
   );
 
-  const openSetCategoryModal = (id: number) => {
-    setSystemItemId(id);
+  const openSetCategoryModal = (system: any) => {
+    setSystemItemId(system.id);
+    setApplicationAreaName(system.applicationAreaName);
     setModalWithChildrenOpen(true);
   };
 
   const closeCategoryModal = () => {
     setSystemItemId(null);
+    setApplicationAreaName("");
+    setSelectedOption("");
     setModalWithChildrenOpen(false);
   };
 
   const handleConfirmCategorization = async () => {
     setModalWithChildrenOpen(false);
+    const type = { type: selectedOption };
+
     if (systemItemId) {
-      // TODO: crear llamara a api que setee STDO / STDOA
-      if (selectedOption === "optimalStandard") {
-        console.log("estandar optimo");
-      }
-      if (selectedOption === "alternativeOptimalStandard") {
-        console.log("estandar optimo alternativo");
+      const response: any = await setSystemCategory(systemItemId, type);
+      if (response.status !== 200) {
+        handleOpenToast(
+          "Algo salió mal al definir el estándar óptimo.",
+          "error"
+        );
+      } else {
+        if (selectedOption === "OPTIMAL_STANDARD") {
+          dispatch({ type: "SET_OPTIMAL_STANDARD", payload: systemItemId });
+          handleOpenToast("Nuevo estándar optimo definido.", "success");
+        }
+        if (selectedOption === "ALTERNATIVE_OPTIMAL_STANDARD") {
+          dispatch({
+            type: "SET_ALTERNATIVE_OPTIMAL_STANDARD",
+            payload: systemItemId,
+          });
+          handleOpenToast(
+            "Nuevo estándar óptimo alternativo definido.",
+            "success"
+          );
+        }
       }
     }
+    setSelectedOption("");
   };
 
   const handleOptionChange = (event: SelectChangeEvent<string>) => {
@@ -294,8 +319,8 @@ export const GridCustom: React.FC<GridProps> = ({
         value={selectedOption}
         onChange={handleOptionChange}
       >
-        <MenuItem value="optimalStandard">Estándar Óptimo</MenuItem>
-        <MenuItem value="alternativeOptimalStandard">
+        <MenuItem value="OPTIMAL_STANDARD">Estándar Óptimo</MenuItem>
+        <MenuItem value="ALTERNATIVE_OPTIMAL_STANDARD">
           Estándar Óptimo Alternativo
         </MenuItem>
       </Select>
@@ -333,7 +358,7 @@ export const GridCustom: React.FC<GridProps> = ({
         <>
           {hasEdit && <>{editButton(item.id)}</>}
           {hasDelete && <>{deleteButton(item.id)}</>}
-          {hasCategory && <>{categoryButton(item.id)}</>}
+          {hasCategory && <>{categoryButton(item)}</>}
           {hasComment && <>{commentButton(item.id)}</>}
           {hasViewComment && <>{viewCommentButton(item.id)}</>}
         </>
@@ -341,6 +366,28 @@ export const GridCustom: React.FC<GridProps> = ({
     }
     formatRows.push(rowData);
   });
+
+  const getRowClassName = (params: any) => {
+    const otimalStandardIds: number[] = [];
+    const alternativeOtimalStandardIds: number[] = [];
+
+    for (const objeto of systems) {
+      if (objeto.systemCategory === "OPTIMAL_STANDARD") {
+        otimalStandardIds.push(objeto.id);
+      }
+      if (objeto.systemCategory === "ALTERNATIVE_OPTIMAL_STANDARD") {
+        alternativeOtimalStandardIds.push(objeto.id);
+      }
+    }
+
+    if (otimalStandardIds.includes(params.row.id)) {
+      return "optimal-standard-color";
+    }
+    if (alternativeOtimalStandardIds.includes(params.row.id)) {
+      return "alternative-optimal-standard-color";
+    }
+    return "";
+  };
 
   const columns: GridColDef[] =
     header?.map((col) => ({
@@ -377,6 +424,7 @@ export const GridCustom: React.FC<GridProps> = ({
   return (
     <div className="data-grid-wrapper">
       <DataGrid
+        getRowClassName={getRowClassName}
         rows={formatRows}
         columns={columns}
         slots={{
@@ -410,6 +458,7 @@ export const GridCustom: React.FC<GridProps> = ({
           open={modalWithChildrenOpen}
           onClose={closeCategoryModal}
           title="Seleccione la categorización del sistema"
+          description={`Campo de aplicación: ${applicationAreaName}`}
           children={modalChildren}
           onConfirm={() => {
             handleConfirmCategorization();

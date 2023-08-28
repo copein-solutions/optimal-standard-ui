@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { ResponseApi } from "../interfaces/service/ApiInterfaces";
 
-export const API_BASE_URL = "http://localhost:8080";
+export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 let config: AxiosRequestConfig = {
   headers: {
     "Content-Type": "Application/json",
@@ -54,8 +54,14 @@ export const getMaterialByID = async (id: number): Promise<ResponseApi> => {
   return get(`/admin/material/${id}`);
 };
 
-export const deleteMaterial = async (id: number | null): Promise<ResponseApi> => {
+export const deleteMaterial = async (
+  id: number | null
+): Promise<ResponseApi> => {
   return remove(`/admin/material/${id}`);
+};
+
+export const getMaterialFileById = async (id: number) => {
+  return get(`/file/load?file_id=${id}`);
 };
 
 //#endregion
@@ -84,7 +90,9 @@ export const getApplicationAreaByID = async (
   return get(`/admin/application_area/${id}`);
 };
 
-export const deleteApplicationArea = async (id: number | null): Promise<ResponseApi> => {
+export const deleteApplicationArea = async (
+  id: number | null
+): Promise<ResponseApi> => {
   return remove(`/admin/application_area/${id}`);
 };
 
@@ -111,23 +119,35 @@ export const updateSystem = async (
   return put(`/admin/construction_system/${id}`, data);
 };
 
-export const createSystemComment = async (id: number, data: any): Promise<ResponseApi> => {
+export const createSystemComment = async (
+  id: number,
+  data: any
+): Promise<ResponseApi> => {
   return post(`/user/construction_system/${id}/comment`, data);
-}
+};
 
 export const getSystemComment = async (id: number): Promise<ResponseApi> => {
   return get(`/user/construction_system/${id}/comment`);
-}
+};
 
-export const deleteSystemComment = async  (id: number | null): Promise<ResponseApi> => {
+export const deleteSystemComment = async (
+  id: number | null
+): Promise<ResponseApi> => {
   return remove(`/user/construction_system/comment/${id}`);
-}
+};
 
 export const updateSystemComment = async (
   id: number,
   data: any
 ): Promise<ResponseApi> => {
   return put(`/user/construction_system/${id}/comment`, data);
+};
+
+export const setSystemCategory = async (
+  id: number,
+  data: any
+): Promise<ResponseApi> => {
+  return put(`/admin/construction_system/${id}/stdo`, data);
 };
 
 //#endregion

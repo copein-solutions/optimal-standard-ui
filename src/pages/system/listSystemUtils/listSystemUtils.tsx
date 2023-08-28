@@ -62,6 +62,8 @@ export const columnGroupingModel: GridColumnGroupingModel = [
 ];
 
 export const header = [
+  // { name: "", value: "systemCategory", width: 0 },
+  { name: "Id sistema", value: "id", width: 80 },
   { name: "Campo de aplicación", value: "applicationAreaName", width: 450 },
   { name: "Precio", value: "totalPrice", width: 150 },
   // Material base

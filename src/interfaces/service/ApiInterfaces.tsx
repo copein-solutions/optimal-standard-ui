@@ -20,6 +20,7 @@ interface ValidationErrors {
 
 interface ResponseApi {
   data: any,
+  headers: any,
   error: any,
   statusCode: number,
 }
