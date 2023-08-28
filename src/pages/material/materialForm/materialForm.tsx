@@ -93,13 +93,17 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
 
   const handleFileClick = async (file: FilePondFile) => {
     try {
-      const response = await getMaterialFileById(Number(file.serverId));
+      // const response = await getMaterialFileById(Number(file.serverId));
+      // return response.data;
       // Crea una URL de objeto Blob
-      const blob = new Blob([response.data], { type: response.headers['content-type'] });  
-      const blobUrl = URL.createObjectURL(blob);
+      // const blob = new Blob([response.data], { type: response.headers['content-type'] });  
+      // const blobUrl = URL.createObjectURL(blob);
+
+      // const blob = new Blob([response.data], { type: 'application/pdf' });
+      // const url = window.URL.createObjectURL(blob);
 
       // Abre la URL de Blob en una nueva pestaña
-      window.open(blobUrl, '_blank');
+      window.open(getMaterialFileById(Number(file.serverId)), '_blank');
     } catch (error) {
       console.error('Error al obtener el archivo:', error);
     }
