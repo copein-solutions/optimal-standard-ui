@@ -74,16 +74,18 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
       });
   };
 
+  const getFileId = ( file: any ) => {
+    if(typeof file.serverId === 'string') {
+      let aux = JSON.parse(file.serverId);
+      return aux.id;
+    }
+    return file.serverId   
+  };
+
   const getMaterialFiles = () :Files[] => {
-    return files.map(item => {
-      let serverEntity = { id: undefined };
-      if(typeof item.serverId === 'string') {
-        serverEntity = JSON.parse(item.serverId);
-      } else {
-        serverEntity.id = item.serverId
-      }   
+    return files.map(item => { 
       return {
-        id: serverEntity.id,
+        id: getFileId(item),
         name: item.file.name,
         size: item.file.size,
         type: item.file.type
