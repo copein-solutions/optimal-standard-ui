@@ -54,7 +54,9 @@ export const getMaterialByID = async (id: number): Promise<ResponseApi> => {
   return get(`/admin/material/${id}`);
 };
 
-export const deleteMaterial = async (id: number | null): Promise<ResponseApi> => {
+export const deleteMaterial = async (
+  id: number | null
+): Promise<ResponseApi> => {
   return remove(`/admin/material/${id}`);
 };
 
@@ -88,7 +90,9 @@ export const getApplicationAreaByID = async (
   return get(`/admin/application_area/${id}`);
 };
 
-export const deleteApplicationArea = async (id: number | null): Promise<ResponseApi> => {
+export const deleteApplicationArea = async (
+  id: number | null
+): Promise<ResponseApi> => {
   return remove(`/admin/application_area/${id}`);
 };
 
@@ -105,7 +109,7 @@ export const getSystems = async (): Promise<ResponseApi> => {
 };
 
 export const getSystemByID = async (id: number): Promise<ResponseApi> => {
-  return get(`/admin/construction_system/${id}`);
+  return get(`/user/construction_system/${id}`);
 };
 
 export const updateSystem = async (
@@ -113,6 +117,13 @@ export const updateSystem = async (
   data: any
 ): Promise<ResponseApi> => {
   return put(`/admin/construction_system/${id}`, data);
+};
+
+export const setSystemCategory = async (
+  id: number,
+  data: any
+): Promise<ResponseApi> => {
+  return put(`/admin/construction_system/${id}/stdo`, data);
 };
 
 //#endregion

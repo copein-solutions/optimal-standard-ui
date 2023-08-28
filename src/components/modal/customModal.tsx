@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactNode } from "react";
 import {
   Button,
   Dialog,
@@ -12,8 +12,9 @@ interface ModalProps {
   open: boolean;
   onClose: () => void;
   title: string;
-  description: string;
+  description?: string;
   onConfirm: () => void;
+  children?: ReactNode;
 }
 
 const CustomModal: React.FC<ModalProps> = ({
@@ -22,12 +23,14 @@ const CustomModal: React.FC<ModalProps> = ({
   title,
   description,
   onConfirm,
+  children,
 }) => {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>{description}</DialogContentText>
+        <div className="m-3">{children}</div>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="primary">

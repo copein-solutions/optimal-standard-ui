@@ -9,6 +9,8 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 
+import "./Header.css";
+
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { LOGIN } from "../../utils/constants";
@@ -27,28 +29,36 @@ export const CustomHeader: React.FC<HeaderProps> = ({ onMenuOpen }) => {
     navigator(LOGIN);
   };
 
-  return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ bgcolor: "#00b500" }}>
-        <Toolbar>
-          <IconButton
-            onClick={onMenuOpen}
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
-            CEAOSA
-          </Typography>
-          <Button onClick={logout} color="inherit">
-            Cerrar sesión
-          </Button>
-        </Toolbar>
-      </AppBar>
-    </Box>
+return (
+    // <div className="app-bar">
+    <AppBar position="static">
+      <Toolbar
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          backgroundColor: "#1b3957",
+        }}
+      >
+        <IconButton
+          onClick={onMenuOpen}
+          size="large"
+          edge="start"
+          color="inherit"
+          aria-label="menu"
+          sx={{ mr: 2 }}
+        >
+          <MenuIcon />
+        </IconButton>
+        <img
+          src="../images/CEAOSA_logo.png"
+          alt="Logo CEAOSA"
+          className="img-fluid image"
+        />
+        <Button onClick={logout} color="inherit">
+          Cerrar sesión
+        </Button>
+      </Toolbar>
+    </AppBar>
+    // </div>
   );
 };

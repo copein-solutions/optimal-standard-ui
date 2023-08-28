@@ -31,6 +31,55 @@ const rootReducer = (state = initialState, action: any) => {
       };
     case "SET_SYSTEM":
       return { ...state, systems: action.payload };
+    case "SET_OPTIMAL_STANDARD":
+      // OS = Optimal Standard
+      // obtengo el sistema recibido
+      const dispatchedOSSystem: any = state.systems.find(
+        (system: any) => system.id === action.payload
+      );
+      //busco si existe otro sistema que sea EO y que tenga el mismo campo de aplicación
+      const existingOSSystem: any = state.systems.find(
+        (system: any) =>
+          system.systemCategory === "OPTIMAL_STANDARD" &&
+          system.applicationArea.id === dispatchedOSSystem?.applicationArea?.id
+      );
+      //Si existe otro que coincida, le quito el systemCategory y le seteo al recibido en el dispatch
+      const updatedSystems = state.systems.map((system: any) => {
+        if (existingOSSystem && system.id === existingOSSystem?.id) {
+          return { ...system, systemCategory: "" };
+        }
+        if (system.id === action.payload) {
+          return { ...system, systemCategory: "OPTIMAL_STANDARD" };
+        }
+        return system;
+      });
+
+      return { ...state, systems: updatedSystems };
+    case "SET_ALTERNATIVE_OPTIMAL_STANDARD":
+      // AOS = Alternative Optimal Standard
+      // obtengo el sistema recibido
+      const dispatchedAOSystem: any = state.systems.find(
+        (system: any) => system.id === action.payload
+      );
+
+      //busco si existe otro sistema que sea EOA y que tenga el mismo campo de aplicación
+      const existingAOSystem: any = state.systems.find(
+        (system: any) =>
+          system.systemCategory === "ALTERNATIVE_OPTIMAL_STANDARD" &&
+          system.applicationArea.id === dispatchedAOSystem?.applicationArea?.id
+      );
+      //Si existe otro que coincida, le quito el systemCategory y le seteo al recibido en el dispatch
+      const updatedSystemsAOS = state.systems.map((system: any) => {
+        if (existingAOSystem && system.id === existingAOSystem?.id) {
+          return { ...system, systemCategory: "" };
+        }
+        if (system.id === action.payload) {
+          return { ...system, systemCategory: "ALTERNATIVE_OPTIMAL_STANDARD" };
+        }
+        return system;
+      });
+
+      return { ...state, systems: updatedSystemsAOS };
     default:
       return state;
   }
