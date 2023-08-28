@@ -9,6 +9,7 @@ type CustomTextFieldProps = {
   error?: any;
   helperText?: string;
   defaultValue?: ReactNode;
+  // variant?: "filled" | "outlined" | "standard" | undefined;
 } & TextFieldProps;
 
 const CustomTextField: React.FC<CustomTextFieldProps> = ({
@@ -17,6 +18,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
   rules,
   error,
   helperText,
+  variant,
   defaultValue = "",
   ...textFieldProps
 }) => {
@@ -28,6 +30,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
       defaultValue={defaultValue}
       render={({ field }) => (
         <TextField
+          // variant={variant}
           size="small"
           {...field}
           {...textFieldProps}

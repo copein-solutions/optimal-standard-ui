@@ -7,3 +7,23 @@
   width: 100%;
   overflow: scroll;
 }
+
+.optimal-standard-color {
+  background-color: rgb(250, 135, 135);
+}
+
+.optimal-standard-color:hover {
+  background-color: rgb(253, 83, 83) !important;
+}
+
+.alternative-optimal-standard-color {
+  background-color: rgb(247, 165, 73);
+}
+
+.alternative-optimal-standard-color:hover {
+  background-color: rgb(252, 143, 19) !important; 
+}
+
+.null {
+  background-color: blue;
+}
