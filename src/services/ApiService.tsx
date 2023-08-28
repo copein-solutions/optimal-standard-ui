@@ -60,8 +60,8 @@ export const deleteMaterial = async (
   return remove(`/admin/material/${id}`);
 };
 
-export const getMaterialFileById = async (id: number) => {
-  return get(`/file/load?file_id=${id}`);
+export const getMaterialFileById = (id: number) => {
+  return `${API_BASE_URL}/public/file/load?file_id=${id}`;
 }
 
 //#endregion
