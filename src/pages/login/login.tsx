@@ -58,7 +58,7 @@ const Login = () => {
           </Typography>
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="col-lg-12 col-sm-6 mt-5">
+          <div className="col-lg-12 col-sm-12 mt-5">
             <CustomTextField
               name="username"
               control={control}
@@ -70,7 +70,7 @@ const Login = () => {
               helperText={errors.username?.message}
             />
           </div>
-          <div className="col-lg-12 col-sm-6 mt-4">
+          <div className="col-lg-12 col-sm-12 mt-4">
             <CustomPasswordField
               name="password"
               control={control}
@@ -82,7 +82,7 @@ const Login = () => {
               helperText={errors.password?.message}
             />
           </div>
-          <div className="col-lg-12 col-sm-6 mt-5">
+          <div className="col-lg-12 col-sm-12 mt-5">
             <Button
               onClick={handleSubmit(onSubmit)}
               type="submit"

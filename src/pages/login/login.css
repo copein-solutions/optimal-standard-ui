@@ -1,6 +1,7 @@
 .login-box {
   background-color: #ffffffe0;
-  width: 40%;
+  width: 28rem;
+  max-width: 28rem;
   border-radius: 10px;
   margin: 0 auto;
   transform: translate(0%, 35%);
@@ -17,7 +18,7 @@
 }
 
 .custom-title {
-  font-family: 'Poppins', sans-serif !important;
+  font-family: "Poppins", sans-serif !important;
   margin-top: 15px;
   color: black;
   font-size: 3rem;
@@ -26,4 +27,10 @@
 .text-buttons {
   display: flex;
   justify-content: space-evenly;
+}
+
+@media only screen and (max-width: 575px) {
+  .login-box {
+    width: 100%;
+  }
 }

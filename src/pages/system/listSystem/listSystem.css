@@ -1,6 +1,6 @@
 .color-explanation {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
   align-items: center;
 }
 
@@ -19,4 +19,3 @@
   width: 40px;
   background-color: rgb(247, 165, 73);
 }
-
