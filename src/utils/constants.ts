@@ -20,6 +20,7 @@ export const APPLICATION_AREA_EDIT = "/application_area/:id/update";
 export const SYSTEM_CREATE = "/system/create";
 export const SYSTEM_LIST = "/system/list";
 export const SYSTEM_EDIT = "/system/:id/update";
+export const SYSTEM_READONLY = "/system/:id/view";
 
 // Roles
 export const ADMIN_ROL = "ROLE_ADMIN";

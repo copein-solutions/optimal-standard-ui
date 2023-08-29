@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import "./listSystem.css";
 import { getSystems } from "../../../services/ApiService";
 import { MainContainer } from "../../../components/mainContainer/MainContainer";
@@ -159,9 +159,9 @@ const ListSystem = () => {
 
   const colorExplanation = (
     <div className="color-explanation">
-      <text>Estándar óptimo</text>
+      <Typography>Estándar óptimo</Typography>
       <div className="optimal-standard"></div>
-      <text>Estándar óptimo alternativo</text>
+      <Typography>Estándar óptimo alternativo</Typography>
       <div className="alternative-optimal-standard"></div>
     </div>
   );

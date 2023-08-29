@@ -62,7 +62,7 @@ export const deleteMaterial = async (
 
 export const getMaterialFileById = async (id: number) => {
   return get(`/file/load?file_id=${id}`);
-}
+};
 
 //#endregion
 
@@ -99,7 +99,6 @@ export const deleteApplicationArea = async (
 //#endregion
 
 //#region SISTEMA
-
 export const createSystem = async (data: any): Promise<ResponseApi> => {
   return post("/admin/construction_system", data);
 };
@@ -117,6 +116,10 @@ export const updateSystem = async (
   data: any
 ): Promise<ResponseApi> => {
   return put(`/admin/construction_system/${id}`, data);
+};
+
+export const deleteSystem = async (id: number | null): Promise<ResponseApi> => {
+  return remove(`/admin/system/${id}`);
 };
 
 export const setSystemCategory = async (
