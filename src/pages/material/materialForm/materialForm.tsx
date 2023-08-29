@@ -105,7 +105,7 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
       // const url = window.URL.createObjectURL(blob);
 
       // Abre la URL de Blob en una nueva pestaña
-      window.open(getMaterialFileById(Number(file.serverId)), '_blank');
+      window.open(getMaterialFileById(getFileId(file)), '_blank');
     } catch (error) {
       console.error('Error al obtener el archivo:', error);
     }
