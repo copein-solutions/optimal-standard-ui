@@ -74,16 +74,18 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
       });
   };
 
+  const getFileId = ( file: any ) => {
+    if(typeof file.serverId === 'string') {
+      let aux = JSON.parse(file.serverId);
+      return aux.id;
+    }
+    return file.serverId   
+  };
+
   const getMaterialFiles = () :Files[] => {
-    return files.map(item => {
-      let serverEntity = { id: undefined };
-      if(typeof item.serverId === 'string') {
-        serverEntity = JSON.parse(item.serverId);
-      } else {
-        serverEntity.id = item.serverId
-      }   
+    return files.map(item => { 
       return {
-        id: serverEntity.id,
+        id: getFileId(item),
         name: item.file.name,
         size: item.file.size,
         type: item.file.type
@@ -93,13 +95,17 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
 
   const handleFileClick = async (file: FilePondFile) => {
     try {
-      const response = await getMaterialFileById(Number(file.serverId));
+      // const response = await getMaterialFileById(Number(file.serverId));
+      // return response.data;
       // Crea una URL de objeto Blob
-      const blob = new Blob([response.data], { type: response.headers['content-type'] });  
-      const blobUrl = URL.createObjectURL(blob);
+      // const blob = new Blob([response.data], { type: response.headers['content-type'] });  
+      // const blobUrl = URL.createObjectURL(blob);
+
+      // const blob = new Blob([response.data], { type: 'application/pdf' });
+      // const url = window.URL.createObjectURL(blob);
 
       // Abre la URL de Blob en una nueva pestaña
-      window.open(blobUrl, '_blank');
+      window.open(getMaterialFileById(getFileId(file)), '_blank');
     } catch (error) {
       console.error('Error al obtener el archivo:', error);
     }
