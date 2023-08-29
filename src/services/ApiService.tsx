@@ -119,7 +119,7 @@ export const updateSystem = async (
 };
 
 export const deleteSystem = async (id: number | null): Promise<ResponseApi> => {
-  return remove(`/admin/system/${id}`);
+  return remove(`/admin/construction_system/${id}`);
 };
 
 export const setSystemCategory = async (

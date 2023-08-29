@@ -100,8 +100,8 @@ export const GridCustom: React.FC<GridProps> = ({
       response = await deleteApplicationArea(deleteItemId);
       callDispatch("DELETE_APPLICATION_AREA", response);
     } else if (navigateTo === "system") {
-      // response = await deleteSystem(deleteItemId);
-      // callDispatch("DELETE_SYSTEM", response);
+      response = await deleteSystem(deleteItemId);
+      callDispatch("DELETE_SYSTEM", response);
     }
   };
 
