@@ -36,7 +36,6 @@ import {
 } from "@mui/x-data-grid";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import CustomSelectField from "../customSelectField";
 import { RootState } from "../../redux/reducers/reducer";
 
 type Header = {

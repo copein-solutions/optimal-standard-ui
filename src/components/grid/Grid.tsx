@@ -1,6 +1,16 @@
-import { Button, FormControl, TextField } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
+  Tooltip,
+} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import RuleIcon from "@mui/icons-material/Rule";
 import { useNavigate } from "react-router-dom";
 import "./Grid.css";
 import CustomModal from "../modal/customModal";
@@ -9,10 +19,12 @@ import {
   deleteApplicationArea,
   deleteMaterial,
   deleteSystemComment,
+  setSystemCommentStatus,
   updateSystemComment,
 } from "../../services/ApiService";
 import { useDispatch } from "react-redux";
 import Toast, { ToastType } from "../toast/toast";
+import { width } from "@mui/system";
 
 type Header = {
   name: string;
@@ -28,6 +40,8 @@ type GridProps = {
   hasEdit?: boolean;
   /** Si es false, se renderizará el botón de eliminar elemento. */
   hasDelete?: boolean;
+  /** Si es false, se renderizará el botón de seleccionar estado del elemento. */
+  hasStatus?: boolean;
   /** String que indica la url a la cual redireccionará el botón de edit. */
   navigateTo?: string;
 };
@@ -37,10 +51,10 @@ export const GridCustom: React.FC<GridProps> = ({
   body,
   hasEdit,
   hasDelete,
+  hasStatus,
   navigateTo,
 }) => {
   const dispatch = useDispatch();
-  const navigator = useNavigate();
   const [modalOpen, setModalOpen] = useState(false); // Estado para controlar el modal
   const [deleteItemId, setDeleteItemId] = useState<number | null>(null); // Estado para rastrear el ID del elemento a eliminar
   const [showToast, setShowToast] = useState(false);
@@ -50,6 +64,13 @@ export const GridCustom: React.FC<GridProps> = ({
   const [commentItemId, setCommentItemId] = useState<number | null>(null);
   const [commentModalOpen, setCommentModalOpen] = useState(false);
   const [commentValue, setCommentValue] = useState("");
+  const [selectedOption, setSelectedOption] = useState("");
+  const [modalWithChildrenOpen, setModalWithChildrenOpen] = useState(false);
+  const [systemCommentItemId, setSystemCommentItemId] = useState<number | null>(
+    null
+  );
+
+  const navigator = useNavigate();
 
   const onDelete = async () => {
     let response: any;
@@ -62,10 +83,7 @@ export const GridCustom: React.FC<GridProps> = ({
     } else if (navigateTo === "comment") {
       response = await deleteSystemComment(deleteItemId);
       if (response.status !== 200) {
-        handleOpenToast(
-          response.data.message,
-          "error"
-        );
+        handleOpenToast(response.data.message, "error");
       } else {
         handleOpenToast("Elemento eliminado con éxito", "success");
         dispatch({ type: "DELETE_COMMENT", payload: deleteItemId });
@@ -105,6 +123,7 @@ export const GridCustom: React.FC<GridProps> = ({
     if (navigateTo !== "comment") {
       navigator(`/${navigateTo}/${data.id}/update`);
     } else {
+      setCommentValue(data.comment);
       setCommentItemId(data.id);
       setSystemId(data.constructionSystemId);
       setCommentModalOpen(true);
@@ -194,6 +213,83 @@ export const GridCustom: React.FC<GridProps> = ({
     </Button>
   );
 
+  const handleConfirmCategorization = async () => {
+    setModalWithChildrenOpen(false);
+    const type = selectedOption;
+
+    if (systemCommentItemId) {
+      const response: any = await setSystemCommentStatus(
+        systemCommentItemId,
+        type
+      );
+      if (response.status !== 200) {
+        handleOpenToast(
+          "Algo salió mal al definir el estándar óptimo.",
+          "error"
+        );
+      } else {
+        if (selectedOption === "VALIDATED") {
+          handleOpenToast("Comentario autorizado.", "success");
+        }
+        if (selectedOption === "REJECTED") {
+          handleOpenToast("Comentario rechazado.", "success");
+        }
+      }
+    }
+    setSelectedOption("");
+  };
+
+  const handleOptionChange = (event: SelectChangeEvent<string>) => {
+    setSelectedOption(event.target.value);
+  };
+
+  const closeCategoryModal = () => {
+    setSystemCommentItemId(null);
+    setSelectedOption("");
+    setModalWithChildrenOpen(false);
+  };
+
+  const statusButton = (id: number) => (
+    <Tooltip title="Autorizar comentario" placement="top">
+      <Button
+        sx={{
+          borderRadius: "50%",
+          height: "40px",
+          width: "40px",
+          minWidth: 0,
+        }}
+        color="secondary"
+        onClick={() => openSetStatusModal(id)}
+      >
+        <RuleIcon fontSize="large" />
+      </Button>
+    </Tooltip>
+  );
+
+  const openSetStatusModal = (id: number) => {
+    setSystemCommentItemId(id);
+    setModalWithChildrenOpen(true);
+  };
+
+  const modalChildren = (
+    <FormControl fullWidth size="small" style={{ width: 350 }}>
+      <InputLabel id="select-label">Seleccioná una opción</InputLabel>
+      <Select
+        labelId="select-label"
+        label="Selecciona una opción"
+        value={selectedOption}
+        onChange={handleOptionChange}
+      >
+        <MenuItem value="VALIDATED">Autorizar</MenuItem>
+        <MenuItem value="REJECTED">Rechazar</MenuItem>
+      </Select>
+    </FormControl>
+  );
+
+  const getClassName = (params: any) => {
+    return params.status === "PENDING" ? "pending-color" : "";
+  };
+
   return (
     <>
       <table className="table">
@@ -204,16 +300,18 @@ export const GridCustom: React.FC<GridProps> = ({
             ))}
             {hasEdit && <th></th>}
             {hasDelete && <th></th>}
+            {hasStatus && <th></th>}
           </tr>
         </thead>
         <tbody>
           {body?.map((item, index) => (
-            <tr key={index}>
+            <tr key={index} className={getClassName(item)}>
               {header?.map((col, index) => (
                 <td key={index}>{item[col.value]}</td>
               ))}
               {hasEdit && <td>{editButton(item)}</td>}
               {hasDelete && <td>{deleteButton(item.id)}</td>}
+              {hasStatus && <td>{statusButton(item.id)}</td>}
             </tr>
           ))}
         </tbody>
@@ -239,6 +337,18 @@ export const GridCustom: React.FC<GridProps> = ({
           onConfirm={() => {
             onComment();
             closeCommentModal();
+          }}
+        />
+      )}
+      {modalWithChildrenOpen && (
+        <CustomModal
+          open={modalWithChildrenOpen}
+          onClose={closeCategoryModal}
+          title="Autorizar comentario"
+          children={modalChildren}
+          onConfirm={() => {
+            handleConfirmCategorization();
+            closeCategoryModal();
           }}
         />
       )}

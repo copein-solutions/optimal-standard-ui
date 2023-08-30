@@ -127,7 +127,7 @@ export const createSystemComment = async (
 };
 
 export const getSystemComment = async (id: number): Promise<ResponseApi> => {
-  return get(`/user/construction_system/${id}/comment`);
+  return get(`/admin/construction_system/${id}/comment`);
 };
 
 export const deleteSystemComment = async (
@@ -140,7 +140,14 @@ export const updateSystemComment = async (
   id: number,
   data: any
 ): Promise<ResponseApi> => {
-  return put(`/user/construction_system/${id}/comment`, data);
+  return put(`/admin/construction_system/${id}/comment`, data);
+};
+
+export const setSystemCommentStatus = async (
+  id: number,
+  data: any
+): Promise<ResponseApi> => {
+  return put(`/admin/construction_system/comment_status/${id}`, data);
 };
 
 export const setSystemCategory = async (

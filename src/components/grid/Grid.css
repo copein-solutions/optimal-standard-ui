@@ -1,3 +1,7 @@
 .table td {
-    vertical-align: unset;
+  vertical-align: unset;
+}
+
+.pending-color {
+  background-color: rgb(247, 165, 73);
 }

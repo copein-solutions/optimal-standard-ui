@@ -66,8 +66,8 @@ const ListSystemComments: React.FC<ListSystemCommentsProps> = ({ id }) => {
           <GridCustom
             header={headers}
             body={comments}
-            hasEdit={userRole === COMMENTOR_ROL || userRole === ADMIN_ROL}
-            hasDelete={userRole === COMMENTOR_ROL || userRole === ADMIN_ROL}
+            hasEdit={userRole === ADMIN_ROL}
+            hasStatus={userRole === ADMIN_ROL}
             navigateTo="comment"
           />
         </MainContainer>
@@ -76,8 +76,8 @@ const ListSystemComments: React.FC<ListSystemCommentsProps> = ({ id }) => {
           <GridCustom
             header={headers}
             body={comments}
-            hasEdit={userRole === COMMENTOR_ROL || userRole === ADMIN_ROL}
-            hasDelete={userRole === COMMENTOR_ROL || userRole === ADMIN_ROL}
+            hasEdit={userRole === ADMIN_ROL}
+            hasStatus={userRole === ADMIN_ROL}
             navigateTo="comment"
           />
           <Button variant="text" color="success" onClick={openAllComments}>
