@@ -52,7 +52,7 @@ import {
   truncateDecimals,
 } from "../../../utils/mathUtils";
 
-import { baseMaterialObject } from "../../../utils/initValueUtils";
+import { initMaterialObject } from "../../../utils/initValueUtils";
 
 export const SystemForm: React.FC<SystemFormProps> = ({
   data,
@@ -85,7 +85,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   const [materialDataVisible, setMaterialDataVisible] = useState(false);
   
   const [selectedBaseMaterialDetail, setSelectedBaseMaterialDetail] =
-    useState<BaseMaterial>(baseMaterialObject);
+    useState<BaseMaterial>(initMaterialObject);
   // MALLA 100%
   const [totalMeshUnityPriceVisible, setTotalMeshUnityPriceVisible] =
     useState(false);
@@ -116,11 +116,11 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   ] = useState("");
 
   const [selectedPluginMaterialDetail1, setSelectedPluginMaterialDetail1] =
-    useState<BaseMaterial>(baseMaterialObject);
+    useState<BaseMaterial>(initMaterialObject);
   const [selectedPluginMaterialDetail2, setSelectedPluginMaterialDetail2] =
-    useState<BaseMaterial>(baseMaterialObject);
+    useState<BaseMaterial>(initMaterialObject);
   const [selectedPluginMaterialDetail3, setSelectedPluginMaterialDetail3] =
-    useState<BaseMaterial>(baseMaterialObject);
+    useState<BaseMaterial>(initMaterialObject);
 
   const navigator = useNavigate();
 

@@ -50,7 +50,7 @@ import {
   truncateDecimals,
 } from "../../../utils/mathUtils";
 
-import { baseMaterialObject } from "../../../utils/initValueUtils";
+import { initMaterialObject } from "../../../utils/initValueUtils";
 
 type ReadonlySystemProps = {
   data?: any;
@@ -87,7 +87,7 @@ const ReadonlySystem: React.FC<ReadonlySystemProps> = ({ data }) => {
   // const [baseMaterialUnitPrice, setBaseMaterialUnitPrice] = useState("");
   const [materialDataVisible, setMaterialDataVisible] = useState(false);
   const [selectedBaseMaterialDetail, setSelectedBaseMaterialDetail] =
-    useState<BaseMaterial>(baseMaterialObject);
+    useState<BaseMaterial>(initMaterialObject);
   // MALLA 100%
   const [totalMeshUnityPriceVisible, setTotalMeshUnityPriceVisible] =
     useState(false);
@@ -117,11 +117,11 @@ const ReadonlySystem: React.FC<ReadonlySystemProps> = ({ data }) => {
     setSelectedPluginMaterialPricePerCoefficient2,
   ] = useState("");
   const [selectedPluginMaterialDetail1, setSelectedPluginMaterialDetail1] =
-    useState<BaseMaterial>(baseMaterialObject);
+    useState<BaseMaterial>(initMaterialObject);
   const [selectedPluginMaterialDetail2, setSelectedPluginMaterialDetail2] =
-    useState<BaseMaterial>(baseMaterialObject);
+    useState<BaseMaterial>(initMaterialObject);
   const [selectedPluginMaterialDetail3, setSelectedPluginMaterialDetail3] =
-    useState<BaseMaterial>(baseMaterialObject);
+    useState<BaseMaterial>(initMaterialObject);
 
   const navigator = useNavigate();
 

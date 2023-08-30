@@ -1,4 +1,4 @@
-export const baseMaterialObject = {
+export const initMaterialObject = {
     brand: "",
     component: "",
     currency: "",
