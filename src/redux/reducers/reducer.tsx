@@ -33,6 +33,8 @@ const rootReducer = (state = initialState, action: any) => {
       return { ...state, systems: action.payload };
     case "SET_COMMENTS":
       return { ...state, comments: action.payload };
+    case "SAVE_COMMENTS":
+      return { ...state, comments: [...state.comments, action.payload] };
     case "DELETE_COMMENT":
       return {
         ...state,

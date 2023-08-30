@@ -4,7 +4,7 @@ import { format, parseISO } from "date-fns";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { getSystemComment } from "../../../services/ApiService";
+import { getSystemComment, getSystemCommentAdmin } from "../../../services/ApiService";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/reducers/reducer";
 import MainContainer from "../../../components/mainContainer";
@@ -28,7 +28,12 @@ const ListSystemComments: React.FC<ListSystemCommentsProps> = ({ id }) => {
   ];
 
   async function fetchData() {
-    const response = await getSystemComment(Number(idParm));
+    let response: any;
+    if (userRole === ADMIN_ROL) {
+      response = await getSystemCommentAdmin(Number(idParm));
+    } else {
+      response = await getSystemComment(Number(idParm));
+    }
 
     console.log(response);
     if (response?.data.error || response === undefined) {
@@ -73,13 +78,7 @@ const ListSystemComments: React.FC<ListSystemCommentsProps> = ({ id }) => {
         </MainContainer>
       ) : (
         <>
-          <GridCustom
-            header={headers}
-            body={comments}
-            hasEdit={userRole === ADMIN_ROL}
-            hasStatus={userRole === ADMIN_ROL}
-            navigateTo="comment"
-          />
+          <GridCustom header={headers} body={comments} navigateTo="comment" />
           <Button variant="text" color="success" onClick={openAllComments}>
             Ver más...
           </Button>

@@ -25,6 +25,7 @@ import {
 import { useDispatch } from "react-redux";
 import Toast, { ToastType } from "../toast/toast";
 import { width } from "@mui/system";
+import { ADMIN_ROL } from "../../utils/constants";
 
 type Header = {
   name: string;
@@ -80,14 +81,6 @@ export const GridCustom: React.FC<GridProps> = ({
     } else if (navigateTo === "application_area") {
       response = await deleteApplicationArea(deleteItemId);
       callDispatch("DELETE_APPLICATION_AREA", response);
-    } else if (navigateTo === "comment") {
-      response = await deleteSystemComment(deleteItemId);
-      if (response.status !== 200) {
-        handleOpenToast(response.data.message, "error");
-      } else {
-        handleOpenToast("Elemento eliminado con éxito", "success");
-        dispatch({ type: "DELETE_COMMENT", payload: deleteItemId });
-      }
     }
   };
 
@@ -162,6 +155,7 @@ export const GridCustom: React.FC<GridProps> = ({
         handleOpenToast(message, "error");
       } else {
         handleOpenToast("Comentario registrado con éxito.", "success");
+        window.location.reload();
       }
     }
     setCommentValue("");
@@ -215,7 +209,7 @@ export const GridCustom: React.FC<GridProps> = ({
 
   const handleConfirmCategorization = async () => {
     setModalWithChildrenOpen(false);
-    const type = selectedOption;
+    const type = { status: selectedOption };
 
     if (systemCommentItemId) {
       const response: any = await setSystemCommentStatus(
@@ -234,6 +228,7 @@ export const GridCustom: React.FC<GridProps> = ({
         if (selectedOption === "REJECTED") {
           handleOpenToast("Comentario rechazado.", "success");
         }
+        window.location.reload();
       }
     }
     setSelectedOption("");

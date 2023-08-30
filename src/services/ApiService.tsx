@@ -126,8 +126,12 @@ export const createSystemComment = async (
   return post(`/user/construction_system/${id}/comment`, data);
 };
 
-export const getSystemComment = async (id: number): Promise<ResponseApi> => {
+export const getSystemCommentAdmin = async (id: number): Promise<ResponseApi> => {
   return get(`/admin/construction_system/${id}/comment`);
+};
+
+export const getSystemComment = async (id: number): Promise<ResponseApi> => {
+  return get(`/user/construction_system/${id}/comment`);
 };
 
 export const deleteSystemComment = async (
