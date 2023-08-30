@@ -17,6 +17,7 @@ import {
   SYSTEM_CREATE,
   SYSTEM_EDIT,
   SYSTEM_LIST,
+  SYSTEM_READONLY,
 } from "./utils/constants";
 import PrivateRoute from "./components/PrivateRoute";
 import Login from "./pages/login/login";
@@ -30,6 +31,7 @@ import AddSystem from "./pages/system/addSystem";
 import ListSystem from "./pages/system/listSystem";
 import EditSystem from "./pages/system/editSystem";
 import Unauthorized from "./components/Unauthorized/unauthorized";
+import ReadonlySystem from "./pages/system/readonlySystem/readonlySystem"
 import ListSystemComments from "./pages/system/listSystemComments/listSystemComments";
 
 const privateRoutes = [
@@ -81,6 +83,11 @@ const privateRoutes = [
   {
     path: SYSTEM_LIST,
     component: <ListSystem />,
+    allowRoles: [ADMIN_ROL, COMMENTOR_ROL, READONLY_ROL],
+  },
+  {
+    path: SYSTEM_READONLY,
+    component: <ReadonlySystem />,
     allowRoles: [ADMIN_ROL, COMMENTOR_ROL, READONLY_ROL],
   },
   {

@@ -99,7 +99,6 @@ export const deleteApplicationArea = async (
 //#endregion
 
 //#region SISTEMA
-
 export const createSystem = async (data: any): Promise<ResponseApi> => {
   return post("/admin/construction_system", data);
 };
@@ -117,6 +116,10 @@ export const updateSystem = async (
   data: any
 ): Promise<ResponseApi> => {
   return put(`/admin/construction_system/${id}`, data);
+};
+
+export const deleteSystem = async (id: number | null): Promise<ResponseApi> => {
+  return remove(`/admin/construction_system/${id}`);
 };
 
 export const createSystemComment = async (

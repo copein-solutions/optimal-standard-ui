@@ -22,6 +22,7 @@ import {
   createSystemComment,
   deleteApplicationArea,
   deleteMaterial,
+  deleteSystem,
   setSystemCategory,
 } from "../../services/ApiService";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,6 +32,7 @@ import {
   GridColDef,
   GridColumnGroupingModel,
   esES,
+  GridCellParams,
   DataGrid,
   GridToolbar,
 } from "@mui/x-data-grid";
@@ -108,6 +110,9 @@ export const GridCustom: React.FC<GridProps> = ({
     } else if (navigateTo === "application_area") {
       response = await deleteApplicationArea(deleteItemId);
       callDispatch("DELETE_APPLICATION_AREA", response);
+    } else if (navigateTo === "system") {
+      response = await deleteSystem(deleteItemId);
+      callDispatch("DELETE_SYSTEM", response);
     }
   };
 
@@ -366,6 +371,7 @@ export const GridCustom: React.FC<GridProps> = ({
     formatRows.push(rowData);
   });
 
+  // TODO: ver como hacer que esto no se dispare todo el tiempo
   const getRowClassName = (params: any) => {
     const otimalStandardIds: number[] = [];
     const alternativeOtimalStandardIds: number[] = [];
@@ -407,9 +413,12 @@ export const GridCustom: React.FC<GridProps> = ({
     });
   }
 
-  const onCellClick = () => {
-    setToastMsg("Row clicked, not implemented.");
-    setShowToast(true);
+  const onCellClick = (params: GridCellParams) => {
+    console.log(params.row.id);
+    const systemId = params.row.id;
+    navigator(`/system/${systemId}/view`);
+    // setToastMsg("Row clicked, not implemented.");
+    // setShowToast(true);
   };
 
   function SortedDescendingIcon() {
