@@ -8,7 +8,7 @@ import { getSystemComment, getSystemCommentAdmin } from "../../../services/ApiSe
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/reducers/reducer";
 import MainContainer from "../../../components/mainContainer";
-import { ADMIN_ROL, COMMENTOR_ROL } from "../../../utils/constants";
+import { ADMIN_ROL } from "../../../utils/constants";
 
 type ListSystemCommentsProps = {
   /** id de sistema, para cargar todos sus comentarios. */

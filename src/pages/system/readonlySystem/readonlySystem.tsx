@@ -49,6 +49,7 @@ import {
   getUnitPriceBaseMaterialSystem,
   truncateDecimals,
 } from "../../../utils/mathUtils";
+import ListSystemComments from "../listSystemComments/listSystemComments";
 
 type ReadonlySystemProps = {
   data?: any;
@@ -757,6 +758,9 @@ const ReadonlySystem: React.FC<ReadonlySystemProps> = ({ data }) => {
           />
         </div>
       </div>
+      {/* ------------- Comentarios sobre el sistema ------------- */}
+      <CustomDivider text="Comentarios" />
+      <ListSystemComments id={Number(id)} />
       {/* ------------- Botones formulario ------------- */}
       <div className="card-footer text-body-secondary align-right">
         <Button onClick={handleReturn} variant="contained">
