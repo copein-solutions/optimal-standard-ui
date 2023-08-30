@@ -54,7 +54,7 @@ const Login = () => {
       <div className="login-box">
         <div className="mt-3">
           <Typography variant="h4" className="title custom-title">
-            Inicia sesión aquí
+            Inicie sesión aquí
           </Typography>
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
