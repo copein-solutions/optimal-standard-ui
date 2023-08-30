@@ -11,7 +11,7 @@ import Toast from "../../components/toast/toast";
 import { useForm } from "react-hook-form";
 import { LoginInputs } from "../../interfaces/form/FormInterfaces";
 import CustomPasswordField from "../../components/passwordField";
-import { Box, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 
 // Services
 import { login } from "../../services/ApiService";

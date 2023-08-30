@@ -1,13 +1,8 @@
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import NumberFormat, { NumberFormatValues } from "react-number-format";
-import { FilePond, registerPlugin } from "react-filepond";
-import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 
-
-import "./materialForm.css";
-// Import FilePond styles
-import "filepond/dist/filepond.min.css";
 import {
   Button,
   FormControlLabel,
@@ -20,7 +15,15 @@ import {
   InputAdornment,
   FormControl,
 } from "@mui/material";
+import "./materialForm.css";
 
+// Import FilePond
+import { FilePond, registerPlugin } from "react-filepond";
+import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
+import "filepond/dist/filepond.min.css";
+import { FilePondFile } from "filepond";
+
+// Imports Utils
 import {
   MATERIAL_TYPE,
   CURRENCY,
@@ -28,14 +31,13 @@ import {
   MATERIAL_COMPONENTS,
   MATERIAL_LIST,
 } from "../../../utils/constants";
+import { getUnitPrice } from "../../../utils/mathUtils";
+import { loadTodayDate } from "../../../utils/dateUtils";
 
 import { MaterialInputs, Files } from "../../../interfaces/form/FormInterfaces";
-import { createMaterial, updateMaterial, getMaterialFileById, API_BASE_URL } from "../../../services/ApiService";
+import { createMaterial, updateMaterial, getMaterialFileById, getQuotationDollar, API_BASE_URL } from "../../../services/ApiService";
 import CustomTextField from "../../../components/TextField";
-import { useNavigate } from "react-router-dom";
 import CustomSelectField from "../../../components/customSelectField";
-import { getUnitPrice } from "../../../utils/mathUtils";
-import { FilePondFile } from "filepond";
 
 type MaterialFromProps = {
   data?: MaterialInputs;
@@ -52,7 +54,7 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
     formState: { errors },
   } = useForm<MaterialInputs>();
   registerPlugin(FilePondPluginFileValidateType);
-  const [inputValue, setInputValue] = useState<string | undefined>("0,00");
+  const [inputValueUnitPrice, setInputValueUnitPrice] = useState<string | undefined>("0,00");
   const [inputValueNumberFormat, setInputValueNumberFormat] = useState("");
   const [files, setFiles] = useState<any[]>([]);
   const [headers, setHeaders] = useState<any>({});
@@ -130,23 +132,12 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
     }
     const credencials = localStorage.getItem("credentials");    
     if (credencials) {
-      console.log(`Bearer ${JSON.parse(credencials)}`);
       setHeaders({
         Authorization: `Bearer ${JSON.parse(credencials)}`,
         "Accept": "*/*"
       });
     }
   }, [setValue, data]);
-  
-
-  const loadTodayDate = (): string => {
-    const currentDate = new Date();
-    const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
-    const day = String(currentDate.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-  };
 
   function handleValueChange(values: NumberFormatValues) {
     const { formattedValue } = values;
@@ -170,25 +161,42 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
     navigator(MATERIAL_LIST);
   };
 
+  const convertCurrency = async (materialPrice: number) => {
+    let finalMaterialprice = materialPrice;
+
+    let response = await getQuotationDollar();
+    if(response.data) {
+      return materialPrice * response.data;
+    }
+    return finalMaterialprice;
+  };
+
   // Obtengo el prefijo del precio unitario
   const unity = watch("presentationUnit");
   const prefix = unity != null ? `$/${unity}` : "";
-  const watchedValues = watch(["presentationPrice", "presentationQuantity"]);
-
+  const watchedValues = watch(["presentationPrice", "presentationQuantity","currency"]);
+  const materialPriceWatch = watchedValues[0];
+  const materialQuantityWatch = watchedValues[1];
+  const currencyWatch = watchedValues[2];
+  
   useEffect(() => {
-    const materialPriceWatch = watchedValues[0];
-    const materialQuantityWatch = watchedValues[1];
-    let materialPrice: number = 0;
-    let materialQuantity: number = 0;
-    setInputValueNumberFormat(materialPriceWatch);
-    if (materialPriceWatch) {
-      materialPrice = Number(materialPriceWatch);
+    async function fetchData() {
+      let materialPrice: number = 0;
+      let materialQuantity: number = 0;
+      setInputValueNumberFormat(materialPriceWatch);
+      if (materialPriceWatch) {
+        materialPrice = Number(materialPriceWatch);
+      }
+      if (materialQuantityWatch) {
+        materialQuantity = Number(materialQuantityWatch);
+      }      
+      if("USD" === currencyWatch) {        
+        materialPrice = await convertCurrency(materialPrice);        
+      }
+      setInputValueUnitPrice(getUnitPrice(materialPrice, materialQuantity));
     }
-    if (materialQuantityWatch) {
-      materialQuantity = Number(materialQuantityWatch);
-    }
-    setInputValue(getUnitPrice(materialPrice, materialQuantity));
-  }, [data, watchedValues]);
+    fetchData();
+  }, [data, materialPriceWatch, materialQuantityWatch, currencyWatch]);
 
   const onSubmit = async (formData: MaterialInputs) => {
     let response: any;
@@ -248,7 +256,7 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
             name="unitPrice"
             control={control}
             label="Precio unitario"
-            value={inputValue}
+            value={inputValueUnitPrice}
             variant="outlined"
             fullWidth
             InputProps={{
