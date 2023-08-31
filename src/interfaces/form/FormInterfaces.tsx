@@ -37,6 +37,7 @@ interface Files {
 interface BaseMaterial {
   brand: string;
   component: string;
+  currency: string;
   presentationPrice: string;
   presentationQuantity: string;
   presentationUnit: string;

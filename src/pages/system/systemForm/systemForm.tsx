@@ -3,7 +3,6 @@ import {
   Divider,
   Button,
   Typography,
-  InputAdornment,
   Tooltip,
   TooltipProps,
   tooltipClasses,
@@ -53,6 +52,8 @@ import {
   truncateDecimals,
 } from "../../../utils/mathUtils";
 
+import { initMaterialObject } from "../../../utils/initValueUtils";
+
 export const SystemForm: React.FC<SystemFormProps> = ({
   data,
   isUpdateForm,
@@ -82,19 +83,9 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   // MATERIAL BASE
   // const [baseMaterialUnitPrice, setBaseMaterialUnitPrice] = useState("");
   const [materialDataVisible, setMaterialDataVisible] = useState(false);
+  
   const [selectedBaseMaterialDetail, setSelectedBaseMaterialDetail] =
-    useState<BaseMaterial>({
-      brand: "",
-      component: "",
-      presentationPrice: "",
-      presentationQuantity: "",
-      presentationUnit: "",
-      unitPrice: "",
-      type: "",
-      priceDate: "",
-      potLife: "",
-      minApplicableTemp: "",
-    });
+    useState<BaseMaterial>(initMaterialObject);
   // MALLA 100%
   const [totalMeshUnityPriceVisible, setTotalMeshUnityPriceVisible] =
     useState(false);
@@ -123,45 +114,13 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     selectedPluginMaterialPricePerCoefficient2,
     setSelectedPluginMaterialPricePerCoefficient2,
   ] = useState("");
+
   const [selectedPluginMaterialDetail1, setSelectedPluginMaterialDetail1] =
-    useState<BaseMaterial>({
-      brand: "",
-      component: "",
-      presentationPrice: "",
-      presentationQuantity: "",
-      presentationUnit: "",
-      unitPrice: "",
-      type: "",
-      priceDate: "",
-      potLife: "",
-      minApplicableTemp: "",
-    });
+    useState<BaseMaterial>(initMaterialObject);
   const [selectedPluginMaterialDetail2, setSelectedPluginMaterialDetail2] =
-    useState<BaseMaterial>({
-      brand: "",
-      component: "",
-      presentationPrice: "",
-      presentationQuantity: "",
-      presentationUnit: "",
-      unitPrice: "",
-      type: "",
-      priceDate: "",
-      potLife: "",
-      minApplicableTemp: "",
-    });
+    useState<BaseMaterial>(initMaterialObject);
   const [selectedPluginMaterialDetail3, setSelectedPluginMaterialDetail3] =
-    useState<BaseMaterial>({
-      brand: "",
-      component: "",
-      presentationPrice: "",
-      presentationQuantity: "",
-      presentationUnit: "",
-      unitPrice: "",
-      type: "",
-      priceDate: "",
-      potLife: "",
-      minApplicableTemp: "",
-    });
+    useState<BaseMaterial>(initMaterialObject);
 
   const navigator = useNavigate();
 
@@ -391,10 +350,11 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     fetchData();
   }, []);
 
-  const setBaseMaterialDetail = (material: Material) => {
-    setSelectedBaseMaterialDetail({
+  const detailsMapper = (material: Material) => {
+    return {
       brand: material.brand,
       component: material.component,
+      currency: material.currency,
       presentationPrice: material.presentationPrice,
       presentationQuantity: material.presentationQuantity,
       presentationUnit: material.presentationUnit,
@@ -405,58 +365,23 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       minApplicableTemp: material.minApplicableTemp
         ? String(material.minApplicableTemp)
         : "-",
-    });
+    }
+  };
+
+  const setBaseMaterialDetail = (material: Material) => {
+    setSelectedBaseMaterialDetail(detailsMapper(material));
   };
 
   const updateMaterialDetail1 = (material: Material) => {
-    setSelectedPluginMaterialDetail1({
-      brand: material.brand,
-      component: material.component,
-      presentationPrice: material.presentationPrice,
-      presentationQuantity: material.presentationQuantity,
-      presentationUnit: material.presentationUnit,
-      unitPrice: material.unitPrice,
-      type: material.type,
-      priceDate: material.priceDate,
-      potLife: material.potLife ? String(material.potLife) : "-",
-      minApplicableTemp: material.minApplicableTemp
-        ? String(material.minApplicableTemp)
-        : "-",
-    });
+    setSelectedPluginMaterialDetail1(detailsMapper(material));
   };
 
   const updateMaterialDetail2 = (material: Material) => {
-    setSelectedPluginMaterialDetail2({
-      brand: material.brand,
-      component: material.component,
-      presentationPrice: material.presentationPrice,
-      presentationQuantity: material.presentationQuantity,
-      presentationUnit: material.presentationUnit,
-      unitPrice: material.unitPrice,
-      type: material.type,
-      priceDate: material.priceDate,
-      potLife: material.potLife ? String(material.potLife) : "-",
-      minApplicableTemp: material.minApplicableTemp
-        ? String(material.minApplicableTemp)
-        : "-",
-    });
+    setSelectedPluginMaterialDetail2(detailsMapper(material));
   };
 
   const updateMaterialDetail3 = (material: Material) => {
-    setSelectedPluginMaterialDetail3({
-      brand: material.brand,
-      component: material.component,
-      presentationPrice: material.presentationPrice,
-      presentationQuantity: material.presentationQuantity,
-      presentationUnit: material.presentationUnit,
-      unitPrice: material.unitPrice,
-      type: material.type,
-      priceDate: material.priceDate,
-      potLife: material.potLife ? String(material.potLife) : "-",
-      minApplicableTemp: material.minApplicableTemp
-        ? String(material.minApplicableTemp)
-        : "-",
-    });
+    setSelectedPluginMaterialDetail3(detailsMapper(material));
   };
 
   const findFromGlobalMaterialsAndSetDetails = (

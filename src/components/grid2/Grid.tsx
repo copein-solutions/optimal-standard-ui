@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
-  Box,
   Button,
   FormControl,
   InputLabel,
@@ -35,7 +34,6 @@ import {
 } from "@mui/x-data-grid";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import CustomSelectField from "../customSelectField";
 import { RootState } from "../../redux/reducers/reducer";
 
 type Header = {

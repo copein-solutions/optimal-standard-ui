@@ -46,7 +46,7 @@ export const MaterialData: React.FC<materialDataProps> = ({ material }) => {
             Precio presentación:
           </Typography>
           <Typography fontWeight="700" variant="body1">
-            {`$ ${material?.presentationPrice}`}
+            {`${material?.currency} ${material?.presentationPrice}`}
           </Typography>
         </div>
 
