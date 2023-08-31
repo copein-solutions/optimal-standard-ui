@@ -4,7 +4,10 @@ import { format, parseISO } from "date-fns";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { getSystemComment, getSystemCommentAdmin } from "../../../services/ApiService";
+import {
+  getSystemComment,
+  getSystemCommentAdmin,
+} from "../../../services/ApiService";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/reducers/reducer";
 import MainContainer from "../../../components/mainContainer";
@@ -64,6 +67,10 @@ const ListSystemComments: React.FC<ListSystemCommentsProps> = ({ id }) => {
 
   const userRole = localStorage.getItem("userRole");
 
+  const handleReturn = () => {
+    navigator(`/system/${idParm}/view`);
+  };
+
   return (
     <>
       {idParm ? (
@@ -75,6 +82,11 @@ const ListSystemComments: React.FC<ListSystemCommentsProps> = ({ id }) => {
             hasStatus={userRole === ADMIN_ROL}
             navigateTo="comment"
           />
+          <div className="card-footer text-body-secondary align-right">
+            <Button onClick={handleReturn} variant="contained">
+              Volver
+            </Button>
+          </div>
         </MainContainer>
       ) : (
         <>

@@ -3,7 +3,6 @@ import {
   Divider,
   Button,
   Typography,
-  InputAdornment,
   Tooltip,
   TooltipProps,
   tooltipClasses,
