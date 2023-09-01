@@ -48,7 +48,7 @@ const privateRoutes = [
   {
     path: MATERIAL_LIST,
     component: <ListMaterial />,
-    allowRoles: [ADMIN_ROL],
+    allowRoles: [ADMIN_ROL, COMMENTOR_ROL, READONLY_ROL],
   },
   {
     path: MATERIAL_EDIT,
@@ -63,7 +63,7 @@ const privateRoutes = [
   {
     path: APPLICATION_AREA_LIST,
     component: <ListApplicationArea />,
-    allowRoles: [ADMIN_ROL],
+    allowRoles: [ADMIN_ROL, COMMENTOR_ROL, READONLY_ROL],
   },
   {
     path: APPLICATION_AREA_EDIT,

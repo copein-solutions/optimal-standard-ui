@@ -34,7 +34,7 @@ export const createMaterial = async (data: any): Promise<ResponseApi> => {
 };
 
 export const getMaterials = async (): Promise<ResponseApi> => {
-  return get("/admin/material");
+  return get("/user/material");
 };
 
 export const getMaterialsByType = async (
@@ -74,7 +74,7 @@ export const createApplicationArea = async (
 };
 
 export const getApplicationArea = async (): Promise<ResponseApi> => {
-  return get("/admin/application_area");
+  return get("/user/application_area");
 };
 
 export const updateApplicationArea = async (
