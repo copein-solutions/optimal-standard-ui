@@ -52,6 +52,8 @@ import {
 import ListSystemComments from "../listSystemComments/listSystemComments";
 import { useDispatch } from "react-redux";
 
+import { initMaterialObject } from "../../../utils/initValueUtils";
+
 const ReadonlySystem = () => {
   const {
     watch,
@@ -80,18 +82,7 @@ const ReadonlySystem = () => {
   // const [baseMaterialUnitPrice, setBaseMaterialUnitPrice] = useState("");
   const [materialDataVisible, setMaterialDataVisible] = useState(false);
   const [selectedBaseMaterialDetail, setSelectedBaseMaterialDetail] =
-    useState<BaseMaterial>({
-      brand: "",
-      component: "",
-      presentationPrice: "",
-      presentationQuantity: "",
-      presentationUnit: "",
-      unitPrice: "",
-      type: "",
-      priceDate: "",
-      potLife: "",
-      minApplicableTemp: "",
-    });
+    useState<BaseMaterial>(initMaterialObject);
   // MALLA 100%
   const [totalMeshUnityPriceVisible, setTotalMeshUnityPriceVisible] =
     useState(false);
@@ -125,44 +116,11 @@ const ReadonlySystem = () => {
     setSelectedPluginMaterialPricePerCoefficient2,
   ] = useState("");
   const [selectedPluginMaterialDetail1, setSelectedPluginMaterialDetail1] =
-    useState<BaseMaterial>({
-      brand: "",
-      component: "",
-      presentationPrice: "",
-      presentationQuantity: "",
-      presentationUnit: "",
-      unitPrice: "",
-      type: "",
-      priceDate: "",
-      potLife: "",
-      minApplicableTemp: "",
-    });
+    useState<BaseMaterial>(initMaterialObject);
   const [selectedPluginMaterialDetail2, setSelectedPluginMaterialDetail2] =
-    useState<BaseMaterial>({
-      brand: "",
-      component: "",
-      presentationPrice: "",
-      presentationQuantity: "",
-      presentationUnit: "",
-      unitPrice: "",
-      type: "",
-      priceDate: "",
-      potLife: "",
-      minApplicableTemp: "",
-    });
+    useState<BaseMaterial>(initMaterialObject);
   const [selectedPluginMaterialDetail3, setSelectedPluginMaterialDetail3] =
-    useState<BaseMaterial>({
-      brand: "",
-      component: "",
-      presentationPrice: "",
-      presentationQuantity: "",
-      presentationUnit: "",
-      unitPrice: "",
-      type: "",
-      priceDate: "",
-      potLife: "",
-      minApplicableTemp: "",
-    });
+    useState<BaseMaterial>(initMaterialObject);
 
   const navigator = useNavigate();
   const dispatch = useDispatch();

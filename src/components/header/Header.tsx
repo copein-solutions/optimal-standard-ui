@@ -2,9 +2,7 @@ import * as React from "react";
 import {
   Button,
   IconButton,
-  Typography,
   Toolbar,
-  Box,
   AppBar,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";

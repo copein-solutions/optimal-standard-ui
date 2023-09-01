@@ -165,6 +165,15 @@ export const setSystemCategory = async (
 };
 
 //#endregion
+
+//#region GLOBAL VARIABLES
+export const getQuotationDollar = async (): Promise<ResponseApi> => {
+  return get("/user/global_variable/quotation_dollar");
+};
+
+//#endregion
+
+
 const post = async (url: string, data: any): Promise<ResponseApi> => {
   try {
     return await api.post(url, data, fetchHeaders());

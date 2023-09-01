@@ -45,12 +45,12 @@ export const truncateDecimals = (
  */
 export function getUnitPriceBaseMaterialSystem(
   formValues: SystemFormInputs,
-  baseMaterialUnitPrice: string,
+  selectedBaseMaterialPrice: string,
   selectedTotalMeshPrice: string,
   selectedPartialMeshPrice: string,
-  selectedPluginMaterialDetail1: string,
-  selectedPluginMaterialDetail2: string,
-  selectedPluginMaterialDetail3: string
+  selectedPluginMaterialDetailPrice1: string,
+  selectedPluginMaterialDetailPrice2: string,
+  selectedPluginMaterialDetailPrice3: string
 ): number {
   const parcialMeshCoefficient =
     formValues.systemParcialMeshCoefficient !== undefined
@@ -73,12 +73,12 @@ export function getUnitPriceBaseMaterialSystem(
       : 0;
 
   const systemUnitPrice =
-    Number(baseMaterialUnitPrice) * Number(formValues.totalConsumption) +
+    Number(selectedBaseMaterialPrice) * Number(formValues.totalConsumption) +
     Number(selectedTotalMeshPrice) +
     Number(selectedPartialMeshPrice) * parcialMeshCoefficient +
-    Number(selectedPluginMaterialDetail1) * pluginMaterialCoefficient1 +
-    Number(selectedPluginMaterialDetail2) * pluginMaterialCoefficient2 +
-    Number(selectedPluginMaterialDetail3) * pluginMaterialCoefficient3;
+    Number(selectedPluginMaterialDetailPrice1) * pluginMaterialCoefficient1 +
+    Number(selectedPluginMaterialDetailPrice2) * pluginMaterialCoefficient2 +
+    Number(selectedPluginMaterialDetailPrice3) * pluginMaterialCoefficient3;
 
   const formatSystemUnitPrice =
     systemUnitPrice !== undefined ? truncateDecimals(systemUnitPrice, 2) : 0;

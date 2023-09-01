@@ -54,6 +54,8 @@ import {
 import ListSystemComments from "../listSystemComments/listSystemComments";
 import { useDispatch } from "react-redux";
 
+import { initMaterialObject } from "../../../utils/initValueUtils";
+
 export const SystemForm: React.FC<SystemFormProps> = ({
   data,
   isUpdateForm,
@@ -83,19 +85,9 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   // MATERIAL BASE
   // const [baseMaterialUnitPrice, setBaseMaterialUnitPrice] = useState("");
   const [materialDataVisible, setMaterialDataVisible] = useState(false);
+  
   const [selectedBaseMaterialDetail, setSelectedBaseMaterialDetail] =
-    useState<BaseMaterial>({
-      brand: "",
-      component: "",
-      presentationPrice: "",
-      presentationQuantity: "",
-      presentationUnit: "",
-      unitPrice: "",
-      type: "",
-      priceDate: "",
-      potLife: "",
-      minApplicableTemp: "",
-    });
+    useState<BaseMaterial>(initMaterialObject);
   // MALLA 100%
   const [totalMeshUnityPriceVisible, setTotalMeshUnityPriceVisible] =
     useState(false);
@@ -124,45 +116,13 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     selectedPluginMaterialPricePerCoefficient2,
     setSelectedPluginMaterialPricePerCoefficient2,
   ] = useState("");
+
   const [selectedPluginMaterialDetail1, setSelectedPluginMaterialDetail1] =
-    useState<BaseMaterial>({
-      brand: "",
-      component: "",
-      presentationPrice: "",
-      presentationQuantity: "",
-      presentationUnit: "",
-      unitPrice: "",
-      type: "",
-      priceDate: "",
-      potLife: "",
-      minApplicableTemp: "",
-    });
+    useState<BaseMaterial>(initMaterialObject);
   const [selectedPluginMaterialDetail2, setSelectedPluginMaterialDetail2] =
-    useState<BaseMaterial>({
-      brand: "",
-      component: "",
-      presentationPrice: "",
-      presentationQuantity: "",
-      presentationUnit: "",
-      unitPrice: "",
-      type: "",
-      priceDate: "",
-      potLife: "",
-      minApplicableTemp: "",
-    });
+    useState<BaseMaterial>(initMaterialObject);
   const [selectedPluginMaterialDetail3, setSelectedPluginMaterialDetail3] =
-    useState<BaseMaterial>({
-      brand: "",
-      component: "",
-      presentationPrice: "",
-      presentationQuantity: "",
-      presentationUnit: "",
-      unitPrice: "",
-      type: "",
-      priceDate: "",
-      potLife: "",
-      minApplicableTemp: "",
-    });
+    useState<BaseMaterial>(initMaterialObject);
 
   const navigator = useNavigate();
   const dispatch = useDispatch();
@@ -310,7 +270,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
           setValue("systemMeshTotalPercentName", m.material.id);
           handleTotalMesh(Number(m.material.id), "isUpdate");
           setSelectedTotalMeshPrice(
-            String(data.materials[1].material.unitPrice)
+            String(m.material.unitPrice)
           );
         } else if (m.typeOfUse === "PARTIAL_MESH") {
           setValue("systemParcialMesh", "si");
@@ -319,7 +279,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
           setValue("systemParcialMeshCoefficient", m.coefficient);
           setValue("systemPartialMeshDescription", m.materialDescription);
           setSelectedPartialMeshPrice(
-            String(data.materials[2].material.unitPrice)
+            String(m.material.unitPrice)
           );
           handlePartialMesh(m.material.id);
         } else if (m.typeOfUse === "PLUGIN_MATERIAL") {
@@ -394,10 +354,11 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     fetchData();
   }, []);
 
-  const setBaseMaterialDetail = (material: Material) => {
-    setSelectedBaseMaterialDetail({
+  const detailsMapper = (material: Material) => {
+    return {
       brand: material.brand,
       component: material.component,
+      currency: material.currency,
       presentationPrice: material.presentationPrice,
       presentationQuantity: material.presentationQuantity,
       presentationUnit: material.presentationUnit,
@@ -408,58 +369,23 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       minApplicableTemp: material.minApplicableTemp
         ? String(material.minApplicableTemp)
         : "-",
-    });
+    }
+  };
+
+  const setBaseMaterialDetail = (material: Material) => {
+    setSelectedBaseMaterialDetail(detailsMapper(material));
   };
 
   const updateMaterialDetail1 = (material: Material) => {
-    setSelectedPluginMaterialDetail1({
-      brand: material.brand,
-      component: material.component,
-      presentationPrice: material.presentationPrice,
-      presentationQuantity: material.presentationQuantity,
-      presentationUnit: material.presentationUnit,
-      unitPrice: material.unitPrice,
-      type: material.type,
-      priceDate: material.priceDate,
-      potLife: material.potLife ? String(material.potLife) : "-",
-      minApplicableTemp: material.minApplicableTemp
-        ? String(material.minApplicableTemp)
-        : "-",
-    });
+    setSelectedPluginMaterialDetail1(detailsMapper(material));
   };
 
   const updateMaterialDetail2 = (material: Material) => {
-    setSelectedPluginMaterialDetail2({
-      brand: material.brand,
-      component: material.component,
-      presentationPrice: material.presentationPrice,
-      presentationQuantity: material.presentationQuantity,
-      presentationUnit: material.presentationUnit,
-      unitPrice: material.unitPrice,
-      type: material.type,
-      priceDate: material.priceDate,
-      potLife: material.potLife ? String(material.potLife) : "-",
-      minApplicableTemp: material.minApplicableTemp
-        ? String(material.minApplicableTemp)
-        : "-",
-    });
+    setSelectedPluginMaterialDetail2(detailsMapper(material));
   };
 
   const updateMaterialDetail3 = (material: Material) => {
-    setSelectedPluginMaterialDetail3({
-      brand: material.brand,
-      component: material.component,
-      presentationPrice: material.presentationPrice,
-      presentationQuantity: material.presentationQuantity,
-      presentationUnit: material.presentationUnit,
-      unitPrice: material.unitPrice,
-      type: material.type,
-      priceDate: material.priceDate,
-      potLife: material.potLife ? String(material.potLife) : "-",
-      minApplicableTemp: material.minApplicableTemp
-        ? String(material.minApplicableTemp)
-        : "-",
-    });
+    setSelectedPluginMaterialDetail3(detailsMapper(material));
   };
 
   const findFromGlobalMaterialsAndSetDetails = (
@@ -616,29 +542,36 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     setShowRestrictions(watchedRestriction === "si" ? true : false);
   }, [watchedRestriction]);
 
+  const calculateSystemTotalPrice = () => {
+    const formValues = getValues();
+
+    const price = getUnitPriceBaseMaterialSystem(
+      formValues,
+      selectedBaseMaterialDetail.unitPrice,
+      selectedTotalMeshPrice,
+      selectedPartialMeshPrice,
+      selectedPluginMaterialDetail1.unitPrice,
+      selectedPluginMaterialDetail2.unitPrice,
+      selectedPluginMaterialDetail3.unitPrice
+    );
+
+    setSystemTotalPrice(price);
+  }
+
   // Cuando cambia un input implicado en el precio unitario del sistema,
   // vuelve a 0 el systemUnitPrice
-  useEffect(() => {
-    const watchedFields = [
-      "totalConsumption",
-      "systemParcialMeshCoefficient",
-      "systemOthersPluginsMaterialCoefficient0",
-      "systemOthersPluginsMaterialCoefficient1",
-      "systemOthersPluginsMaterialCoefficient2",
-    ];
-
-    const shouldReset = watchedFields.some((field) => watch(field));
-
-    if (shouldReset) {
+  const watchedFields = watch([
+    "totalConsumption",
+    "systemParcialMeshCoefficient",
+    "systemOthersPluginsMaterialCoefficient0",
+    "systemOthersPluginsMaterialCoefficient1",
+    "systemOthersPluginsMaterialCoefficient2",
+  ]);
+  useEffect(() => {    
+    if (watchedFields) {
       calculateSystemTotalPrice();
     }
-  }, [
-    watch("totalConsumption"),
-    watch("systemParcialMeshCoefficient"),
-    watch("systemOthersPluginsMaterialCoefficient0"),
-    watch("systemOthersPluginsMaterialCoefficient1"),
-    watch("systemOthersPluginsMaterialCoefficient2"),
-  ]);
+  }, [watchedFields]);
 
   // Precio por m² de malla parcial
   const systemParcialMeshCoefficientValue = watch(
@@ -657,8 +590,6 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     "systemOthersPluginsMaterialCoefficient0"
   );
   useEffect(() => {
-    console.log(selectedPluginMaterialPricePerCoefficient0);
-
     const price = calculatePricePerCoefficientParcialMesh(
       Number(pluginMaterial1CoefficientValue),
       Number(selectedPluginMaterialDetail1.unitPrice)
@@ -715,22 +646,6 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     selectedPluginMaterialDetail3,
   ]);
 
-  function calculateSystemTotalPrice() {
-    const formValues = getValues();
-
-    const price = getUnitPriceBaseMaterialSystem(
-      formValues,
-      selectedBaseMaterialDetail.unitPrice,
-      selectedTotalMeshPrice,
-      selectedPartialMeshPrice,
-      selectedPluginMaterialDetail1.unitPrice,
-      selectedPluginMaterialDetail2.unitPrice,
-      selectedPluginMaterialDetail3.unitPrice
-    );
-
-    setSystemTotalPrice(price);
-  }
-
   // Evento de botón agregar - otros complementos
   const handleAddMaterial = () => {
     if (materialCount > 2) {
@@ -745,11 +660,32 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     if (materialCount === 2) setSelectedPluginMaterialPricePerCoefficient2("0");
   };
 
+  const resetDynamicInputs = (index: number) => {
+    setValue(`systemOthersPluginsMaterials${index}`, "");
+    setValue(`systemOthersPluginsMaterialCoefficient${index}`, "");
+    setValue(`systemOthersPluginsMaterialDescription${index}`, "");
+    setValue(`systemOthersPluginsMaterialCoefficientDescription${index}`,"");
+  }
+
   // Evento de botón eliminar - otros complementos
   const handleDeleteMaterial = () => {
     if (materialCount === 0) {
       handleOpenToast("No hay materiales para eliminar");
     } else {
+      
+      if (materialCount === 1) {
+        setSelectedPluginMaterialDetail1(initMaterialObject);
+        resetDynamicInputs(materialCount -1);
+      }
+      if (materialCount === 2) {
+        setSelectedPluginMaterialDetail2(initMaterialObject);
+        resetDynamicInputs(materialCount -1);
+      }
+      if (materialCount === 3) {
+        setSelectedPluginMaterialDetail3(initMaterialObject);
+        resetDynamicInputs(materialCount -1);
+      } 
+
       setMaterialCount((prevCount) => Math.max(prevCount - 1, 0));
     }
   };

@@ -76,7 +76,7 @@ const ListSystem = () => {
                   system.materialBaseName = material.material.product;
                   system.materialBaseUnitPrice = `${material.material.unitPrice.toFixed(
                     2
-                  )} ${material.material.currency}/${
+                  )} $/${
                     material.material.presentationUnit
                   }`;
                   system.materialBaseType = material.material.type;
