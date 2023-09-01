@@ -119,7 +119,7 @@ export const GridCustom: React.FC<GridProps> = ({
   function callDispatch(type: string, response: any) {
     if (response.status !== 200) {
       handleOpenToast(
-        "No se puede eliminar el elemento ya que forma parte de un sistema",
+        "No se puede eliminar el elemento",
         "error"
       );
     } else {
