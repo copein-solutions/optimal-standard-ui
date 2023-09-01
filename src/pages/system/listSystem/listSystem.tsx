@@ -7,7 +7,7 @@ import { GridCustom } from "../../../components/grid2/Grid";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../redux/reducers/reducer";
 import { useNavigate } from "react-router-dom";
-import { ADMIN_ROL, SYSTEM_CREATE } from "../../../utils/constants";
+import { ADMIN_ROL, COMMENTOR_ROL, SYSTEM_CREATE } from "../../../utils/constants";
 import {
   columnGroupingModel,
   header,
@@ -167,27 +167,26 @@ const ListSystem = () => {
   );
 
   return (
-    <>
-      <MainContainer cardTitle="Sistemas">
-        <div>{colorExplanation}</div>
-        <div>
-          {userRole === ADMIN_ROL && (
-            <Button variant="text" color="success" onClick={handleAddSystem}>
-              Agregar sistema
-            </Button>
-          )}
-          <GridCustom
-            columnGroupingModel={columnGroupingModel}
-            header={header}
-            body={systems}
-            hasEdit={userRole === ADMIN_ROL}
-            hasDelete={userRole === ADMIN_ROL}
-            hasCategory={userRole === ADMIN_ROL}
-            navigateTo="system"
-          />
-        </div>
-      </MainContainer>
-    </>
+    <MainContainer cardTitle="Sistema">
+      <div>
+        {userRole === ADMIN_ROL && (
+          <Button variant="text" color="success" onClick={handleAddSystem}>
+            Agregar sistema
+          </Button>
+        )}
+        <GridCustom
+          header={header}
+          body={systems}
+          hasEdit={userRole === ADMIN_ROL}
+          hasDelete={userRole === ADMIN_ROL}
+          hasCategory={userRole === ADMIN_ROL}
+          hasComment={userRole === COMMENTOR_ROL}
+          hasViewComment
+          navigateTo="system"
+          columnGroupingModel={columnGroupingModel}
+        />
+      </div>
+    </MainContainer>
   );
 };
 

@@ -13,6 +13,7 @@ import {
   MATERIAL_EDIT,
   MATERIAL_LIST,
   READONLY_ROL,
+  SYSTEM_COMMENTS,
   SYSTEM_CREATE,
   SYSTEM_EDIT,
   SYSTEM_LIST,
@@ -31,6 +32,7 @@ import ListSystem from "./pages/system/listSystem";
 import EditSystem from "./pages/system/editSystem";
 import Unauthorized from "./components/Unauthorized/unauthorized";
 import ReadonlySystem from "./pages/system/readonlySystem/readonlySystem"
+import ListSystemComments from "./pages/system/listSystemComments/listSystemComments";
 
 const privateRoutes = [
   {
@@ -86,6 +88,11 @@ const privateRoutes = [
   {
     path: SYSTEM_READONLY,
     component: <ReadonlySystem />,
+    allowRoles: [ADMIN_ROL, COMMENTOR_ROL, READONLY_ROL],
+  },
+  {
+    path: SYSTEM_COMMENTS,
+    component: <ListSystemComments />,
     allowRoles: [ADMIN_ROL, COMMENTOR_ROL, READONLY_ROL],
   },
 ];

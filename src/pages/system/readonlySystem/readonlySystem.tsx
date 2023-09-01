@@ -49,14 +49,12 @@ import {
   getUnitPriceBaseMaterialSystem,
   truncateDecimals,
 } from "../../../utils/mathUtils";
+import ListSystemComments from "../listSystemComments/listSystemComments";
+import { useDispatch } from "react-redux";
 
 import { initMaterialObject } from "../../../utils/initValueUtils";
 
-type ReadonlySystemProps = {
-  data?: any;
-};
-
-const ReadonlySystem: React.FC<ReadonlySystemProps> = ({ data }) => {
+const ReadonlySystem = () => {
   const {
     watch,
     setValue,
@@ -74,9 +72,6 @@ const ReadonlySystem: React.FC<ReadonlySystemProps> = ({ data }) => {
   const [cured, setCured] = useState("");
   const [restrictions, setRestrictions] = useState("");
 
-  // const [applicationArea, setApplicationAreaName] = useState("");
-  // const [applicationArea, setApplicationAreaName] = useState("");
-
   const [showMeshTotalPercentInput, setShowMeshTotalPercentInput] =
     useState(false);
   const [showParcialMeshInputs, setShowParcialMeshInputs] = useState(false);
@@ -92,6 +87,8 @@ const ReadonlySystem: React.FC<ReadonlySystemProps> = ({ data }) => {
   const [totalMeshUnityPriceVisible, setTotalMeshUnityPriceVisible] =
     useState(false);
   const [selectedTotalMeshPrice, setSelectedTotalMeshPrice] = useState("");
+  const [systemMeshTotalPercentName, setSystemMeshTotalPercentName] =
+    useState("");
   // MALLA PARCIAL
   const [partialMeshUnityPriceVisible, setPartialMeshUnityPriceVisible] =
     useState(false);
@@ -101,6 +98,8 @@ const ReadonlySystem: React.FC<ReadonlySystemProps> = ({ data }) => {
     selectedPartialMeshPricePerCoefficient,
     setSelectedPartialMeshPricePerCoefficient,
   ] = useState("");
+  const [systemParcialMesh, setSystemParcialMesh] = useState(false);
+  const [systemParcialMeshName, setSystemParcialMeshName] = useState("");
   // OTROS COMPLEMENTOS
   const [pluginMaterialDataVisible, setPluginMaterialDataVisible] =
     useState(false);
@@ -124,6 +123,7 @@ const ReadonlySystem: React.FC<ReadonlySystemProps> = ({ data }) => {
     useState<BaseMaterial>(initMaterialObject);
 
   const navigator = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // Carga los datos del JSON
@@ -148,7 +148,6 @@ const ReadonlySystem: React.FC<ReadonlySystemProps> = ({ data }) => {
 
   // Pre cargo formulario en caso de ser update
   useEffect(() => {
-    // if (data && isUpdateForm) {
     if (formData) {
       console.log("formData", formData);
 
@@ -163,25 +162,23 @@ const ReadonlySystem: React.FC<ReadonlySystemProps> = ({ data }) => {
       setValue("totalConsumption", formData.totalConsumption);
       setValue("baseConditions", formData.baseConditions);
       setSelectedBaseMaterialDetail(formData.materials[0].material);
-      // setTotalMesh()
 
-      // setValue("applicationAreaId", formData.applicationArea.id);
-      // setValue("applicationMode", formData.applicationMode);
-      // setValue("cured", formData.cured ? "si" : "no");
-      // if (
-      //   formData.materialAreaRestrictions !== null &&
-      //   formData.materialAreaRestrictions !== "n/e"
-      // ) {
-      //   setValue(
-      //     "materialAreaRestrictionValue",
-      //     formData.materialAreaRestrictions
-      //   );
-      //   setValue("materialAreaRestrictions", "Si");
-      //   setShowRestrictions(true);
-      // } else {
-      //   setValue("materialAreaRestrictions", formData.materialAreaRestrictions);
-      //   setShowRestrictions(false);
-      // }
+      setValue("applicationAreaId", formData.applicationArea.id);
+      setValue("applicationMode", formData.applicationMode);
+      if (
+        formData.materialAreaRestrictions !== null &&
+        formData.materialAreaRestrictions !== "n/e"
+      ) {
+        setValue(
+          "materialAreaRestrictionValue",
+          formData.materialAreaRestrictions
+        );
+        setValue("materialAreaRestrictions", "Si");
+        setShowRestrictions(true);
+      } else {
+        setValue("materialAreaRestrictions", formData.materialAreaRestrictions);
+        setShowRestrictions(false);
+      }
 
       if (formData.materialAreaRestrictions === null) {
         setRestrictions("No");
@@ -198,41 +195,28 @@ const ReadonlySystem: React.FC<ReadonlySystemProps> = ({ data }) => {
         setShowRestrictions(true);
       }
 
-      setValue("materialAreaDescription", formData.materialAreaDescription);
-      setValue("systemMeshTotalPercent", "no");
-      setValue("systemParcialMesh", "no");
-
       let pluginMaterialC = 0;
       formData.materials?.map((m: any) => {
         if (m.typeOfUse === "BASE") {
-          setValue("systemMaterialId", m.id);
-          setValue("systemMaterial", m.material.id);
-          //   handleBaseMaterial(m.material.id, "isUpdate");
         } else if (m.typeOfUse === "TOTAL_MESH") {
-          setValue("systemMeshTotalPercent", "si");
-          setValue("systemMeshTotalPercentId", m.id);
-          setValue("systemMeshTotalPercentName", m.material.id);
-          //   handleTotalMesh(Number(m.material.id), "isUpdate");
-          setSelectedTotalMeshPrice(
-            String(formData.materials[1].material.unitPrice)
+          setSystemMeshTotalPercentName(
+            `${m.material.brand} - ${m.material.product}`
           );
+          setTotalMeshUnityPriceVisible(true);
+          setShowMeshTotalPercentInput(true);
+          setSelectedTotalMeshPrice(String(m.material.unitPrice));
         } else if (m.typeOfUse === "PARTIAL_MESH") {
-          setValue("systemParcialMesh", "si");
-          setValue("systemParcialMeshId", m.id);
-          setValue("systemParcialMeshName", m.material.id);
+          setSystemParcialMesh(true);
+          setSystemParcialMeshName(
+            `${m.material.brand} - ${m.material.product}`
+          );
           setValue("systemParcialMeshCoefficient", m.coefficient);
           setValue("systemPartialMeshDescription", m.materialDescription);
           setSelectedPartialMeshPrice(
             String(formData.materials[2].material.unitPrice)
           );
-          //   handlePartialMesh(m.material.id);
         } else if (m.typeOfUse === "PLUGIN_MATERIAL") {
-          //   handleAddMaterial();
-          //   handlePluginsMaterial(
-          //     Number(m.material.id),
-          //     pluginMaterialC,
-          //     "isUpdate"
-          //   );
+          handleAddMaterial();
           setValue("systemOthersPluginsMaterialsId" + pluginMaterialC, m.id);
           setValue(
             `systemOthersPluginsMaterials${pluginMaterialC}`,
@@ -253,8 +237,18 @@ const ReadonlySystem: React.FC<ReadonlySystemProps> = ({ data }) => {
           pluginMaterialC++;
         }
       });
+      dispatch({ type: "SET_COMMENTS", payload: formData.comments });
     }
   }, [setValue, formData]);
+
+  // Evento de botón agregar - otros complementos
+  const handleAddMaterial = () => {
+    setMaterialCount((prevCount) => prevCount + 1);
+
+    if (materialCount === 0) setSelectedPluginMaterialPricePerCoefficient0("0");
+    if (materialCount === 1) setSelectedPluginMaterialPricePerCoefficient1("0");
+    if (materialCount === 2) setSelectedPluginMaterialPricePerCoefficient2("0");
+  };
 
   function renderPluginMaterialDetails(index: number): ReactNode {
     let materialData;
@@ -419,8 +413,8 @@ const ReadonlySystem: React.FC<ReadonlySystemProps> = ({ data }) => {
           <TextField
             size="small"
             className="readOnly"
-            label="Curado"
-            value={cured}
+            label="Si / No"
+            value={totalMeshUnityPriceVisible ? "Si" : "No"}
             variant="outlined"
             fullWidth
             InputProps={{
@@ -434,15 +428,20 @@ const ReadonlySystem: React.FC<ReadonlySystemProps> = ({ data }) => {
         {/* ------------- Nombre malla 100% ------------- */}
         {showMeshTotalPercentInput && (
           <div className="col-lg-6 col-sm-6">
-            {/* <CustomSelectField
-              name="systemMeshTotalPercentName"
-              control={control}
-              rules={{ required: "Nombre malla requerido." }}
+            <TextField
+              value={systemMeshTotalPercentName}
+              size="small"
+              className="readOnly"
               label="Malla"
-              error={errors.systemMeshTotalPercentName}
-              options={formattedMeshSelect}
-              //   onSelectOption={(value) => handleTotalMesh(value, "select")}
-            /> */}
+              variant="outlined"
+              fullWidth
+              InputProps={{
+                readOnly: true,
+              }}
+              InputLabelProps={{
+                className: "readOnly",
+              }}
+            />
           </div>
         )}
       </div>
@@ -468,28 +467,41 @@ const ReadonlySystem: React.FC<ReadonlySystemProps> = ({ data }) => {
       <div className="row mt-3">
         {/* ------------- Malla parcial si / no ------------- */}
         <div className="col-lg-2 col-sm-6">
-          <CustomSelectField
+          <TextField
             name="systemParcialMesh"
-            control={control}
-            rules={{ required: "Seleccione una opción." }}
-            label="Si / No"
-            error={errors.systemParcialMesh}
-            options={SI_NO}
+            size="small"
+            className="readOnly"
+            label="Malla"
+            variant="outlined"
+            fullWidth
+            value={systemParcialMesh ? "Si" : "No"}
+            InputProps={{
+              readOnly: true,
+            }}
+            InputLabelProps={{
+              className: "readOnly",
+            }}
           />
         </div>
         {/* ------------- Nombre malla parcial ------------- */}
-        {showParcialMeshInputs && (
+        {systemParcialMesh && (
           <>
             <div className="col-lg-4 col-sm-6">
-              {/* <CustomSelectField
-                name="systemParcialMeshName"
-                control={control}
-                rules={{ required: "Nombre de malla requerido." }}
+              <TextField
+                name="systemParcialMesh"
+                size="small"
+                className="readOnly"
                 label="Malla"
-                error={errors.systemParcialMeshName}
-                options={formattedMeshSelect}
-                // onSelectOption={(value) => handlePartialMesh(value)}
-              /> */}
+                variant="outlined"
+                fullWidth
+                value={systemParcialMeshName}
+                InputProps={{
+                  readOnly: true,
+                }}
+                InputLabelProps={{
+                  className: "readOnly",
+                }}
+              />
             </div>
             {/* ------------- Coeficiente por m² ------------- */}
             <div className="col-lg-2 col-sm-2 mt-16">
@@ -506,7 +518,7 @@ const ReadonlySystem: React.FC<ReadonlySystemProps> = ({ data }) => {
               />
             </div>
             {/* ------------- Info malla parcial seleccionada ------------- */}
-            {partialMeshUnityPriceVisible && showParcialMeshInputs && (
+            {systemParcialMesh && (
               <div className="col-lg-3 col-sm-4 mt-16">
                 <div className="material-data-container">
                   <div className="data-div ml-2">
@@ -532,7 +544,7 @@ const ReadonlySystem: React.FC<ReadonlySystemProps> = ({ data }) => {
         )}
       </div>
       {/* ------------- descripción coef malla parcial ------------- */}
-      {showParcialMeshInputs && (
+      {systemParcialMesh && (
         <div className="row mt-3">
           <div className="col-lg-12 col-sm-12">
             <CustomTextField
@@ -543,34 +555,44 @@ const ReadonlySystem: React.FC<ReadonlySystemProps> = ({ data }) => {
               label="Descripción coef. m²"
               variant="outlined"
               fullWidth
+              className="readOnly"
+              InputProps={{
+                readOnly: true,
+              }}
             />
           </div>
         </div>
       )}
-      <CustomDivider
-        hasButtons
-        addButtonText="Agregar"
-        deleteButtonText="Eliminar"
-        // addButtonHandleEvent={handleAddMaterial}
-        // deleteButtonHandleEvent={handleDeleteMaterial}
-        text="Otros complementos"
-      />
+      <CustomDivider text="Otros complementos" />
       {Array.from({ length: materialCount }).map((_, index) => (
         <div key={index}>
           <div className="row mt-3">
             <div className="col-lg-6 col-sm-6">
               {/* ------------- Materiales (otros complementos) ------------- */}
-              {/* <CustomSelectField
+              {/* <CustomTextField
                 name={`systemOthersPluginsMaterials${index}`}
                 control={control}
                 rules={{ required: "Material requerido." }}
                 label={`Material ${index + 1}`}
                 error={errors[`systemOthersPluginsMaterials${index}`]}
-                options={materialsSelect}
+                // options={materialsSelect}
                 // onSelectOption={(value) =>
                 //   handlePluginsMaterial(value, index, "select")
-                // }
-              /> */}
+                // } */}
+              <TextField
+                name={`systemOthersPluginsMaterials${index}`}
+                size="small"
+                className="readOnly"
+                label={`Material ${index + 1}`}
+                variant="outlined"
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+                InputLabelProps={{
+                  className: "readOnly",
+                }}
+              />
             </div>
             {/* ------------- Coeficiente por m² (otros complementos) ------------- */}
             <div className="col-lg-2 col-sm-2">
@@ -581,12 +603,10 @@ const ReadonlySystem: React.FC<ReadonlySystemProps> = ({ data }) => {
                 variant="outlined"
                 fullWidth
                 type="number"
-                rules={{ required: "Coeficiente requerido." }}
-                error={errors[`systemOthersPluginsMaterialCoefficient${index}`]}
-                helperText={
-                  errors[`systemOthersPluginsMaterialCoefficient${index}`]
-                    ?.message
-                }
+                className="readOnly"
+                InputProps={{
+                  readOnly: true,
+                }}
               />
             </div>
             <div className="col-lg-3 col-sm-4">
@@ -671,13 +691,27 @@ const ReadonlySystem: React.FC<ReadonlySystemProps> = ({ data }) => {
       {/* ------------- Si | No | N/E ------------- */}
       <div className="row mt-3">
         <div className="col-lg-3 col-sm-3">
-          <CustomSelectField
+          {/* <CustomSelectField
             name="materialAreaRestrictions"
             control={control}
             rules={{ required: "Seleccione una opción." }}
             label="Si / No / N/E"
             error={errors.materialAreaRestrictions}
             options={SI_NO_NE}
+          /> */}
+          <TextField
+            value={restrictions}
+            size="small"
+            className="readOnly"
+            label="Si / No / N/E"
+            variant="outlined"
+            fullWidth
+            InputProps={{
+              readOnly: true,
+            }}
+            InputLabelProps={{
+              className: "readOnly",
+            }}
           />
         </div>
         {/* ------------- Campo restriction ------------- */}
@@ -715,6 +749,9 @@ const ReadonlySystem: React.FC<ReadonlySystemProps> = ({ data }) => {
           />
         </div>
       </div>
+      {/* ------------- Comentarios sobre el sistema ------------- */}
+      <CustomDivider text="Comentarios" />
+      <ListSystemComments id={formData?.id} />
       {/* ------------- Botones formulario ------------- */}
       <div className="card-footer text-body-secondary align-right">
         <Button onClick={handleReturn} variant="contained">

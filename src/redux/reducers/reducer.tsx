@@ -39,6 +39,16 @@ const rootReducer = (state = initialState, action: any) => {
         ...state,
         systems: state.systems.filter((t: any) => t.id !== action.payload),
       };
+    case "SET_COMMENTS":
+      return { ...state, comments: action.payload };
+    case "SAVE_COMMENTS":
+      return { ...state, comments: [...state.comments, action.payload] };
+    case "DELETE_COMMENT":
+      return {
+        ...state,
+        comments: state.comments.filter((t: any) => t.id !== action.payload),
+      };
+
     case "SET_OPTIMAL_STANDARD":
       // OS = Optimal Standard
       // obtengo el sistema recibido

@@ -51,6 +51,8 @@ import {
   getUnitPriceBaseMaterialSystem,
   truncateDecimals,
 } from "../../../utils/mathUtils";
+import ListSystemComments from "../listSystemComments/listSystemComments";
+import { useDispatch } from "react-redux";
 
 import { initMaterialObject } from "../../../utils/initValueUtils";
 
@@ -123,6 +125,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     useState<BaseMaterial>(initMaterialObject);
 
   const navigator = useNavigate();
+  const dispatch = useDispatch();
 
   const handleOpenToast = (msg: any) => {
     setToastMsg(msg);
@@ -306,6 +309,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
           pluginMaterialC++;
         }
       });
+      dispatch({ type: "SET_COMMENTS", payload: data.comments });
     }
   }, [setValue, data]);
 
@@ -1121,6 +1125,9 @@ export const SystemForm: React.FC<SystemFormProps> = ({
           />
         </div>
       </div>
+      {/* ------------- Comentarios sobre el sistema ------------- */}
+      {isUpdateForm && <CustomDivider text="Comentarios" />}
+      {isUpdateForm && <ListSystemComments id={data?.id} />}
       {/* ------------- Botones formulario ------------- */}
       <div className="card-footer text-body-secondary align-right">
         <Button onClick={handleCancel} variant="text">

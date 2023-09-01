@@ -30,7 +30,7 @@ const CustomModal: React.FC<ModalProps> = ({
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>{description}</DialogContentText>
-        <div className="m-3">{children}</div>
+        <div className="m-3 d-flex">{children}</div>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="primary">

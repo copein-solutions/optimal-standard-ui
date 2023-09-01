@@ -6,16 +6,19 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  TextField,
   Tooltip,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import StarsIcon from "@mui/icons-material/Stars";
+import CommentIcon from "@mui/icons-material/Comment";
 import { useNavigate } from "react-router-dom";
 import "./Grid.css";
 import CustomModal from "../modal/customModal";
 import { useState } from "react";
 import {
+  createSystemComment,
   deleteApplicationArea,
   deleteMaterial,
   deleteSystem,
@@ -25,12 +28,12 @@ import { useDispatch, useSelector } from "react-redux";
 import Toast, { ToastType } from "../toast/toast";
 
 import {
-  DataGrid,
   GridColDef,
-  GridToolbar,
   GridColumnGroupingModel,
   esES,
   GridCellParams,
+  DataGrid,
+  GridToolbar,
 } from "@mui/x-data-grid";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -62,6 +65,10 @@ type GridProps = {
   hasDelete?: boolean;
   /** Si es true, se renderizará el botón para categorizar el sistema. */
   hasCategory?: boolean;
+  /** Si es true, se renderizará el botón de comentar elemento. */
+  hasComment?: boolean;
+  /** Si es true, se renderizará el botón de visualizar comentarios del elemento. */
+  hasViewComment?: boolean;
   /** String que indica la url a la cual redireccionará el botón de edit. */
   navigateTo?: string;
 };
@@ -72,6 +79,8 @@ export const GridCustom: React.FC<GridProps> = ({
   hasEdit,
   hasDelete,
   hasCategory,
+  hasComment,
+  hasViewComment,
   navigateTo,
   columnGroupingModel,
 }) => {
@@ -79,8 +88,11 @@ export const GridCustom: React.FC<GridProps> = ({
   const navigator = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
   const [modalWithChildrenOpen, setModalWithChildrenOpen] = useState(false);
+  const [commentModalOpen, setCommentModalOpen] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState<number | null>(null);
   const [systemItemId, setSystemItemId] = useState<number | null>(null);
+  const [commentItemId, setCommentItemId] = useState<number | null>(null);
+  const [commentValue, setCommentValue] = useState("");
   const [applicationAreaName, setApplicationAreaName] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
@@ -106,7 +118,7 @@ export const GridCustom: React.FC<GridProps> = ({
   function callDispatch(type: string, response: any) {
     if (response.status !== 200) {
       handleOpenToast(
-        "No se puede eliminar el elemento ya que forma parte de un sistema",
+        "No se puede eliminar el elemento",
         "error"
       );
     } else {
@@ -133,6 +145,57 @@ export const GridCustom: React.FC<GridProps> = ({
     </Tooltip>
   );
 
+  const onComment = async () => {
+    const data = {
+      comment: commentValue,
+    };
+    if (commentItemId) {
+      let response: any = await createSystemComment(commentItemId, data);
+      if (response.status !== 200) {
+        handleOpenToast("Algo salió mal al enviar tu comentario.", "error");
+      } else {
+        handleOpenToast("Comentario registrado con éxito.", "success");
+      }
+    }
+    setCommentValue("");
+  };
+
+  const commentButton = (id: number) => (
+    <Tooltip title="Dejar un comentario" placement="top">
+      <Button
+        sx={{
+          borderRadius: "50%",
+          height: "40px",
+          width: "40px",
+          minWidth: 0,
+          marginRight: "20px",
+        }}
+        color="success"
+        onClick={() => openCommentModal(id)}
+      >
+        <CommentIcon />
+      </Button>
+    </Tooltip>
+  );
+
+  const viewCommentButton = (id: number) => {
+    <Tooltip title="Ver comentarios" placement="top">
+      <Button
+        sx={{
+          borderRadius: "50%",
+          height: "40px",
+          width: "40px",
+          minWidth: 0,
+          marginRight: "20px",
+        }}
+        color="info"
+        onClick={() => navigator(`/system/${id}/comments`)}
+      >
+        <CommentIcon />
+      </Button>
+    </Tooltip>;
+  };
+
   const onEdit = (id: number) => {
     navigator(`/${navigateTo}/${id}/update`);
   };
@@ -145,6 +208,16 @@ export const GridCustom: React.FC<GridProps> = ({
   const closeDeleteModal = () => {
     setDeleteItemId(null);
     setModalOpen(false);
+  };
+
+  const openCommentModal = (id: number) => {
+    setCommentItemId(id);
+    setCommentModalOpen(true);
+  };
+
+  const closeCommentModal = () => {
+    setCommentItemId(null);
+    setCommentModalOpen(false);
   };
 
   const handleOpenToast = (msg: string, type: ToastType) => {
@@ -208,13 +281,12 @@ export const GridCustom: React.FC<GridProps> = ({
   const handleConfirmCategorization = async () => {
     setModalWithChildrenOpen(false);
     const type = { type: selectedOption };
-    console.log(type);
 
     if (systemItemId) {
       const response: any = await setSystemCategory(systemItemId, type);
       if (response.status !== 200) {
         handleOpenToast(
-          "Algo salio mal al definir el estándar óptimo.",
+          "Algo salió mal al definir el estándar óptimo.",
           "error"
         );
       } else {
@@ -258,19 +330,40 @@ export const GridCustom: React.FC<GridProps> = ({
     </FormControl>
   );
 
+  const handleCommentChanged = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    setCommentValue(event.target.value);
+  };
+
+  const modalCommentChildren = (
+    <div style={{ height: "150px", width: "600px" }}>
+      <FormControl fullWidth size="small">
+        <TextField
+          name="Comentario"
+          value={commentValue}
+          onChange={handleCommentChanged}
+          minRows={5}
+          multiline
+        ></TextField>
+      </FormControl>
+    </div>
+  );
+
   const formatRows: RowData[] = [];
   body?.forEach((item, index) => {
     const rowData: RowData = { id: index + 1, actions: <></> };
     header?.forEach((col) => {
       rowData[col.value] = item[col.value];
     });
-
-    if (hasEdit || hasDelete) {
+    if (hasEdit || hasDelete || hasComment || hasCategory || hasViewComment) {
       rowData.actions = (
         <>
           {hasEdit && <>{editButton(item.id)}</>}
           {hasDelete && <>{deleteButton(item.id)}</>}
           {hasCategory && <>{categoryButton(item)}</>}
+          {hasComment && <>{commentButton(item.id)}</>}
+          {hasViewComment && <>{viewCommentButton(item.id)}</>}
         </>
       );
     }
@@ -308,7 +401,7 @@ export const GridCustom: React.FC<GridProps> = ({
       description: col.description,
     })) || [];
 
-  if (hasEdit || hasDelete) {
+  if (hasEdit || hasDelete || hasComment || hasCategory || hasViewComment) {
     columns.push({
       field: "actions",
       headerName: "",
@@ -377,6 +470,18 @@ export const GridCustom: React.FC<GridProps> = ({
           onConfirm={() => {
             handleConfirmCategorization();
             closeCategoryModal();
+          }}
+        />
+      )}
+      {commentModalOpen && (
+        <CustomModal
+          open={commentModalOpen}
+          onClose={closeCommentModal}
+          title="Comentar"
+          children={modalCommentChildren}
+          onConfirm={() => {
+            onComment();
+            closeCommentModal();
           }}
         />
       )}

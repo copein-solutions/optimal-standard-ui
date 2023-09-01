@@ -3,8 +3,7 @@ const initialState = {
 	materials: [],
 	applicationAreas: [],
 	systems: [],
-	// optimalStandardSystems: [],
-	// alternativeOptimalStandardSystems: [],
+	comments: [],
 }
 
 export default initialState;
