@@ -4,16 +4,12 @@ import { Link } from "react-router-dom";
 import {
   Box,
   Button,
-  Divider,
   Drawer,
-  FormControl,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  TextField,
-  Typography,
 } from "@mui/material";
 import {
   ADMIN_ROL,
@@ -27,11 +23,14 @@ import {
 import CustomModal from "../modal/customModal";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import ModalChildren from "./modalVariablesChildren";
+import Toast, { ToastType } from "../../components/toast/toast";
 import "./Menu.css";
+
 import {
   getLaborCost,
   getQuotationDollar,
   saveDollarRate,
+  saveLaborCost,
 } from "../../services/ApiService";
 
 type MenuProps = {
@@ -40,6 +39,16 @@ type MenuProps = {
 };
 
 export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
+  const [showToast, setShowToast] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+
+  const [toastType, setToastType] = useState<ToastType>("success");
+  const [toastMsg, setToastMsg] = useState("");
+
+  const handleCloseToast = () => {
+    setShowToast(false);
+  };
+
   let menuOptions = [
     {
       name: "Sistemas",
@@ -78,8 +87,6 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
       }
     );
   }
-
-  const [openModal, setOpenModal] = useState(false);
 
   const toggleDrawer =
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -151,6 +158,7 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
     setOpenModal(false);
     setLaborCostValue("");
     setDollarRateValue("");
+    // setToastMsg("");
   };
 
   const handleDollarRate = (
@@ -168,26 +176,41 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
   const handleDollarRateSubmit = async () => {
     console.log(dollarRateValue);
 
-    const response = (await saveDollarRate(dollarRateValue)) as any;
+    const response = (await saveDollarRate({ value: dollarRateValue })) as any;
     if (response.status !== 200) {
-      alert("Error!!!!!!!!!!!!!");
+      setToastMsg("Error al guardar la cotización del dólar");
+      setToastType("error");
+      setShowToast(true);
     } else {
-      alert("éxito pa");
+      setToastMsg("Cotización actualizada con éxito");
+      setToastType("success");
+      setShowToast(true);
     }
   };
 
-  const handleLaborCostSubmit = () => {
+  const handleLaborCostSubmit = async () => {
     console.log(laborCostValue);
+    const response = (await saveLaborCost({ value: laborCostValue })) as any;
+    if (response.status !== 200) {
+      setToastMsg("Error al guardar el costo de mano de obra");
+      setToastType("error");
+      setShowToast(true);
+    } else {
+      setToastMsg("Valor de mano de obra actualizada con éxito");
+      setToastType("success");
+      setShowToast(true);
+    }
   };
 
   const modalChildren = (
     <ModalChildren
-      dollarRateTxt={`Cotización actual del dólar: ${dollarRateDataBase}`}
-      laborCostTxt={`Valor actual de mano de obra: ${laborCostDataBase}`}
+      // TODO: ver si ponemos alguna descripción de que pasará cuando se modifiquen estas variables
+      // dollarRateTxt={}
+      // laborCostTxt={}
       handleDollarRate={handleDollarRate}
       handleLaborCost={handleLaborCost}
-      dollarRateValue={dollarRateValue}
-      laborCostValue={laborCostValue}
+      dollarRateValue={dollarRateDataBase}
+      laborCostValue={laborCostDataBase}
       handleDollarRateSubmit={handleDollarRateSubmit}
       handleLaborCostSubmit={handleLaborCostSubmit}
     />
@@ -202,11 +225,16 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
         <CustomModal
           open={openModal}
           onClose={onCloseModal}
-          title="Definir variables"
+          title="Actualizar variables"
           children={modalChildren}
         />
       )}
-      ;
+      <Toast
+        type={toastType}
+        message={toastMsg}
+        open={showToast}
+        onClose={handleCloseToast}
+      />
     </React.Fragment>
   );
 };

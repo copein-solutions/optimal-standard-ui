@@ -8,8 +8,8 @@ type ModalChildrenProps = {
   laborCostValue: string;
   handleDollarRateSubmit: () => void;
   handleLaborCostSubmit: () => void;
-  dollarRateTxt?: string
-  laborCostTxt?: string
+  dollarRateTxt?: string;
+  laborCostTxt?: string;
 };
 
 const ModalChildren: React.FC<ModalChildrenProps> = ({
@@ -20,21 +20,19 @@ const ModalChildren: React.FC<ModalChildrenProps> = ({
   handleDollarRateSubmit,
   handleLaborCostSubmit,
   dollarRateTxt: dollarText,
-  laborCostTxt: laborCost
+  laborCostTxt: laborCost,
 }) => {
   return (
     <div className="modal-wrapper">
       <div className="mb-5 modal-inputs">
-        <Typography className="mb-4">
-          {dollarText}
-        </Typography>
+        <Typography className="mb-4">{dollarText}</Typography>
         <div>
           <TextField
             size="small"
             label="Cotización dólar"
             name="dollarRate"
             type="number"
-            value={dollarRateValue}
+            defaultValue={dollarRateValue}
             onChange={handleDollarRate}
           />
           <Button className="modal-buttons" onClick={handleDollarRateSubmit}>
@@ -44,16 +42,14 @@ const ModalChildren: React.FC<ModalChildrenProps> = ({
       </div>
       <Divider sx={{ width: "100%" }} />
       <div className="mt-5 modal-inputs">
-        <Typography className="mb-4">
-          {laborCost}
-        </Typography>
+        <Typography className="mb-4">{laborCost}</Typography>
         <div>
           <TextField
             size="small"
             label="Costo mano de obra"
             name="laborCost"
             type="number"
-            value={laborCostValue}
+            defaultValue={laborCostValue}
             onChange={handleLaborCost}
           />
           <Button className="modal-buttons" onClick={handleLaborCostSubmit}>

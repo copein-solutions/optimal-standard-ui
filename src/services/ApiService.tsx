@@ -179,11 +179,11 @@ export const saveDollarRate = async (data: any): Promise<ResponseApi> => {
 };
 
 export const getLaborCost = async (): Promise<ResponseApi> => {
-  return get("/admin/global_variable/labor_cost");
+  return get("/user/global_variable/labor_cost");
 };
 
 export const saveLaborCost = async (data: any): Promise<ResponseApi> => {
-  return post("/admin/global_variable/quotation_dollar", data);
+  return post("/admin/global_variable/labor_cost", data);
 };
 
 //#endregion
