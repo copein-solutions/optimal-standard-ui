@@ -169,6 +169,7 @@ const ListSystem = () => {
   return (
     <MainContainer cardTitle="Sistema">
       <div>
+        {colorExplanation}
         {userRole === ADMIN_ROL && (
           <Button variant="text" color="success" onClick={handleAddSystem}>
             Agregar sistema
