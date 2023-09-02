@@ -28,6 +28,7 @@ const ModalChildren: React.FC<ModalChildrenProps> = ({
         <Typography className="mb-4">{dollarText}</Typography>
         <div>
           <TextField
+            sx={{ width: "8rem" }}
             size="small"
             label="Cotización dólar"
             name="dollarRate"
@@ -45,8 +46,9 @@ const ModalChildren: React.FC<ModalChildrenProps> = ({
         <Typography className="mb-4">{laborCost}</Typography>
         <div>
           <TextField
+            sx={{ width: "8rem" }}
             size="small"
-            label="Costo mano de obra"
+            label="Mano de obra"
             name="laborCost"
             type="number"
             defaultValue={laborCostValue}
