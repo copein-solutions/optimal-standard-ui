@@ -62,7 +62,7 @@ export const deleteMaterial = async (
 
 export const getMaterialFileById = (id: number) => {
   return `${API_BASE_URL}/public/file/load?file_id=${id}`;
-}
+};
 
 //#endregion
 
@@ -129,7 +129,9 @@ export const createSystemComment = async (
   return post(`/user/construction_system/${id}/comment`, data);
 };
 
-export const getSystemCommentAdmin = async (id: number): Promise<ResponseApi> => {
+export const getSystemCommentAdmin = async (
+  id: number
+): Promise<ResponseApi> => {
   return get(`/admin/construction_system/${id}/comment`);
 };
 
@@ -167,12 +169,24 @@ export const setSystemCategory = async (
 //#endregion
 
 //#region GLOBAL VARIABLES
+
 export const getQuotationDollar = async (): Promise<ResponseApi> => {
   return get("/user/global_variable/quotation_dollar");
 };
 
-//#endregion
+export const saveDollarRate = async (data: any): Promise<ResponseApi> => {
+  return post("/admin/global_variable/quotation_dollar", data);
+};
 
+export const getLaborCost = async (): Promise<ResponseApi> => {
+  return get("/admin/global_variable/labor_cost");
+};
+
+export const saveLaborCost = async (data: any): Promise<ResponseApi> => {
+  return post("/admin/global_variable/quotation_dollar", data);
+};
+
+//#endregion
 
 const post = async (url: string, data: any): Promise<ResponseApi> => {
   try {
