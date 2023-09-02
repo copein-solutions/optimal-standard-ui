@@ -7,7 +7,7 @@ import { GridCustom } from "../../../components/grid/Grid";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../redux/reducers/reducer";
 import { useNavigate } from "react-router-dom";
-import { APPLICATION_AREA_CREATE } from "../../../utils/constants";
+import { ADMIN_ROL, APPLICATION_AREA_CREATE } from "../../../utils/constants";
 
 const ListApplicationArea = () => {
   const applicationAreas = useSelector(
@@ -25,9 +25,9 @@ const ListApplicationArea = () => {
   useEffect(() => {
     async function fetchData() {
       const response = await getApplicationArea();
-      if(response && response.data !== "") {
+      if (response && response.data !== "") {
         dispatch({ type: "SET_APPLICATION_AREA", payload: response.data });
-      }      
+      }
     }
     fetchData();
   }, [dispatch]);
@@ -36,17 +36,20 @@ const ListApplicationArea = () => {
     navigator(APPLICATION_AREA_CREATE);
   };
 
+  const userRole = localStorage.getItem("userRole");
   return (
     <MainContainer cardTitle="Campo de aplicación">
       <div>
-        <Button variant="text" color="success" onClick={handleOpenForm}>
-          Agregar campo de aplicación
-        </Button>
+        {userRole === ADMIN_ROL && (
+          <Button variant="text" color="success" onClick={handleOpenForm}>
+            Agregar campo de aplicación
+          </Button>
+        )}
         <GridCustom
           header={header}
           body={applicationAreas}
-          hasEdit
-          hasDelete
+          hasEdit={userRole === ADMIN_ROL}
+          hasDelete={userRole === ADMIN_ROL}
           navigateTo="application_area"
         />
       </div>

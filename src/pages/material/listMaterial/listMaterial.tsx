@@ -7,7 +7,7 @@ import { GridCustom } from "../../../components/grid/Grid";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../redux/reducers/reducer";
 import { useNavigate } from "react-router-dom";
-import { MATERIAL_CREATE } from "../../../utils/constants";
+import { ADMIN_ROL, MATERIAL_CREATE } from "../../../utils/constants";
 import { format, parseISO } from "date-fns";
 import { getUnitPrice } from "../../../utils/mathUtils";
 
@@ -46,7 +46,7 @@ const ListMaterial = () => {
               material.presentationPrice,
               material.presentationQuantity,
               material.presentationUnit,
-              true,
+              true
             );
 
             // Convierte la fecha a nuestra horaria.
@@ -66,16 +66,20 @@ const ListMaterial = () => {
     navigator(MATERIAL_CREATE);
   };
 
+  const userRole = localStorage.getItem("userRole");
+
   return (
     <MainContainer cardTitle="Listado de material">
-      <Button variant="text" color="success" onClick={handleOpenForm}>
-        Agregar material
-      </Button>
+      {userRole === ADMIN_ROL && (
+        <Button variant="text" color="success" onClick={handleOpenForm}>
+          Agregar material
+        </Button>
+      )}
       <GridCustom
         header={header}
         body={materials}
-        hasEdit
-        hasDelete
+        hasEdit={userRole === ADMIN_ROL}
+        hasDelete={userRole === ADMIN_ROL}
         navigateTo="material"
       />
     </MainContainer>

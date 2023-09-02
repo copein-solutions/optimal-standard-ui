@@ -63,6 +63,19 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
         path: APPLICATION_AREA_CREATE,
       }
     );
+  } else {
+    menuOptions.push(
+      {
+        name: "Materiales",
+        icon: <ArrowRightIcon />,
+        path: MATERIAL_LIST,
+      },
+      {
+        name: "Campos de aplicación",
+        icon: <ArrowRightIcon />,
+        path: APPLICATION_AREA_LIST,
+      },
+    );
   }
 
   const toggleDrawer =
