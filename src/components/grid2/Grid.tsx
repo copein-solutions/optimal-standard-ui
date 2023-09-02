@@ -117,10 +117,7 @@ export const GridCustom: React.FC<GridProps> = ({
 
   function callDispatch(type: string, response: any) {
     if (response.status !== 200) {
-      handleOpenToast(
-        "No se puede eliminar el elemento",
-        "error"
-      );
+      handleOpenToast("No se puede eliminar el elemento", "error");
     } else {
       handleOpenToast("Elemento eliminado con éxito", "success");
       dispatch({ type: type, payload: deleteItemId });
@@ -322,10 +319,11 @@ export const GridCustom: React.FC<GridProps> = ({
         value={selectedOption}
         onChange={handleOptionChange}
       >
-        <MenuItem value="OPTIMAL_STANDARD">Estándar Óptimo</MenuItem>
+        <MenuItem value="OPTIMAL_STANDARD">Estándar óptimo</MenuItem>
         <MenuItem value="ALTERNATIVE_OPTIMAL_STANDARD">
-          Estándar Óptimo Alternativo
+          Estándar óptimo alternativo
         </MenuItem>
+        <MenuItem value="REMOVE">Quitar categorización</MenuItem>
       </Select>
     </FormControl>
   );
