@@ -10,11 +10,11 @@ import {
 
 interface ModalProps {
   open: boolean;
-  onClose: () => void;
   title: string;
   description?: string;
-  onConfirm?: () => void;
   children?: ReactNode;
+  onClose?: () => void;
+  onConfirm?: () => void;
 }
 
 const CustomModal: React.FC<ModalProps> = ({
@@ -33,9 +33,11 @@ const CustomModal: React.FC<ModalProps> = ({
         <div className="m-3 d-flex">{children}</div>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="primary">
-          Cancelar
-        </Button>
+        {onClose && (
+          <Button onClick={onClose} color="primary">
+            Cancelar
+          </Button>
+        )}
         {onConfirm && (
           <Button onClick={onConfirm} variant="contained" color="primary">
             Aceptar

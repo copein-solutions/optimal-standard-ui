@@ -149,8 +149,6 @@ const ReadonlySystem = () => {
   // Pre cargo formulario en caso de ser update
   useEffect(() => {
     if (formData) {
-      console.log("formData", formData);
-
       setApplicationAreaName(String(formData.applicationArea.name));
       const material = `${formData?.materials[0].material.product} - ${formData?.materials[0].material.brand}`;
       setMaterial(material);

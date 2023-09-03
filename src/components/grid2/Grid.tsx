@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Button,
   FormControl,
@@ -100,6 +100,7 @@ export const GridCustom: React.FC<GridProps> = ({
   const [selectedOption, setSelectedOption] = useState("");
 
   const systems = useSelector((state: RootState) => state.systems);
+  const state = useSelector((state: RootState) => state);
 
   const onDelete = async () => {
     let response: any;
@@ -419,7 +420,6 @@ export const GridCustom: React.FC<GridProps> = ({
   }
 
   const onCellClick = (params: GridCellParams) => {
-    console.log(params.row.id);
     const systemId = params.row.id;
     navigator(`/system/${systemId}/view`);
   };
