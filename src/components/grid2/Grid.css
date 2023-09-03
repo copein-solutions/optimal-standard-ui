@@ -9,21 +9,17 @@
 }
 
 .optimal-standard-color {
-  background-color: rgb(250, 135, 135);
+  background-color: rgb(26 145 2 / 50%);
 }
 
 .optimal-standard-color:hover {
-  background-color: rgb(253, 83, 83) !important;
+  background-color: rgb(26 145 2 / 70%) !important;
 }
 
 .alternative-optimal-standard-color {
-  background-color: rgb(247, 165, 73);
+  background-color: rgb(255 149 0 / 60%);
 }
 
 .alternative-optimal-standard-color:hover {
-  background-color: rgb(252, 143, 19) !important; 
-}
-
-.null {
-  background-color: blue;
+  background-color: rgb(247, 165, 70) !important;
 }
