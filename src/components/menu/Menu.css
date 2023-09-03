@@ -1,0 +1,37 @@
+.menu-wrapper {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  padding-top: 60px;
+  width: 300px;
+}
+
+.global-variables-button {
+  color: black;
+  display: flex;
+  top: 80%;
+}
+
+.menu-icon {
+  margin-right: 10px;
+  min-width: none;
+}
+
+.modal-wrapper {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 35rem;
+}
+
+.modal-inputs {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-buttons {
+  color: #01941e !important;
+  margin-left: 20px !important;
+}
