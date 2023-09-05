@@ -270,10 +270,6 @@ const ReadonlySystem = () => {
   // Evento de botón agregar - otros complementos
   const handleAddMaterial = () => {
     setMaterialCount((prevCount) => prevCount + 1);
-
-    if (materialCount === 0) setSelectedPluginMaterialPricePerCoefficient0("0");
-    if (materialCount === 1) setSelectedPluginMaterialPricePerCoefficient1("0");
-    if (materialCount === 2) setSelectedPluginMaterialPricePerCoefficient2("0");
   };
 
   function renderPluginMaterialDetails(index: number): ReactNode {
