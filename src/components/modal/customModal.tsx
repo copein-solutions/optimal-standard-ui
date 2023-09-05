@@ -13,7 +13,7 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   description?: string;
-  onConfirm: () => void;
+  onConfirm?: () => void;
   children?: ReactNode;
 }
 
@@ -36,9 +36,11 @@ const CustomModal: React.FC<ModalProps> = ({
         <Button onClick={onClose} color="primary">
           Cancelar
         </Button>
-        <Button onClick={onConfirm} variant="contained" color="primary">
-          Aceptar
-        </Button>
+        {onConfirm && (
+          <Button onClick={onConfirm} variant="contained" color="primary">
+            Aceptar
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );

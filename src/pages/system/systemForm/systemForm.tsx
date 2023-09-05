@@ -432,7 +432,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   }
 
   // Obtengo precio unitario malla 100 %
-  function handleTotalMesh(value: number, origin: string) {
+  function handleTotalMesh(value: number, origin: string) {    
     setTotalMeshUnityPriceVisible(true);
     const selectedMesh = materialsTypeMesh.find((item) => item.id === value);
     if (selectedMesh) {
@@ -525,15 +525,28 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   // Muestro inputs de malla 100% si corresponde
   const watchedMeshTotalPercent = watch("systemMeshTotalPercent");
   useEffect(() => {
-    const showMeshTotalPercentInput =
-      watchedMeshTotalPercent === "si" ? true : false;
-    setShowMeshTotalPercentInput(showMeshTotalPercentInput);
+      if(watchedMeshTotalPercent === "si"){
+        setShowMeshTotalPercentInput(true);
+      } else {
+        setShowMeshTotalPercentInput(false);
+        setTotalMeshUnityPriceVisible(false);
+        setValue("systemMeshTotalPercentName","");
+        setSelectedTotalMeshPrice("");
+      }
   }, [watchedMeshTotalPercent]);
 
   // Muestro inputs de malla parcial si corresponde
   const watchedParcialMesh = watch("systemParcialMesh");
   useEffect(() => {
-    setShowParcialMeshInputs(watchedParcialMesh === "si" ? true : false);
+    if(watchedParcialMesh === "si") {
+      setShowParcialMeshInputs(true);
+    } else {
+      setShowParcialMeshInputs(false);
+      setPartialMeshUnityPriceVisible(false);      
+      setValue("systemParcialMeshName","");
+      setValue("systemParcialMeshCoefficient","");
+      setSelectedPartialMeshPricePerCoefficient("");
+    }
   }, [watchedParcialMesh]);
 
   // Muestro input de restriction si corresponde

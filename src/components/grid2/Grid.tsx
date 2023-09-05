@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import StarsIcon from "@mui/icons-material/Stars";
+import VerifiedIcon from "@mui/icons-material/Verified";
 import CommentIcon from "@mui/icons-material/Comment";
 import { useNavigate } from "react-router-dom";
 import "./Grid.css";
@@ -117,10 +117,7 @@ export const GridCustom: React.FC<GridProps> = ({
 
   function callDispatch(type: string, response: any) {
     if (response.status !== 200) {
-      handleOpenToast(
-        "No se puede eliminar el elemento",
-        "error"
-      );
+      handleOpenToast("No se puede eliminar el elemento", "error");
     } else {
       handleOpenToast("Elemento eliminado con éxito", "success");
       dispatch({ type: type, payload: deleteItemId });
@@ -256,11 +253,12 @@ export const GridCustom: React.FC<GridProps> = ({
           height: "40px",
           width: "40px",
           minWidth: 0,
+          marginRight: "20px",
         }}
         color="success"
         onClick={() => openSetCategoryModal(system)}
       >
-        <StarsIcon fontSize="large" />
+        <VerifiedIcon fontSize="large" />
       </Button>
     </Tooltip>
   );
@@ -304,6 +302,10 @@ export const GridCustom: React.FC<GridProps> = ({
             "success"
           );
         }
+        if (selectedOption === "REMOVE") {
+          dispatch({ type: "SET_REMOVE", payload: systemItemId });
+          handleOpenToast("Se quitó la categorización del sistema.", "success");
+        }
       }
     }
     setSelectedOption("");
@@ -322,10 +324,11 @@ export const GridCustom: React.FC<GridProps> = ({
         value={selectedOption}
         onChange={handleOptionChange}
       >
-        <MenuItem value="OPTIMAL_STANDARD">Estándar Óptimo</MenuItem>
+        <MenuItem value="OPTIMAL_STANDARD">Estándar óptimo</MenuItem>
         <MenuItem value="ALTERNATIVE_OPTIMAL_STANDARD">
-          Estándar Óptimo Alternativo
+          Estándar óptimo alternativo
         </MenuItem>
+        <MenuItem value="REMOVE">Quitar categorización</MenuItem>
       </Select>
     </FormControl>
   );
@@ -359,9 +362,9 @@ export const GridCustom: React.FC<GridProps> = ({
     if (hasEdit || hasDelete || hasComment || hasCategory || hasViewComment) {
       rowData.actions = (
         <>
+          {hasCategory && <>{categoryButton(item)}</>}
           {hasEdit && <>{editButton(item.id)}</>}
           {hasDelete && <>{deleteButton(item.id)}</>}
-          {hasCategory && <>{categoryButton(item)}</>}
           {hasComment && <>{commentButton(item.id)}</>}
           {hasViewComment && <>{viewCommentButton(item.id)}</>}
         </>
@@ -390,6 +393,9 @@ export const GridCustom: React.FC<GridProps> = ({
     if (alternativeOtimalStandardIds.includes(params.row.id)) {
       return "alternative-optimal-standard-color";
     }
+    if (params.row.systemCategory === "REMOVE") {
+      return "default-grid-style";
+    }
     return "";
   };
 
@@ -416,8 +422,6 @@ export const GridCustom: React.FC<GridProps> = ({
     console.log(params.row.id);
     const systemId = params.row.id;
     navigator(`/system/${systemId}/view`);
-    // setToastMsg("Row clicked, not implemented.");
-    // setShowToast(true);
   };
 
   function SortedDescendingIcon() {
