@@ -98,3 +98,31 @@ export function calculatePricePerCoefficientParcialMesh(
 ): number {
   return truncateDecimals(coefficient * unitPrice, 2);
 }
+
+export function getTotalLaborCost(
+  baseMaterialLaborCost: number,
+  totalMeshLaborCost: number,
+  parcialMeshLaborCost: number,
+  pluginMaterialLaborCost0: number,
+  pluginMaterialLaborCost1: number,
+  pluginMaterialLaborCost2: number
+): number {
+  const params = [
+    baseMaterialLaborCost,
+    totalMeshLaborCost,
+    parcialMeshLaborCost,
+    pluginMaterialLaborCost0,
+    pluginMaterialLaborCost1,
+    pluginMaterialLaborCost2,
+  ];
+
+  const notNaNParams = params.filter((param) => !isNaN(param));
+
+  if (notNaNParams.length === 0) {
+    return 0;
+  }
+
+  const price = notNaNParams.reduce((total, param) => total + param, 0);
+  console.log(price);
+  return price;
+}

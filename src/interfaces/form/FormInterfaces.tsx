@@ -61,6 +61,9 @@ interface SystemFormInputs {
   cured: boolean | string | any;
   layers: string;
   totalConsumption: string;
+  baseMaterialPerformance: string;
+  totalMeshPerformance: string;
+  parcialMeshPerformance: string;
   supportConditions: string;
   baseConditions: string;
   materialAreaRestrictions: string;
