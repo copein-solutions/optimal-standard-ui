@@ -72,7 +72,7 @@ const ListSystemComments: React.FC<ListSystemCommentsProps> = ({ id }) => {
   };
 
   const colorExplanation = (
-    <div className="color-explanation">
+    <div className="color-explanation mb-3">
       <Typography>Pendiente</Typography>
       <div className="alternative-optimal-standard"></div>
     </div>
