@@ -85,7 +85,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   // MATERIAL BASE
   // const [baseMaterialUnitPrice, setBaseMaterialUnitPrice] = useState("");
   const [materialDataVisible, setMaterialDataVisible] = useState(false);
-  
+
   const [selectedBaseMaterialDetail, setSelectedBaseMaterialDetail] =
     useState<BaseMaterial>(initMaterialObject);
   // MALLA 100%
@@ -269,18 +269,14 @@ export const SystemForm: React.FC<SystemFormProps> = ({
           setValue("systemMeshTotalPercentId", m.id);
           setValue("systemMeshTotalPercentName", m.material.id);
           handleTotalMesh(Number(m.material.id), "isUpdate");
-          setSelectedTotalMeshPrice(
-            String(m.material.unitPrice)
-          );
+          setSelectedTotalMeshPrice(String(m.material.unitPrice));
         } else if (m.typeOfUse === "PARTIAL_MESH") {
           setValue("systemParcialMesh", "si");
           setValue("systemParcialMeshId", m.id);
           setValue("systemParcialMeshName", m.material.id);
           setValue("systemParcialMeshCoefficient", m.coefficient);
           setValue("systemPartialMeshDescription", m.materialDescription);
-          setSelectedPartialMeshPrice(
-            String(m.material.unitPrice)
-          );
+          setSelectedPartialMeshPrice(String(m.material.unitPrice));
           handlePartialMesh(m.material.id);
         } else if (m.typeOfUse === "PLUGIN_MATERIAL") {
           handleAddMaterial();
@@ -369,7 +365,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       minApplicableTemp: material.minApplicableTemp
         ? String(material.minApplicableTemp)
         : "-",
-    }
+    };
   };
 
   const setBaseMaterialDetail = (material: Material) => {
@@ -432,7 +428,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   }
 
   // Obtengo precio unitario malla 100 %
-  function handleTotalMesh(value: number, origin: string) {    
+  function handleTotalMesh(value: number, origin: string) {
     setTotalMeshUnityPriceVisible(true);
     const selectedMesh = materialsTypeMesh.find((item) => item.id === value);
     if (selectedMesh) {
@@ -525,26 +521,26 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   // Muestro inputs de malla 100% si corresponde
   const watchedMeshTotalPercent = watch("systemMeshTotalPercent");
   useEffect(() => {
-      if(watchedMeshTotalPercent === "si"){
-        setShowMeshTotalPercentInput(true);
-      } else {
-        setShowMeshTotalPercentInput(false);
-        setTotalMeshUnityPriceVisible(false);
-        setValue("systemMeshTotalPercentName","");
-        setSelectedTotalMeshPrice("");
-      }
+    if (watchedMeshTotalPercent === "si") {
+      setShowMeshTotalPercentInput(true);
+    } else {
+      setShowMeshTotalPercentInput(false);
+      setTotalMeshUnityPriceVisible(false);
+      setValue("systemMeshTotalPercentName", "");
+      setSelectedTotalMeshPrice("");
+    }
   }, [watchedMeshTotalPercent]);
 
   // Muestro inputs de malla parcial si corresponde
   const watchedParcialMesh = watch("systemParcialMesh");
   useEffect(() => {
-    if(watchedParcialMesh === "si") {
+    if (watchedParcialMesh === "si") {
       setShowParcialMeshInputs(true);
     } else {
       setShowParcialMeshInputs(false);
-      setPartialMeshUnityPriceVisible(false);      
-      setValue("systemParcialMeshName","");
-      setValue("systemParcialMeshCoefficient","");
+      setPartialMeshUnityPriceVisible(false);
+      setValue("systemParcialMeshName", "");
+      setValue("systemParcialMeshCoefficient", "");
       setSelectedPartialMeshPricePerCoefficient("");
     }
   }, [watchedParcialMesh]);
@@ -569,7 +565,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     );
 
     setSystemTotalPrice(price);
-  }
+  };
 
   // Cuando cambia un input implicado en el precio unitario del sistema,
   // vuelve a 0 el systemUnitPrice
@@ -580,7 +576,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     "systemOthersPluginsMaterialCoefficient1",
     "systemOthersPluginsMaterialCoefficient2",
   ]);
-  useEffect(() => {    
+  useEffect(() => {
     if (watchedFields) {
       calculateSystemTotalPrice();
     }
@@ -677,27 +673,26 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     setValue(`systemOthersPluginsMaterials${index}`, "");
     setValue(`systemOthersPluginsMaterialCoefficient${index}`, "");
     setValue(`systemOthersPluginsMaterialDescription${index}`, "");
-    setValue(`systemOthersPluginsMaterialCoefficientDescription${index}`,"");
-  }
+    setValue(`systemOthersPluginsMaterialCoefficientDescription${index}`, "");
+  };
 
   // Evento de botón eliminar - otros complementos
   const handleDeleteMaterial = () => {
     if (materialCount === 0) {
       handleOpenToast("No hay materiales para eliminar");
     } else {
-      
       if (materialCount === 1) {
         setSelectedPluginMaterialDetail1(initMaterialObject);
-        resetDynamicInputs(materialCount -1);
+        resetDynamicInputs(materialCount - 1);
       }
       if (materialCount === 2) {
         setSelectedPluginMaterialDetail2(initMaterialObject);
-        resetDynamicInputs(materialCount -1);
+        resetDynamicInputs(materialCount - 1);
       }
       if (materialCount === 3) {
         setSelectedPluginMaterialDetail3(initMaterialObject);
-        resetDynamicInputs(materialCount -1);
-      } 
+        resetDynamicInputs(materialCount - 1);
+      }
 
       setMaterialCount((prevCount) => Math.max(prevCount - 1, 0));
     }
@@ -806,6 +801,9 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             variant="outlined"
             fullWidth
             type="number"
+            inputProps={{
+              min: 0,
+            }}
             error={errors.totalConsumption}
             helperText={errors.totalConsumption?.message}
           />
@@ -820,6 +818,9 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             variant="outlined"
             fullWidth
             type="number"
+            inputProps={{
+              min: 0,
+            }}
             error={errors.layers}
             helperText={errors.layers?.message}
           />
@@ -931,6 +932,9 @@ export const SystemForm: React.FC<SystemFormProps> = ({
                 variant="outlined"
                 fullWidth
                 type="number"
+                inputProps={{
+                  min: 0,
+                }}
                 error={errors.systemParcialMeshCoefficient}
                 helperText={errors.systemParcialMeshCoefficient?.message}
               />
@@ -1011,6 +1015,9 @@ export const SystemForm: React.FC<SystemFormProps> = ({
                 variant="outlined"
                 fullWidth
                 type="number"
+                inputProps={{
+                  min: 0,
+                }}
                 rules={{ required: "Coeficiente requerido." }}
                 error={errors[`systemOthersPluginsMaterialCoefficient${index}`]}
                 helperText={
@@ -1119,6 +1126,9 @@ export const SystemForm: React.FC<SystemFormProps> = ({
               variant="outlined"
               fullWidth
               type="number"
+              inputProps={{
+                min: 0,
+              }}
               error={errors.materialAreaRestrictionValue}
               helperText={errors.materialAreaRestrictionValue?.message}
             />

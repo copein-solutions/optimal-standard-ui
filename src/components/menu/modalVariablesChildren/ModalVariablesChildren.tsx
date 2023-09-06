@@ -33,6 +33,9 @@ const ModalChildren: React.FC<ModalChildrenProps> = ({
             label="Cotización dólar"
             name="dollarRate"
             type="number"
+            inputProps={{
+              min: 0,
+            }}
             defaultValue={dollarRateValue}
             onChange={handleDollarRate}
           />
@@ -51,6 +54,9 @@ const ModalChildren: React.FC<ModalChildrenProps> = ({
             label="Mano de obra"
             name="laborCost"
             type="number"
+            inputProps={{
+              min: 0,
+            }}
             defaultValue={laborCostValue}
             onChange={handleLaborCost}
           />
