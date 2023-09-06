@@ -40,6 +40,7 @@ import {
 } from "../../../interfaces/form/FormInterfaces";
 import {
   calculatePricePerCoefficientParcialMesh,
+  formatMaterialLaborCost,
   getTotalLaborCost,
   getUnitPriceBaseMaterialSystem,
   truncateDecimals,
@@ -74,10 +75,11 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   const [showParcialMeshInputs, setShowParcialMeshInputs] = useState(false);
   const [showRestrictions, setShowRestrictions] = useState(false);
   const [materialCount, setMaterialCount] = useState(0);
+  const [baseMaterialTotalPrice, setBaseMaterialTotalPrice] = useState(0);
+  const [totalLaborCost, setTotalLaborCost] = useState(0);
   const [systemTotalPrice, setSystemTotalPrice] = useState(0);
-  const [systemTotalLaborCost, setSystemTotalLaborCost] = useState(0);
   // VARIABLES GLOBALES
-  const [laborCost, setLaborCost] = useState(false);
+  const [laborCost, setLaborCost] = useState("");
   // MATERIAL BASE
   const [materialDataVisible, setMaterialDataVisible] = useState(false);
   const [selectedBaseMaterialDetail, setSelectedBaseMaterialDetail] =
@@ -168,7 +170,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
 
   const processFormData = (data: SystemFormInputs) => {
     let constructionSystem: ConstructionSystem = {
-      totalPrice: systemTotalPrice,
+      totalPrice: baseMaterialTotalPrice,
       totalConsumption: data.totalConsumption,
       layers: data.layers,
       applicationMode: data.applicationMode,
@@ -252,7 +254,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       setValue("applicationMode", data.applicationMode);
       setValue("cured", data.cured ? "si" : "no");
       setValue("layers", data.layers);
-      setSystemTotalPrice(Number(data.totalPrice));
+      setBaseMaterialTotalPrice(Number(data.totalPrice));
       setValue("totalConsumption", data.totalConsumption);
       setValue("supportConditions", data.supportConditions);
       setValue("baseConditions", data.baseConditions);
@@ -358,7 +360,6 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       const laborCostResponse = await getLaborCost();
       if (laborCostResponse && laborCostResponse.data) {
         const laborCost = laborCostResponse.data;
-        console.log(laborCost);
         setLaborCost(laborCost);
       } else {
         handleOpenToast("No se puede recuperar el costo laboral del back");
@@ -472,7 +473,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
 
   function handlePluginsMaterial(value: number, index: number, origin: string) {
     setPluginMaterialDataVisible(true);
-    setSystemTotalPrice(0);
+    setBaseMaterialTotalPrice(0);
     if (isUpdateForm) {
       if (origin !== "select") {
         const typeOfUseMaterial = data?.materials.find(
@@ -582,7 +583,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       selectedPluginMaterialDetail3.unitPrice
     );
 
-    setSystemTotalPrice(price);
+    setBaseMaterialTotalPrice(price);
   };
 
   // Cuando cambia un input implicado en el precio unitario del sistema,
@@ -607,7 +608,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     const price = Number(baseMaterialPrice) * Number(totalConsumptionWatched);
     const stringPrice = String(truncateDecimals(price, 2));
     setBaseMaterialPrice(stringPrice);
-  }, [totalConsumptionWatched]);
+  }, [totalConsumptionWatched, selectedBaseMaterialDetail.unitPrice]);
 
   //#region CALCULO DE COSTO MANO DE OBRA
   //Costo mano de obra material base
@@ -625,56 +626,55 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   // Costo mano de obra malla 100%
   const totalMeshPerformanceWatched = watch("totalMeshPerformance");
   useEffect(() => {
-    const price = Number(laborCost) * Number(totalMeshPerformanceWatched);
-    const stringPrice = String(truncateDecimals(price, 2));
-    setSelectedTotalMeshLaborCost(stringPrice);
+    formatMaterialLaborCost(
+      laborCost,
+      totalMeshPerformanceWatched,
+      setSelectedTotalMeshLaborCost
+    );
   }, [totalMeshPerformanceWatched]);
 
   // Costo mano de obra malla parcial
-  const parcialMeshPerformanceWatched = watch("parcialMeshPerformance");
+  const partialMeshPerformanceWatched = watch("parcialMeshPerformance");
   useEffect(() => {
-    const price = Number(laborCost) * Number(parcialMeshPerformanceWatched);
-    const formattedPrice = isNaN(price)
-      ? "0"
-      : String(truncateDecimals(price, 2));
-    setSelectedParcialMeshLaborCost(formattedPrice);
-  }, [parcialMeshPerformanceWatched]);
+    formatMaterialLaborCost(
+      laborCost,
+      partialMeshPerformanceWatched,
+      setSelectedParcialMeshLaborCost
+    );
+  }, [partialMeshPerformanceWatched]);
 
   // Costo mano de obra otros complementos
   const systemOthersPluginsPerformanceWatched0 = watch(
     "systemOthersPluginsPerformance0"
   );
   useEffect(() => {
-    const price =
-      Number(laborCost) * Number(systemOthersPluginsPerformanceWatched0);
-    const formattedPrice = isNaN(price)
-      ? "0"
-      : String(truncateDecimals(price, 2));
-    setSelectedPluginMaterialLaborCost0(formattedPrice);
+    formatMaterialLaborCost(
+      laborCost,
+      systemOthersPluginsPerformanceWatched0,
+      setSelectedPluginMaterialLaborCost0
+    );
   }, [systemOthersPluginsPerformanceWatched0]);
 
   const systemOthersPluginsPerformanceWatched1 = watch(
     "systemOthersPluginsPerformance1"
   );
   useEffect(() => {
-    const price =
-      Number(laborCost) * Number(systemOthersPluginsPerformanceWatched1);
-    const formattedPrice = isNaN(price)
-      ? "0"
-      : String(truncateDecimals(price, 2));
-    setSelectedPluginMaterialLaborCost1(formattedPrice);
+    formatMaterialLaborCost(
+      laborCost,
+      systemOthersPluginsPerformanceWatched1,
+      setSelectedPluginMaterialLaborCost1
+    );
   }, [systemOthersPluginsPerformanceWatched1]);
 
   const systemOthersPluginsPerformanceWatched2 = watch(
     "systemOthersPluginsPerformance2"
   );
   useEffect(() => {
-    const price =
-      Number(laborCost) * Number(systemOthersPluginsPerformanceWatched2);
-    const formattedPrice = isNaN(price)
-      ? "0"
-      : String(truncateDecimals(price, 2));
-    setSelectedPluginMaterialLaborCost2(formattedPrice);
+    formatMaterialLaborCost(
+      laborCost,
+      systemOthersPluginsPerformanceWatched2,
+      setSelectedPluginMaterialLaborCost2
+    );
   }, [systemOthersPluginsPerformanceWatched2]);
 
   // si cambia un costo de mano de obra,
@@ -688,8 +688,6 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     "systemOthersPluginsPerformance2",
   ]);
   useEffect(() => {
-    console.log(watchedPerformanceFields);
-
     if (watchedPerformanceFields) {
       const price = getTotalLaborCost(
         Number(baseMaterialLaborCost),
@@ -699,11 +697,17 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         Number(selectedPluginMaterialLaborCost1),
         Number(selectedPluginMaterialLaborCost2)
       );
-      setSystemTotalLaborCost(price);
+      setTotalLaborCost(price);
     }
   }, [watchedPerformanceFields]);
 
   //#endregion
+
+  // Costo Total del sistema
+  useEffect(() => {
+    const price = baseMaterialTotalPrice + totalLaborCost;
+    setSystemTotalPrice(truncateDecimals(price, 2));
+  }, [baseMaterialTotalPrice, totalLaborCost]);
 
   // Precio por m² de malla parcial
   const systemParcialMeshCoefficientValue = watch(
@@ -727,7 +731,10 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       Number(selectedPluginMaterialDetail1.unitPrice)
     );
     setSelectedPluginMaterialPricePerCoefficient0(String(price));
-  }, [pluginMaterial1CoefficientValue]);
+  }, [
+    pluginMaterial1CoefficientValue,
+    selectedPluginMaterialDetail1.unitPrice,
+  ]);
 
   // Precio por m² de material complementario 2
   const pluginMaterial2CoefficientValue = watch(
@@ -739,7 +746,10 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       Number(selectedPluginMaterialDetail2.unitPrice)
     );
     setSelectedPluginMaterialPricePerCoefficient1(String(price));
-  }, [pluginMaterial2CoefficientValue]);
+  }, [
+    pluginMaterial2CoefficientValue,
+    selectedPluginMaterialDetail2.unitPrice,
+  ]);
 
   // Precio por m² de material complementario 3
   const pluginMaterial3CoefficientValue = watch(
@@ -751,35 +761,10 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       Number(selectedPluginMaterialDetail3.unitPrice)
     );
     setSelectedPluginMaterialPricePerCoefficient2(String(price));
-  }, [pluginMaterial3CoefficientValue]);
-
-
-  // ES NECESARIO ESTO? NO SE HACE EN LA LINEA 588 !!!!!!!!!!!!
-
-  // Cada vez que modifico uno de los componentes del precio del sistema,
-  // ejecuto la operación con los precios actualizados
-  // useEffect(() => {
-  //   const formValues = getValues();
-
-  //   const price = getUnitPriceBaseMaterialSystem(
-  //     formValues,
-  //     selectedBaseMaterialDetail.unitPrice,
-  //     selectedTotalMeshPrice,
-  //     selectedPartialMeshPrice,
-  //     selectedPluginMaterialDetail1.unitPrice,
-  //     selectedPluginMaterialDetail2.unitPrice,
-  //     selectedPluginMaterialDetail3.unitPrice
-  //   );
-
-  //   setSystemTotalPrice(price);
-  // }, [
-  //   selectedBaseMaterialDetail,
-  //   selectedTotalMeshPrice,
-  //   selectedPartialMeshPrice,
-  //   selectedPluginMaterialDetail1,
-  //   selectedPluginMaterialDetail2,
-  //   selectedPluginMaterialDetail3,
-  // ]);
+  }, [
+    pluginMaterial3CoefficientValue,
+    selectedPluginMaterialDetail3.unitPrice,
+  ]);
 
   // Evento de botón agregar - otros complementos
   const handleAddMaterial = () => {
@@ -803,6 +788,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     setValue(`systemOthersPluginsMaterialCoefficient${index}`, "");
     setValue(`systemOthersPluginsMaterialCoefficient${index}`, "");
     setValue(`systemOthersPluginsMaterialCoefficient${index}`, "");
+    setValue(`systemOthersPluginsPerformance${index}`, "");
   };
 
   // Evento de botón eliminar - otros complementos
@@ -865,7 +851,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             className="readOnly"
             control={control}
             label="Costo materiales"
-            value={systemTotalPrice}
+            value={baseMaterialTotalPrice}
             variant="outlined"
             fullWidth
             InputProps={{
@@ -887,7 +873,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             className="readOnly"
             control={control}
             label="Costo mano de obra"
-            value={systemTotalLaborCost}
+            value={totalLaborCost}
             variant="outlined"
             fullWidth
             InputProps={{
@@ -909,7 +895,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             className="readOnly"
             control={control}
             label="Costo total"
-            value={0}
+            value={systemTotalPrice}
             variant="outlined"
             fullWidth
             InputProps={{
@@ -1370,7 +1356,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         )}
       </div>
       <div className="row mt-3">
-        <div className="col-lg-5 col-sm-6">
+        <div className="col-lg-12 col-sm-6">
           <CustomTextField
             multiline
             minRows={3}
