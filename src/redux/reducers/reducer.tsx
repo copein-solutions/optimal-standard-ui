@@ -2,6 +2,7 @@ import initialState from "../store/initialState";
 
 const rootReducer = (state = initialState, action: any) => {
   switch (action.type) {
+    // --------------- SESIÓN ---------------
     case "LOGIN":
       return { ...state, logged: true };
     case "LOGOUT":
@@ -48,7 +49,6 @@ const rootReducer = (state = initialState, action: any) => {
         ...state,
         comments: state.comments.filter((t: any) => t.id !== action.payload),
       };
-
     case "SET_OPTIMAL_STANDARD":
       return {
         ...state,
@@ -58,7 +58,6 @@ const rootReducer = (state = initialState, action: any) => {
           "OPTIMAL_STANDARD"
         ),
       };
-
     case "SET_ALTERNATIVE_OPTIMAL_STANDARD":
       return {
         ...state,
@@ -68,13 +67,16 @@ const rootReducer = (state = initialState, action: any) => {
           "ALTERNATIVE_OPTIMAL_STANDARD"
         ),
       };
-
     case "SET_REMOVE":
       return {
         ...state,
         systems: updateSystemCategory(state.systems, action.payload, "REMOVE"),
       };
-
+    // --------------- VARIABLES GLOBALES ---------------
+    case "SET_DOLLAR_RATE":
+      return { ...state, dollarRate: action.payload };
+    case "SET_LABOR_COST":
+      return { ...state, laborCost: action.payload };
     default:
       return state;
   }

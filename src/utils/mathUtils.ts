@@ -98,3 +98,66 @@ export function calculatePricePerCoefficientParcialMesh(
 ): number {
   return truncateDecimals(coefficient * unitPrice, 2);
 }
+
+/**
+ * Calcula el costo total de mano de obra a partir de los costos de mano de obra
+ * ingresados para los distintos materiales. Suma los costos válidos
+ * y devuelve el costo total.
+ *
+ * @param baseMaterialLaborCost El costo de mano de obra material base.
+ * @param totalMeshLaborCost El costo de mano de obra de malla total.
+ * @param parcialMeshLaborCost El costo de mano de obra de malla parcial.
+ * @param pluginMaterialLaborCost0 El costo de mano de obra del material complementario 1.
+ * @param pluginMaterialLaborCost1 El costo de mano de obra del material complementario 2.
+ * @param pluginMaterialLaborCost2 El costo de mano de obra del material complementario 3.
+ * @returns El costo total de mano de obra calculado a partir de los costos proporcionados.
+ * Si todos los costos son NaN devuelve 0.
+ */
+export function getTotalLaborCost(
+  baseMaterialLaborCost: number,
+  totalMeshLaborCost: number,
+  parcialMeshLaborCost: number,
+  pluginMaterialLaborCost0: number,
+  pluginMaterialLaborCost1: number,
+  pluginMaterialLaborCost2: number
+): number {
+  const params = [
+    baseMaterialLaborCost,
+    totalMeshLaborCost,
+    parcialMeshLaborCost,
+    pluginMaterialLaborCost0,
+    pluginMaterialLaborCost1,
+    pluginMaterialLaborCost2,
+  ];
+
+  const notNaNParams = params.filter((param) => !isNaN(param));
+
+  if (notNaNParams.length === 0) {
+    return 0;
+  }
+
+  const price = notNaNParams.reduce((total, param) => total + param, 0);
+  return price;
+}
+
+/**
+ * Formatea el valor de costo de mano de obra de un material y setea el resultado
+ * variable de estado recibida.
+ *
+ * @param laborCost Valor de la variable global de costo de mano de obra.
+ * @param performanceValue Valor de rendimiento del material.
+ * @param variableToSetValue La función de "set" de una variable de estado en la que se actualizará
+ *                          el resultado formateado.
+ * @returns Void.
+ */
+export function formatMaterialLaborCost(
+  laborCost: string,
+  performanceValue: string,
+  variableToSetValue: any
+): void {
+  const price = Number(laborCost) * Number(performanceValue);
+  const formattedPrice = isNaN(price)
+    ? "0"
+    : String(truncateDecimals(price, 2));
+  variableToSetValue(formattedPrice);
+}
