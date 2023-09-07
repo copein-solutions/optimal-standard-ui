@@ -37,8 +37,6 @@ const ListSystemComments: React.FC<ListSystemCommentsProps> = ({ id }) => {
     } else {
       response = await getSystemComment(Number(idParm));
     }
-
-    console.log(response);
     if (response?.data.error || response === undefined) {
     } else {
       dispatch({ type: "SET_COMMENTS", payload: response?.data });
@@ -46,8 +44,6 @@ const ListSystemComments: React.FC<ListSystemCommentsProps> = ({ id }) => {
   }
 
   useEffect(() => {
-    console.log(idParm);
-
     if (idParm === undefined) {
       if (!comments) {
         const formatedComments = comments?.map((comment: { date: string }) => {

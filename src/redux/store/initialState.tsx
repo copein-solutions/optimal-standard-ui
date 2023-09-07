@@ -1,9 +1,11 @@
 const initialState = {
-	logged: false,
-	materials: [],
-	applicationAreas: [],
-	systems: [],
-	comments: [],
-}
+  applicationAreas: [],
+  comments: [],
+  dollarRate: "",
+  materials: [],
+  laborCost: "",
+  logged: false,
+  systems: [],
+};
 
 export default initialState;
