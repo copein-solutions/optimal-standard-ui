@@ -20,18 +20,10 @@ import { useForm } from "react-hook-form";
 import "./readonlySystem.css";
 
 // Services
-import {
-  getApplicationArea,
-  getSystemByID,
-} from "../../../services/ApiService";
+import { getSystemByID } from "../../../services/ApiService";
 
 // Constants
-import {
-  APPLICATION_MODE,
-  SI_NO,
-  SI_NO_NE,
-  SYSTEM_LIST,
-} from "../../../utils/constants";
+import { SYSTEM_LIST } from "../../../utils/constants";
 
 // Interfaces
 import { useNavigate, useParams } from "react-router-dom";
@@ -125,6 +117,17 @@ const ReadonlySystem = () => {
   const navigator = useNavigate();
   const dispatch = useDispatch();
 
+  function capitalizeFirstLetter(inputString: string): string {
+    if (inputString.length === 0) {
+      return inputString; // Devuelve el string original si está vacío.
+    }
+
+    const firstLetter = inputString.substring(0, 1).toUpperCase();
+    const restOfString = inputString.substring(1).toLowerCase();
+
+    return firstLetter + restOfString;
+  }
+
   useEffect(() => {
     // Carga los datos del JSON
     async function fetchData() {
@@ -151,28 +154,29 @@ const ReadonlySystem = () => {
     if (formData) {
       console.log("formData", formData);
 
+      setSystemTotalPrice(truncateDecimals(Number(formData.totalPrice), 2));
       setApplicationAreaName(String(formData.applicationArea.name));
       const material = `${formData?.materials[0].material.product} - ${formData?.materials[0].material.brand}`;
       setMaterial(material);
-      setApplicationMode(formData.applicationMode);
+      setApplicationMode(capitalizeFirstLetter(formData.applicationMode));
       setCured(formData.cured ? "Si" : "No");
       setValue("supportConditions", formData.supportConditions);
       setValue("layers", formData.layers);
-      setSystemTotalPrice(Number(formData.totalPrice));
       setValue("totalConsumption", formData.totalConsumption);
       setValue("baseConditions", formData.baseConditions);
       setSelectedBaseMaterialDetail(formData.materials[0].material);
 
+      setValue("materialAreaDescription", formData.materialAreaDescription);
       setValue("applicationAreaId", formData.applicationArea.id);
       setValue("applicationMode", formData.applicationMode);
+      setValue(
+        "materialAreaRestrictionValue",
+        formData.materialAreaRestrictions
+      );
       if (
         formData.materialAreaRestrictions !== null &&
         formData.materialAreaRestrictions !== "n/e"
       ) {
-        setValue(
-          "materialAreaRestrictionValue",
-          formData.materialAreaRestrictions
-        );
         setValue("materialAreaRestrictions", "Si");
         setShowRestrictions(true);
       } else {
@@ -186,12 +190,8 @@ const ReadonlySystem = () => {
       } else if (formData.materialAreaRestrictions === "n/e") {
         setRestrictions("No especifica");
         setShowRestrictions(false);
-      } else if (formData.materialAreaRestrictions === "si") {
+      } else {
         setRestrictions("Si");
-        setValue(
-          "materialAreaRestrictionValue",
-          formData.materialAreaRestrictions
-        );
         setShowRestrictions(true);
       }
 
@@ -212,15 +212,13 @@ const ReadonlySystem = () => {
           );
           setValue("systemParcialMeshCoefficient", m.coefficient);
           setValue("systemPartialMeshDescription", m.materialDescription);
-          setSelectedPartialMeshPrice(
-            String(formData.materials[2].material.unitPrice)
-          );
+          setSelectedPartialMeshPrice(String(m.material.unitPrice));
         } else if (m.typeOfUse === "PLUGIN_MATERIAL") {
           handleAddMaterial();
           setValue("systemOthersPluginsMaterialsId" + pluginMaterialC, m.id);
           setValue(
             `systemOthersPluginsMaterials${pluginMaterialC}`,
-            m.material.id
+            `${m.material.brand} - ${m.material.product}`
           );
           setValue(
             `systemOthersPluginsMaterialCoefficient${pluginMaterialC}`,
@@ -234,6 +232,17 @@ const ReadonlySystem = () => {
             `systemOthersPluginsMaterialCoefficientDescription${pluginMaterialC}`,
             m.coefficientDescription
           );
+          handlePluginsMaterial(Number(m.material.id), pluginMaterialC);
+          const price = calculatePricePerCoefficientParcialMesh(
+            Number(m.coefficient),
+            Number(m.material.unitPrice)
+          );
+          if (pluginMaterialC === 0)
+            setSelectedPluginMaterialPricePerCoefficient0(String(price));
+          if (pluginMaterialC === 1)
+            setSelectedPluginMaterialPricePerCoefficient1(String(price));
+          if (pluginMaterialC === 2)
+            setSelectedPluginMaterialPricePerCoefficient2(String(price));
           pluginMaterialC++;
         }
       });
@@ -241,13 +250,26 @@ const ReadonlySystem = () => {
     }
   }, [setValue, formData]);
 
+  function handlePluginsMaterial(value: number, index: number) {
+    setPluginMaterialDataVisible(true);
+    const typeOfUseMaterial = formData?.materials.find(
+      (item: TypeOfUseOfMaterial) => item.material?.id === value
+    );
+
+    if (typeOfUseMaterial) {
+      if (index === 0) {
+        setSelectedPluginMaterialDetail1(typeOfUseMaterial.material);
+      } else if (index === 1) {
+        setSelectedPluginMaterialDetail2(typeOfUseMaterial.material);
+      } else if (index === 2) {
+        setSelectedPluginMaterialDetail3(typeOfUseMaterial.material);
+      }
+    }
+  }
+
   // Evento de botón agregar - otros complementos
   const handleAddMaterial = () => {
     setMaterialCount((prevCount) => prevCount + 1);
-
-    if (materialCount === 0) setSelectedPluginMaterialPricePerCoefficient0("0");
-    if (materialCount === 1) setSelectedPluginMaterialPricePerCoefficient1("0");
-    if (materialCount === 2) setSelectedPluginMaterialPricePerCoefficient2("0");
   };
 
   function renderPluginMaterialDetails(index: number): ReactNode {
@@ -512,9 +534,10 @@ const ReadonlySystem = () => {
                 label="Coef. m²"
                 variant="outlined"
                 fullWidth
-                type="number"
-                error={errors.systemParcialMeshCoefficient}
-                helperText={errors.systemParcialMeshCoefficient?.message}
+                className="readOnly"
+                InputProps={{
+                  readOnly: true,
+                }}
               />
             </div>
             {/* ------------- Info malla parcial seleccionada ------------- */}
@@ -569,28 +592,15 @@ const ReadonlySystem = () => {
           <div className="row mt-3">
             <div className="col-lg-6 col-sm-6">
               {/* ------------- Materiales (otros complementos) ------------- */}
-              {/* <CustomTextField
+              <CustomTextField
                 name={`systemOthersPluginsMaterials${index}`}
                 control={control}
                 rules={{ required: "Material requerido." }}
-                label={`Material ${index + 1}`}
-                error={errors[`systemOthersPluginsMaterials${index}`]}
-                // options={materialsSelect}
-                // onSelectOption={(value) =>
-                //   handlePluginsMaterial(value, index, "select")
-                // } */}
-              <TextField
-                name={`systemOthersPluginsMaterials${index}`}
-                size="small"
-                className="readOnly"
-                label={`Material ${index + 1}`}
                 variant="outlined"
                 fullWidth
+                className="readOnly"
                 InputProps={{
                   readOnly: true,
-                }}
-                InputLabelProps={{
-                  className: "readOnly",
                 }}
               />
             </div>
@@ -633,6 +643,10 @@ const ReadonlySystem = () => {
                 label="Descripción complemento"
                 variant="outlined"
                 fullWidth
+                className="readOnly"
+                InputProps={{
+                  readOnly: true,
+                }}
               />
             </div>
             {/* ------------- Descripción coef m² (otros complementos) ------------- */}
@@ -645,6 +659,10 @@ const ReadonlySystem = () => {
                 label="Descripción coeficiente m²"
                 variant="outlined"
                 fullWidth
+                className="readOnly"
+                InputProps={{
+                  readOnly: true,
+                }}
               />
             </div>
           </div>
@@ -691,14 +709,6 @@ const ReadonlySystem = () => {
       {/* ------------- Si | No | N/E ------------- */}
       <div className="row mt-3">
         <div className="col-lg-3 col-sm-3">
-          {/* <CustomSelectField
-            name="materialAreaRestrictions"
-            control={control}
-            rules={{ required: "Seleccione una opción." }}
-            label="Si / No / N/E"
-            error={errors.materialAreaRestrictions}
-            options={SI_NO_NE}
-          /> */}
           <TextField
             value={restrictions}
             size="small"

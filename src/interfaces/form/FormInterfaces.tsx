@@ -61,6 +61,9 @@ interface SystemFormInputs {
   cured: boolean | string | any;
   layers: string;
   totalConsumption: string;
+  baseMaterialPerformance: string;
+  totalMeshPerformance: string;
+  partialMeshPerformance: string;
   supportConditions: string;
   baseConditions: string;
   materialAreaRestrictions: string;
@@ -119,6 +122,7 @@ interface TypeOfUseOfMaterial {
   coefficientDescription?: string,
   materialDescription?: string,
   material?: Material,
+  performance: string;
 };
 
 interface SystemMaterialFormInputs {
@@ -130,6 +134,7 @@ interface SystemMaterialFormInputs {
   materialDescription?: string;
   coefficientDescription?: string;
   material: Material;
+  performance: string;
 }
 
 // Login

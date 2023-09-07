@@ -139,15 +139,12 @@ export const GridCustom: React.FC<GridProps> = ({
   };
 
   const onComment = async () => {
-    console.log(commentItemId, systemId);
-
     if (commentItemId && systemId) {
       const data = {
         id: commentItemId,
         comment: commentValue,
       };
       let response: any = await updateSystemComment(systemId, data);
-      console.log(response);
 
       if (response.status !== 200) {
         let message = "Algo salió mal al enviar tu comentario.";

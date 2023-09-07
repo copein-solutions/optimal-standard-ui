@@ -24,6 +24,7 @@ import CustomModal from "../modal/customModal";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import ModalChildren from "./modalVariablesChildren";
 import Toast, { ToastType } from "../../components/toast/toast";
+import { useDispatch } from "react-redux";
 import "./Menu.css";
 
 import {
@@ -39,11 +40,17 @@ type MenuProps = {
 };
 
 export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
+  const userRole = localStorage.getItem("userRole");
   const [showToast, setShowToast] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-
+  const [dollarRateDataBase, setDollarRateDataBase] = useState("");
+  const [dollarRateValue, setDollarRateValue] = useState("");
+  const [laborCostDataBase, setLaborCostDataBase] = useState("");
+  const [laborCostValue, setLaborCostValue] = useState("");
   const [toastType, setToastType] = useState<ToastType>("success");
   const [toastMsg, setToastMsg] = useState("");
+
+  const dispatch = useDispatch();
 
   const handleCloseToast = () => {
     setShowToast(false);
@@ -57,7 +64,6 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
     },
   ];
 
-  const userRole = localStorage.getItem("userRole");
   if (userRole === ADMIN_ROL) {
     menuOptions.push(
       {
@@ -97,7 +103,7 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
         name: "Campos de aplicación",
         icon: <ArrowRightIcon />,
         path: APPLICATION_AREA_LIST,
-      },
+      }
     );
   }
 
@@ -148,12 +154,6 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
     </Box>
   );
 
-  // ------------------ MODAL DE VARIABLES ------------------
-  const [dollarRateDataBase, setDollarRateDataBase] = useState("");
-  const [dollarRateValue, setDollarRateValue] = useState("");
-  const [laborCostDataBase, setLaborCostDataBase] = useState("");
-  const [laborCostValue, setLaborCostValue] = useState("");
-
   const openVariablesModal = async () => {
     let dollarRateResponse = await getQuotationDollar();
     let laborCostResponse = await getLaborCost();
@@ -171,7 +171,6 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
     setOpenModal(false);
     setLaborCostValue("");
     setDollarRateValue("");
-    // setToastMsg("");
   };
 
   const handleDollarRate = (
@@ -187,14 +186,13 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
   };
 
   const handleDollarRateSubmit = async () => {
-    console.log(dollarRateValue);
-
     const response = (await saveDollarRate({ value: dollarRateValue })) as any;
     if (response.status !== 200) {
       setToastMsg("Error al guardar la cotización del dólar");
       setToastType("error");
       setShowToast(true);
     } else {
+      dispatch({ type: "SET_DOLLAR_RATE", payload: dollarRateValue });
       setToastMsg("Cotización actualizada con éxito");
       setToastType("success");
       setShowToast(true);
@@ -202,13 +200,13 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
   };
 
   const handleLaborCostSubmit = async () => {
-    console.log(laborCostValue);
     const response = (await saveLaborCost({ value: laborCostValue })) as any;
     if (response.status !== 200) {
       setToastMsg("Error al guardar el costo de mano de obra");
       setToastType("error");
       setShowToast(true);
     } else {
+      dispatch({ type: "SET_LABOR_COST", payload: laborCostValue });
       setToastMsg("Valor de mano de obra actualizada con éxito");
       setToastType("success");
       setShowToast(true);
@@ -218,8 +216,6 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
   const modalChildren = (
     <ModalChildren
       // TODO: ver si ponemos alguna descripción de que pasará cuando se modifiquen estas variables
-      // dollarRateTxt={}
-      // laborCostTxt={}
       handleDollarRate={handleDollarRate}
       handleLaborCost={handleLaborCost}
       dollarRateValue={dollarRateDataBase}
@@ -237,7 +233,7 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
       {openModal && (
         <CustomModal
           open={openModal}
-          onClose={onCloseModal}
+          onConfirm={onCloseModal}
           title="Actualizar variables"
           children={modalChildren}
         />

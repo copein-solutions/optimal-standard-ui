@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { GridCustom } from "../../../components/grid/Grid";
 import { format, parseISO } from "date-fns";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import {
@@ -37,8 +37,6 @@ const ListSystemComments: React.FC<ListSystemCommentsProps> = ({ id }) => {
     } else {
       response = await getSystemComment(Number(idParm));
     }
-
-    console.log(response);
     if (response?.data.error || response === undefined) {
     } else {
       dispatch({ type: "SET_COMMENTS", payload: response?.data });
@@ -46,8 +44,6 @@ const ListSystemComments: React.FC<ListSystemCommentsProps> = ({ id }) => {
   }
 
   useEffect(() => {
-    console.log(idParm);
-
     if (idParm === undefined) {
       if (!comments) {
         const formatedComments = comments?.map((comment: { date: string }) => {
@@ -71,10 +67,18 @@ const ListSystemComments: React.FC<ListSystemCommentsProps> = ({ id }) => {
     navigator(`/system/${idParm}/view`);
   };
 
+  const colorExplanation = (
+    <div className="color-explanation mb-3">
+      <Typography>Pendiente</Typography>
+      <div className="alternative-optimal-standard"></div>
+    </div>
+  );
+
   return (
     <>
       {idParm ? (
         <MainContainer cardTitle="Comentarios">
+          {userRole === ADMIN_ROL && colorExplanation}
           <GridCustom
             header={headers}
             body={comments}
@@ -91,9 +95,9 @@ const ListSystemComments: React.FC<ListSystemCommentsProps> = ({ id }) => {
       ) : (
         <>
           <GridCustom header={headers} body={comments} navigateTo="comment" />
-          <Button variant="text" color="success" onClick={openAllComments}>
+          {(comments.length >= 5 || userRole === ADMIN_ROL) && <Button variant="text" color="success" onClick={openAllComments}>
             Ver más...
-          </Button>
+          </Button>}
         </>
       )}
     </>

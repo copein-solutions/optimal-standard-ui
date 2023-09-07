@@ -1,19 +1,10 @@
-import { ReactNode, useEffect, useState } from "react";
-import {
-  Divider,
-  Button,
-  Typography,
-  Tooltip,
-  TooltipProps,
-  tooltipClasses,
-  styled,
-} from "@mui/material";
+import React, { ReactNode, useEffect, useLayoutEffect, useState } from "react";
+import { Divider, Button, Typography, InputAdornment } from "@mui/material";
 import CustomTextField from "../../../components/TextField";
 import CustomSelectField from "../../../components/customSelectField";
 import CustomDivider from "../../../components/divider";
 import MaterialData from "../../system/materialData/materialData";
 import Toast from "../../../components/toast";
-import InfoIcon from "@mui/icons-material/Info";
 
 import { useForm } from "react-hook-form";
 import "./systemForm.css";
@@ -25,6 +16,7 @@ import {
   getMaterialsByType,
   createSystem,
   updateSystem,
+  getLaborCost,
 } from "../../../services/ApiService";
 
 // Constants
@@ -48,6 +40,8 @@ import {
 } from "../../../interfaces/form/FormInterfaces";
 import {
   calculatePricePerCoefficientParcialMesh,
+  formatMaterialLaborCost,
+  getTotalLaborCost,
   getUnitPriceBaseMaterialSystem,
   truncateDecimals,
 } from "../../../utils/mathUtils";
@@ -81,17 +75,24 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   const [showParcialMeshInputs, setShowParcialMeshInputs] = useState(false);
   const [showRestrictions, setShowRestrictions] = useState(false);
   const [materialCount, setMaterialCount] = useState(0);
+  const [baseMaterialTotalPrice, setBaseMaterialTotalPrice] = useState(0);
+  const [totalLaborCost, setTotalLaborCost] = useState(0);
   const [systemTotalPrice, setSystemTotalPrice] = useState(0);
+  // VARIABLES GLOBALES
+  const [laborCost, setLaborCost] = useState("");
   // MATERIAL BASE
-  // const [baseMaterialUnitPrice, setBaseMaterialUnitPrice] = useState("");
   const [materialDataVisible, setMaterialDataVisible] = useState(false);
 
   const [selectedBaseMaterialDetail, setSelectedBaseMaterialDetail] =
     useState<BaseMaterial>(initMaterialObject);
+  const [baseMaterialPrice, setBaseMaterialPrice] = useState("");
+  const [baseMaterialLaborCost, setBaseMaterialLaborCost] = useState("");
   // MALLA 100%
   const [totalMeshUnityPriceVisible, setTotalMeshUnityPriceVisible] =
     useState(false);
   const [selectedTotalMeshPrice, setSelectedTotalMeshPrice] = useState("");
+  const [selectedTotalMeshLaborCost, setSelectedTotalMeshLaborCost] =
+    useState("");
   // MALLA PARCIAL
   const [partialMeshUnityPriceVisible, setPartialMeshUnityPriceVisible] =
     useState(false);
@@ -101,6 +102,8 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     selectedPartialMeshPricePerCoefficient,
     setSelectedPartialMeshPricePerCoefficient,
   ] = useState("");
+  const [selectedParcialMeshLaborCost, setSelectedParcialMeshLaborCost] =
+    useState("");
   // OTROS COMPLEMENTOS
   const [pluginMaterialDataVisible, setPluginMaterialDataVisible] =
     useState(false);
@@ -115,6 +118,18 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   const [
     selectedPluginMaterialPricePerCoefficient2,
     setSelectedPluginMaterialPricePerCoefficient2,
+  ] = useState("");
+  const [
+    selectedPluginMaterialLaborCost0,
+    setSelectedPluginMaterialLaborCost0,
+  ] = useState("");
+  const [
+    selectedPluginMaterialLaborCost1,
+    setSelectedPluginMaterialLaborCost1,
+  ] = useState("");
+  const [
+    selectedPluginMaterialLaborCost2,
+    setSelectedPluginMaterialLaborCost2,
   ] = useState("");
 
   const [selectedPluginMaterialDetail1, setSelectedPluginMaterialDetail1] =
@@ -156,7 +171,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
 
   const processFormData = (data: SystemFormInputs) => {
     let constructionSystem: ConstructionSystem = {
-      totalPrice: systemTotalPrice,
+      totalPrice: baseMaterialTotalPrice,
       totalConsumption: data.totalConsumption,
       layers: data.layers,
       applicationMode: data.applicationMode,
@@ -176,6 +191,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       id: data.systemMaterialId,
       materialId: data.systemMaterial,
       typeOfUse: "BASE",
+      performance: data.baseMaterialPerformance,
     });
 
     if (data.systemMeshTotalPercent === "si") {
@@ -183,6 +199,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         id: data.systemMeshTotalPercentId,
         materialId: data.systemMeshTotalPercentName,
         typeOfUse: "TOTAL_MESH",
+        performance: data.totalMeshPerformance,
       });
     }
 
@@ -193,6 +210,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         typeOfUse: "PARTIAL_MESH",
         coefficient: data.systemParcialMeshCoefficient,
         materialDescription: data.systemPartialMeshDescription,
+        performance: data.partialMeshPerformance,
       });
     }
 
@@ -205,6 +223,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         materialDescription: data[`systemOthersPluginsMaterialDescription${i}`],
         coefficientDescription:
           data[`systemOthersPluginsMaterialCoefficientDescription${i}`],
+        performance: data[`systemOthersPluginsPerformance${i}`],
       });
     }
 
@@ -240,7 +259,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       setValue("applicationMode", data.applicationMode);
       setValue("cured", data.cured ? "si" : "no");
       setValue("layers", data.layers);
-      setSystemTotalPrice(Number(data.totalPrice));
+      setBaseMaterialTotalPrice(Number(data.totalPrice));
       setValue("totalConsumption", data.totalConsumption);
       setValue("supportConditions", data.supportConditions);
       setValue("baseConditions", data.baseConditions);
@@ -263,11 +282,13 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         if (m.typeOfUse === "BASE") {
           setValue("systemMaterialId", m.id);
           setValue("systemMaterial", m.material.id);
+          setValue("baseMaterialPerformance", m.performance);
           handleBaseMaterial(m.material.id, "isUpdate");
         } else if (m.typeOfUse === "TOTAL_MESH") {
           setValue("systemMeshTotalPercent", "si");
           setValue("systemMeshTotalPercentId", m.id);
           setValue("systemMeshTotalPercentName", m.material.id);
+          setValue("totalMeshPerformance", m.performance);
           handleTotalMesh(Number(m.material.id), "isUpdate");
           setSelectedTotalMeshPrice(String(m.material.unitPrice));
         } else if (m.typeOfUse === "PARTIAL_MESH") {
@@ -276,6 +297,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
           setValue("systemParcialMeshName", m.material.id);
           setValue("systemParcialMeshCoefficient", m.coefficient);
           setValue("systemPartialMeshDescription", m.materialDescription);
+          setValue("partialMeshPerformance", m.performance);
           setSelectedPartialMeshPrice(String(m.material.unitPrice));
           handlePartialMesh(m.material.id);
         } else if (m.typeOfUse === "PLUGIN_MATERIAL") {
@@ -302,6 +324,10 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             `systemOthersPluginsMaterialCoefficientDescription${pluginMaterialC}`,
             m.coefficientDescription
           );
+          setValue(
+            `systemOthersPluginsPerformance${pluginMaterialC}`,
+            m.performance
+          );
           pluginMaterialC++;
         }
       });
@@ -309,12 +335,12 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     }
   }, [setValue, data]);
 
-  // Obtengo campos de aplicación del back
   useEffect(() => {
     async function fetchData() {
-      const response = await getApplicationArea();
-      if (response && response.data) {
-        const backendApplicationAreas = response.data;
+      // Obtengo campos de aplicación del back
+      const applicationAreasResponse = await getApplicationArea();
+      if (applicationAreasResponse && applicationAreasResponse.data) {
+        const backendApplicationAreas = applicationAreasResponse.data;
         const formattedApplicationAreas = backendApplicationAreas.map(
           (item: { id: any; name: any }) => ({
             value: item.id,
@@ -325,20 +351,15 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       } else {
         handleOpenToast("No se pueden recuperar campos de aplicación del back");
       }
-    }
-    fetchData();
-  }, []);
 
-  // Obtengo materiales del back
-  useEffect(() => {
-    async function fetchData() {
-      const response = await getMaterials();
-      if (response && response.data) {
-        const backendMaterials = response.data;
+      // Obtengo materiales del back
+      const materialsResponse = await getMaterials();
+      if (materialsResponse && materialsResponse.data) {
+        const backendMaterials = materialsResponse.data;
         const formattedMaterials = backendMaterials.map(
           (material: { id: any; product: any; brand: any }) => ({
             value: material.id,
-            label: `${material.product} ${material.brand}`,
+            label: `${material.brand} - ${material.product}`,
           })
         );
         setMaterialsSelect(formattedMaterials);
@@ -346,7 +367,17 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       } else {
         handleOpenToast("No se pueden recuperar materiales del back");
       }
+
+      // Obtengo el costo laboral del back
+      const laborCostResponse = await getLaborCost();
+      if (laborCostResponse && laborCostResponse.data) {
+        const laborCost = laborCostResponse.data;
+        setLaborCost(laborCost);
+      } else {
+        handleOpenToast("No se puede recuperar el costo laboral del back");
+      }
     }
+
     fetchData();
   }, []);
 
@@ -454,7 +485,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
 
   function handlePluginsMaterial(value: number, index: number, origin: string) {
     setPluginMaterialDataVisible(true);
-    setSystemTotalPrice(0);
+    setBaseMaterialTotalPrice(0);
     if (isUpdateForm) {
       if (origin !== "select") {
         const typeOfUseMaterial = data?.materials.find(
@@ -527,6 +558,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       setShowMeshTotalPercentInput(false);
       setTotalMeshUnityPriceVisible(false);
       setValue("systemMeshTotalPercentName", "");
+      setValue("totalMeshPerformance", "");
       setSelectedTotalMeshPrice("");
     }
   }, [watchedMeshTotalPercent]);
@@ -541,6 +573,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       setPartialMeshUnityPriceVisible(false);
       setValue("systemParcialMeshName", "");
       setValue("systemParcialMeshCoefficient", "");
+      setValue("partialMeshPerformance", "");
       setSelectedPartialMeshPricePerCoefficient("");
     }
   }, [watchedParcialMesh]);
@@ -551,7 +584,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     setShowRestrictions(watchedRestriction === "si" ? true : false);
   }, [watchedRestriction]);
 
-  const calculateSystemTotalPrice = () => {
+  const calculateBaseMaterialTotalPrice = () => {
     const formValues = getValues();
 
     const price = getUnitPriceBaseMaterialSystem(
@@ -564,11 +597,11 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       selectedPluginMaterialDetail3.unitPrice
     );
 
-    setSystemTotalPrice(price);
+    setBaseMaterialTotalPrice(price);
   };
 
   // Cuando cambia un input implicado en el precio unitario del sistema,
-  // vuelve a 0 el systemUnitPrice
+  // vuelve a calcular el systemUnitPrice
   const watchedFields = watch([
     "totalConsumption",
     "systemParcialMeshCoefficient",
@@ -578,9 +611,117 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   ]);
   useEffect(() => {
     if (watchedFields) {
-      calculateSystemTotalPrice();
+      calculateBaseMaterialTotalPrice();
     }
   }, [watchedFields]);
+
+  // Costo material base
+  const totalConsumptionWatched = watch("totalConsumption");
+  useEffect(() => {
+    const baseMaterialPrice = selectedBaseMaterialDetail.unitPrice;
+    const price = Number(baseMaterialPrice) * Number(totalConsumptionWatched);
+    const stringPrice = String(truncateDecimals(price, 2));
+    setBaseMaterialPrice(stringPrice);
+  }, [totalConsumptionWatched, selectedBaseMaterialDetail.unitPrice]);
+
+  //#region CALCULO DE COSTO MANO DE OBRA
+  //Costo mano de obra material base
+  const baseMaterialPerformanceWatched = watch("baseMaterialPerformance");
+  const layersWatched = watch("layers");
+  useEffect(() => {
+    const totalCost =
+      Number(baseMaterialPerformanceWatched) *
+      Number(layersWatched) *
+      Number(laborCost);
+    const stringTotalCost = String(truncateDecimals(totalCost, 2));
+    setBaseMaterialLaborCost(stringTotalCost);
+  }, [baseMaterialPerformanceWatched, layersWatched, laborCost]);
+
+  // Costo mano de obra malla 100%
+  const totalMeshPerformanceWatched = watch("totalMeshPerformance");
+  useEffect(() => {
+    formatMaterialLaborCost(
+      laborCost,
+      totalMeshPerformanceWatched,
+      setSelectedTotalMeshLaborCost
+    );
+  }, [totalMeshPerformanceWatched]);
+
+  // Costo mano de obra malla parcial
+  const partialMeshPerformanceWatched = watch("parcialMeshPerformance");
+  useEffect(() => {
+    formatMaterialLaborCost(
+      laborCost,
+      partialMeshPerformanceWatched,
+      setSelectedParcialMeshLaborCost
+    );
+  }, [partialMeshPerformanceWatched]);
+
+  // Costo mano de obra otros complementos
+  const systemOthersPluginsPerformanceWatched0 = watch(
+    "systemOthersPluginsPerformance0"
+  );
+  useEffect(() => {
+    formatMaterialLaborCost(
+      laborCost,
+      systemOthersPluginsPerformanceWatched0,
+      setSelectedPluginMaterialLaborCost0
+    );
+  }, [systemOthersPluginsPerformanceWatched0]);
+
+  const systemOthersPluginsPerformanceWatched1 = watch(
+    "systemOthersPluginsPerformance1"
+  );
+  useEffect(() => {
+    formatMaterialLaborCost(
+      laborCost,
+      systemOthersPluginsPerformanceWatched1,
+      setSelectedPluginMaterialLaborCost1
+    );
+  }, [systemOthersPluginsPerformanceWatched1]);
+
+  const systemOthersPluginsPerformanceWatched2 = watch(
+    "systemOthersPluginsPerformance2"
+  );
+  useEffect(() => {
+    formatMaterialLaborCost(
+      laborCost,
+      systemOthersPluginsPerformanceWatched2,
+      setSelectedPluginMaterialLaborCost2
+    );
+  }, [systemOthersPluginsPerformanceWatched2]);
+
+  // si cambia un costo de mano de obra,
+  //se calcula nuevamente el costo total de mano de obra
+  const watchedPerformanceFields = watch([
+    "baseMaterialPerformance",
+    "totalMeshPerformance",
+    "parcialMeshPerformance",
+    "systemOthersPluginsPerformance0",
+    "systemOthersPluginsPerformance1",
+    "systemOthersPluginsPerformance2",
+  ]);
+  useEffect(() => {
+    if (watchedPerformanceFields) {
+      const price = getTotalLaborCost(
+        Number(baseMaterialLaborCost),
+        Number(selectedTotalMeshLaborCost),
+        Number(selectedParcialMeshLaborCost),
+        Number(selectedPluginMaterialLaborCost0),
+        Number(selectedPluginMaterialLaborCost1),
+        Number(selectedPluginMaterialLaborCost2)
+      );
+      setTotalLaborCost(price);
+    }
+  }, [watchedPerformanceFields]);
+
+  //#endregion
+
+  // Costo Total del sistema
+  useEffect(() => {
+    const price = baseMaterialTotalPrice + totalLaborCost;
+    setSystemTotalPrice(truncateDecimals(price, 2));
+  }, [baseMaterialTotalPrice, totalLaborCost]);
 
   // Precio por m² de malla parcial
   const systemParcialMeshCoefficientValue = watch(
@@ -604,7 +745,10 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       Number(selectedPluginMaterialDetail1.unitPrice)
     );
     setSelectedPluginMaterialPricePerCoefficient0(String(price));
-  }, [pluginMaterial1CoefficientValue]);
+  }, [
+    pluginMaterial1CoefficientValue,
+    selectedPluginMaterialDetail1.unitPrice,
+  ]);
 
   // Precio por m² de material complementario 2
   const pluginMaterial2CoefficientValue = watch(
@@ -616,7 +760,10 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       Number(selectedPluginMaterialDetail2.unitPrice)
     );
     setSelectedPluginMaterialPricePerCoefficient1(String(price));
-  }, [pluginMaterial2CoefficientValue]);
+  }, [
+    pluginMaterial2CoefficientValue,
+    selectedPluginMaterialDetail2.unitPrice,
+  ]);
 
   // Precio por m² de material complementario 3
   const pluginMaterial3CoefficientValue = watch(
@@ -628,31 +775,9 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       Number(selectedPluginMaterialDetail3.unitPrice)
     );
     setSelectedPluginMaterialPricePerCoefficient2(String(price));
-  }, [pluginMaterial3CoefficientValue]);
-
-  // Cada vez que modifico uno de los componentes del precio del sistema,
-  // ejecuto la operación con los precios actualizados
-  useEffect(() => {
-    const formValues = getValues();
-
-    const price = getUnitPriceBaseMaterialSystem(
-      formValues,
-      selectedBaseMaterialDetail.unitPrice,
-      selectedTotalMeshPrice,
-      selectedPartialMeshPrice,
-      selectedPluginMaterialDetail1.unitPrice,
-      selectedPluginMaterialDetail2.unitPrice,
-      selectedPluginMaterialDetail3.unitPrice
-    );
-
-    setSystemTotalPrice(price);
   }, [
-    selectedBaseMaterialDetail,
-    selectedTotalMeshPrice,
-    selectedPartialMeshPrice,
-    selectedPluginMaterialDetail1,
-    selectedPluginMaterialDetail2,
-    selectedPluginMaterialDetail3,
+    pluginMaterial3CoefficientValue,
+    selectedPluginMaterialDetail3.unitPrice,
   ]);
 
   // Evento de botón agregar - otros complementos
@@ -674,6 +799,10 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     setValue(`systemOthersPluginsMaterialCoefficient${index}`, "");
     setValue(`systemOthersPluginsMaterialDescription${index}`, "");
     setValue(`systemOthersPluginsMaterialCoefficientDescription${index}`, "");
+    setValue(`systemOthersPluginsMaterialCoefficient${index}`, "");
+    setValue(`systemOthersPluginsMaterialCoefficient${index}`, "");
+    setValue(`systemOthersPluginsMaterialCoefficient${index}`, "");
+    setValue(`systemOthersPluginsPerformance${index}`, "");
   };
 
   // Evento de botón eliminar - otros complementos
@@ -683,14 +812,17 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     } else {
       if (materialCount === 1) {
         setSelectedPluginMaterialDetail1(initMaterialObject);
+        setSelectedPluginMaterialLaborCost0("");
         resetDynamicInputs(materialCount - 1);
       }
       if (materialCount === 2) {
         setSelectedPluginMaterialDetail2(initMaterialObject);
+        setSelectedPluginMaterialLaborCost1("");
         resetDynamicInputs(materialCount - 1);
       }
       if (materialCount === 3) {
         setSelectedPluginMaterialDetail3(initMaterialObject);
+        setSelectedPluginMaterialLaborCost2("");
         resetDynamicInputs(materialCount - 1);
       }
 
@@ -698,48 +830,11 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     }
   };
 
-  // #region TOOLTIP
-  const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
-    <Tooltip {...props} classes={{ popper: className }} />
-  ))({
-    [`& .${tooltipClasses.tooltip}`]: {
-      maxWidth: 600,
-    },
-  });
-
-  const systemTotalPriceTooltip = (
-    <CustomWidthTooltip
-      title={
-        <span style={{ fontSize: "1rem", maxWidth: "600px" }}>
-          El cálculo del precio se realiza en base a:
-          <ul>
-            <li>Precio de material base</li>
-            <li>Consumo total</li>
-            <li>Precio de malla 100 %</li>
-            <li>Precio de malla parcial y su coeficiente por m²</li>
-            <li>
-              Precios de materiales complementarios y sus respectivos
-              coeficientes por m²
-            </li>
-          </ul>
-          <span>
-            Si alguno de estos campos no es ingresado por ser opcional, su valor
-            asignado será 0.
-          </span>
-        </span>
-      }
-      placement="bottom"
-    >
-      <InfoIcon />
-    </CustomWidthTooltip>
-  );
-  //#endregion
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {/* ------------- Campo de aplicación ------------- */}
       <div className="row mb-3">
-        <div className="col-lg-8 col-sm-9">
+        <div className="col-lg-7 col-sm-9">
           <CustomSelectField
             name="applicationAreaId"
             control={control}
@@ -752,7 +847,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       </div>
       {/* ------------- Material base ------------- */}
       <div className="row mb-3">
-        <div className="col-lg-6 col-sm-6">
+        <div className="col-lg-5 col-sm-6">
           <CustomSelectField
             name="systemMaterial"
             control={control}
@@ -763,24 +858,71 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             onSelectOption={(value) => handleBaseMaterial(value, "select")}
           />
         </div>
+        {/* ------------- Costo materiales ------------- */}
         <div className="col-lg-2 col-sm-3 mb-3 d-flex">
           <CustomTextField
             name="systemTotalPrice"
             className="readOnly"
             control={control}
-            label="Precio unitario sistema"
+            label="Costo materiales"
+            value={baseMaterialTotalPrice}
+            variant="outlined"
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Typography>$/m²</Typography>
+                </InputAdornment>
+              ),
+            }}
+            InputLabelProps={{
+              onClick: (e) => e.preventDefault(),
+            }}
+          />
+        </div>
+        {/* ------------- Costo mano de obra ------------- */}
+        <div className="col-lg-2 col-sm-3 mb-3 d-flex">
+          <CustomTextField
+            name="systemTotalPrice"
+            className="readOnly"
+            control={control}
+            label="Costo mano de obra"
+            value={totalLaborCost}
+            variant="outlined"
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Typography>$/m²</Typography>
+                </InputAdornment>
+              ),
+            }}
+            InputLabelProps={{
+              onClick: (e) => e.preventDefault(),
+            }}
+          />
+        </div>
+        {/* ------------- Costo total ------------- */}
+        <div className="col-lg-2 col-sm-3 mb-3 d-flex">
+          <CustomTextField
+            name="systemTotalPrice"
+            className="readOnly"
+            control={control}
+            label="Costo total"
             value={systemTotalPrice}
             variant="outlined"
             fullWidth
             InputProps={{
-              readOnly: true,
-              startAdornment: "$",
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Typography>$/m²</Typography>
+                </InputAdornment>
+              ),
             }}
             InputLabelProps={{
-              className: "readOnly",
+              onClick: (e) => e.preventDefault(),
             }}
           />
-          <div className="tooltip-icon">{systemTotalPriceTooltip}</div>
         </div>
       </div>
       {/* ------------- Info del material seleccionado ------------- */}
@@ -792,7 +934,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       <CustomDivider text="Aplicación" />
       {/* ------------- Consumo total ------------- */}
       <div className="row mt-3">
-        <div className="col-lg-3 col-sm-6">
+        <div className="col-lg-2 col-sm-6">
           <CustomTextField
             name="totalConsumption"
             control={control}
@@ -808,8 +950,22 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             helperText={errors.totalConsumption?.message}
           />
         </div>
+        {/* ------------- Rendimiento (material base) ------------- */}
+        <div className="col-lg-2 col-sm-6">
+          <CustomTextField
+            name="baseMaterialPerformance"
+            control={control}
+            rules={{ required: "Rendimiento requerido." }}
+            label="Rendimiento hrs/m²"
+            variant="outlined"
+            fullWidth
+            type="number"
+            error={errors.baseMaterialPerformance}
+            helperText={errors.baseMaterialPerformance?.message}
+          />
+        </div>
         {/* ------------- Cantidad de manos ------------- */}
-        <div className="col-lg-3 col-sm-6">
+        <div className="col-lg-2 col-sm-6">
           <CustomTextField
             name="layers"
             control={control}
@@ -826,7 +982,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
           />
         </div>
         {/* ------------- Modo de aplicación ------------- */}
-        <div className="col-lg-3 col-sm-6 mt-16">
+        <div className="col-lg-2 col-sm-6 mt-16">
           <CustomSelectField
             name="applicationMode"
             control={control}
@@ -837,7 +993,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
           />
         </div>
         {/* ------------- Curado ------------- */}
-        <div className="col-lg-3 col-sm-6 mt-16">
+        <div className="col-lg-2 col-sm-6 mt-16">
           <CustomSelectField
             name="cured"
             control={control}
@@ -846,6 +1002,27 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             error={errors.cured}
             options={SI_NO}
           />
+        </div>
+      </div>
+      {/* ------------- Info bloque Aplicación------------- */}
+      <div className="row mt-3">
+        <div className="col-lg-5 col-sm-4">
+          <div className="material-data-container">
+            <div className="data-div ml-2">
+              <Typography fontWeight="500" mr={1} variant="body1">
+                Costo material: $/m²
+              </Typography>
+              <Typography fontWeight="700" variant="body1">
+                {baseMaterialPrice}
+              </Typography>
+              <Typography fontWeight="500" ml={5} mr={1} variant="body1">
+                Costo mano de obra: $/m²
+              </Typography>
+              <Typography fontWeight="700" variant="body1">
+                {baseMaterialLaborCost}
+              </Typography>
+            </div>
+          </div>
         </div>
       </div>
       {/* ------------- Mallas 100% ------------- */}
@@ -864,30 +1041,52 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         </div>
         {/* ------------- Nombre malla 100% ------------- */}
         {showMeshTotalPercentInput && (
-          <div className="col-lg-6 col-sm-6">
-            <CustomSelectField
-              name="systemMeshTotalPercentName"
-              control={control}
-              rules={{ required: "Nombre malla requerido." }}
-              label="Malla"
-              error={errors.systemMeshTotalPercentName}
-              options={formattedMeshSelect}
-              onSelectOption={(value) => handleTotalMesh(value, "select")}
-            />
-          </div>
+          <>
+            <div className="col-lg-6 col-sm-6">
+              <CustomSelectField
+                name="systemMeshTotalPercentName"
+                control={control}
+                rules={{ required: "Nombre malla requerido." }}
+                label="Malla"
+                error={errors.systemMeshTotalPercentName}
+                options={formattedMeshSelect}
+                onSelectOption={(value) => handleTotalMesh(value, "select")}
+              />
+            </div>
+            {/* ------------- Rendimiento malla 100% ------------- */}
+            <div className="col-lg-2 col-sm-6">
+              <CustomTextField
+                name="totalMeshPerformance"
+                control={control}
+                rules={{ required: "Rendimiento requerido." }}
+                label="Rendimiento hrs/m²"
+                variant="outlined"
+                fullWidth
+                type="number"
+                error={errors.totalMeshPerformance}
+                helperText={errors.totalMeshPerformance?.message}
+              />
+            </div>
+          </>
         )}
       </div>
       {/* ------------- Info malla 100% seleccionada ------------- */}
       <div className="row mt-3">
         {totalMeshUnityPriceVisible && showMeshTotalPercentInput && (
-          <div className="col-lg-3 col-sm-4">
+          <div className="col-lg-5 col-sm-4">
             <div className="material-data-container">
               <div className="data-div ml-2">
                 <Typography fontWeight="500" mr={1} variant="body1">
-                  Precio: $/ml
+                  Costo material: $/m²
                 </Typography>
                 <Typography fontWeight="700" variant="body1">
                   {selectedTotalMeshPrice}
+                </Typography>
+                <Typography fontWeight="500" ml={5} mr={1} variant="body1">
+                  Costo mano de obra: $/m²
+                </Typography>
+                <Typography fontWeight="700" variant="body1">
+                  {selectedTotalMeshLaborCost}
                 </Typography>
               </div>
             </div>
@@ -939,30 +1138,50 @@ export const SystemForm: React.FC<SystemFormProps> = ({
                 helperText={errors.systemParcialMeshCoefficient?.message}
               />
             </div>
-            {/* ------------- Info malla parcial seleccionada ------------- */}
-            {partialMeshUnityPriceVisible && showParcialMeshInputs && (
-              <div className="col-lg-3 col-sm-4 mt-16">
-                <div className="material-data-container">
-                  <div className="data-div ml-2">
-                    <Typography fontWeight="500" mr={1} variant="body1">
-                      Precio: $/ml
-                    </Typography>
-                    <Typography fontWeight="700" variant="body1">
-                      {selectedPartialMeshPrice}
-                    </Typography>
-                  </div>
-                  <div className="data-div ml-2">
-                    <Typography fontWeight="500" mr={1} variant="body1">
-                      Precio: $/m²
-                    </Typography>
-                    <Typography fontWeight="700" variant="body1">
-                      {selectedPartialMeshPricePerCoefficient}
-                    </Typography>
-                  </div>
-                </div>
-              </div>
-            )}
+            {/* ------------- Rendimiento malla parcial ------------- */}
+            <div className="col-lg-2 col-sm-6">
+              <CustomTextField
+                name="partialMeshPerformance"
+                control={control}
+                rules={{ required: "Rendimiento requerido." }}
+                label="Rendimiento hrs/m²"
+                variant="outlined"
+                fullWidth
+                type="number"
+                error={errors.partialMeshPerformance}
+                helperText={errors.partialMeshPerformance?.message}
+              />
+            </div>
           </>
+        )}
+      </div>
+      <div className="row mt-3">
+        {/* ------------- Info malla parcial seleccionada ------------- */}
+        {partialMeshUnityPriceVisible && showParcialMeshInputs && (
+          <div className="col-lg-6 col-sm-4 mt-16">
+            <div className="material-data-container">
+              <div className="data-div ml-2">
+                <Typography fontWeight="500" mr={1} variant="body1">
+                  Precio: $/ml
+                </Typography>
+                <Typography fontWeight="700" variant="body1">
+                  {selectedPartialMeshPrice}
+                </Typography>
+                <Typography fontWeight="500" ml={5} mr={1} variant="body1">
+                  Precio: $/m²
+                </Typography>
+                <Typography fontWeight="700" variant="body1">
+                  {selectedPartialMeshPricePerCoefficient}
+                </Typography>
+                <Typography fontWeight="500" ml={5} mr={1} variant="body1">
+                  Costo mano de obra: $/m²
+                </Typography>
+                <Typography fontWeight="700" variant="body1">
+                  {selectedParcialMeshLaborCost}
+                </Typography>
+              </div>
+            </div>
+          </div>
         )}
       </div>
       {/* ------------- descripción coef malla parcial ------------- */}
@@ -992,7 +1211,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       {Array.from({ length: materialCount }).map((_, index) => (
         <div key={index}>
           <div className="row mt-3">
-            <div className="col-lg-6 col-sm-6">
+            <div className="col-lg-5 col-sm-6">
               {/* ------------- Materiales (otros complementos) ------------- */}
               <CustomSelectField
                 name={`systemOthersPluginsMaterials${index}`}
@@ -1026,16 +1245,46 @@ export const SystemForm: React.FC<SystemFormProps> = ({
                 }
               />
             </div>
+            {/* ------------- Rendimiento (otros complementos) ------------- */}
+            <div className="col-lg-2 col-sm-6">
+              <CustomTextField
+                name={`systemOthersPluginsPerformance${index}`}
+                control={control}
+                rules={{ required: "Rendimiento requerido." }}
+                label="Rendimiento hrs/m²"
+                variant="outlined"
+                fullWidth
+                type="number"
+                error={errors[`systemOthersPluginsPerformance${index}`]}
+                helperText={
+                  errors[`systemOthersPluginsPerformance${index}`]?.message
+                }
+              />
+            </div>
             <div className="col-lg-3 col-sm-4">
               <div className="material-data-container">
                 <div className="data-div ml-2">
-                  <Typography variant="body1">Precio por m²: $</Typography>
+                  <Typography variant="body1" mr={1}>
+                    Costo material: $/m²
+                  </Typography>
                   <Typography fontWeight="700" variant="body1">
                     {index === 0
                       ? selectedPluginMaterialPricePerCoefficient0
                       : index === 1
                       ? selectedPluginMaterialPricePerCoefficient1
                       : selectedPluginMaterialPricePerCoefficient2}
+                  </Typography>
+                </div>
+                <div className="data-div ml-2">
+                  <Typography variant="body1" mr={1}>
+                    Costo mano de obra: $/m²
+                  </Typography>
+                  <Typography fontWeight="700" variant="body1">
+                    {index === 0
+                      ? selectedPluginMaterialLaborCost0
+                      : index === 1
+                      ? selectedPluginMaterialLaborCost1
+                      : selectedPluginMaterialLaborCost2}
                   </Typography>
                 </div>
               </div>
@@ -1136,7 +1385,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         )}
       </div>
       <div className="row mt-3">
-        <div className="col-lg-5 col-sm-6">
+        <div className="col-lg-12 col-sm-6">
           <CustomTextField
             multiline
             minRows={3}
