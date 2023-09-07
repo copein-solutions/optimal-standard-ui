@@ -190,6 +190,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       id: data.systemMaterialId,
       materialId: data.systemMaterial,
       typeOfUse: "BASE",
+      performance: data.baseMaterialPerformance,
     });
 
     if (data.systemMeshTotalPercent === "si") {
@@ -197,6 +198,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         id: data.systemMeshTotalPercentId,
         materialId: data.systemMeshTotalPercentName,
         typeOfUse: "TOTAL_MESH",
+        performance: data.totalMeshPerformance,
       });
     }
 
@@ -207,6 +209,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         typeOfUse: "PARTIAL_MESH",
         coefficient: data.systemParcialMeshCoefficient,
         materialDescription: data.systemPartialMeshDescription,
+        performance: data.partialMeshPerformance,
       });
     }
 
@@ -219,6 +222,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         materialDescription: data[`systemOthersPluginsMaterialDescription${i}`],
         coefficientDescription:
           data[`systemOthersPluginsMaterialCoefficientDescription${i}`],
+        performance: data[`systemOthersPluginsPerformance${i}`],
       });
     }
 
@@ -277,11 +281,13 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         if (m.typeOfUse === "BASE") {
           setValue("systemMaterialId", m.id);
           setValue("systemMaterial", m.material.id);
+          setValue("baseMaterialPerformance", m.performance);
           handleBaseMaterial(m.material.id, "isUpdate");
         } else if (m.typeOfUse === "TOTAL_MESH") {
           setValue("systemMeshTotalPercent", "si");
           setValue("systemMeshTotalPercentId", m.id);
           setValue("systemMeshTotalPercentName", m.material.id);
+          setValue("totalMeshPerformance", m.performance);
           handleTotalMesh(Number(m.material.id), "isUpdate");
           setSelectedTotalMeshPrice(String(m.material.unitPrice));
         } else if (m.typeOfUse === "PARTIAL_MESH") {
@@ -290,6 +296,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
           setValue("systemParcialMeshName", m.material.id);
           setValue("systemParcialMeshCoefficient", m.coefficient);
           setValue("systemPartialMeshDescription", m.materialDescription);
+          setValue("partialMeshPerformance", m.performance);
           setSelectedPartialMeshPrice(String(m.material.unitPrice));
           handlePartialMesh(m.material.id);
         } else if (m.typeOfUse === "PLUGIN_MATERIAL") {
@@ -315,6 +322,10 @@ export const SystemForm: React.FC<SystemFormProps> = ({
           setValue(
             `systemOthersPluginsMaterialCoefficientDescription${pluginMaterialC}`,
             m.coefficientDescription
+          );
+          setValue(
+            `systemOthersPluginsPerformance${pluginMaterialC}`,
+            m.performance
           );
           pluginMaterialC++;
         }
@@ -546,6 +557,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       setShowMeshTotalPercentInput(false);
       setTotalMeshUnityPriceVisible(false);
       setValue("systemMeshTotalPercentName", "");
+      setValue("totalMeshPerformance", "");
       setSelectedTotalMeshPrice("");
     }
   }, [watchedMeshTotalPercent]);
@@ -560,6 +572,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       setPartialMeshUnityPriceVisible(false);
       setValue("systemParcialMeshName", "");
       setValue("systemParcialMeshCoefficient", "");
+      setValue("partialMeshPerformance", "");
       setSelectedPartialMeshPricePerCoefficient("");
     }
   }, [watchedParcialMesh]);
@@ -1118,15 +1131,15 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             {/* ------------- Rendimiento malla parcial ------------- */}
             <div className="col-lg-2 col-sm-6">
               <CustomTextField
-                name="parcialMeshPerformance"
+                name="partialMeshPerformance"
                 control={control}
                 rules={{ required: "Rendimiento requerido." }}
                 label="Rendimiento hrs/m²"
                 variant="outlined"
                 fullWidth
                 type="number"
-                error={errors.parcialMeshPerformance}
-                helperText={errors.parcialMeshPerformance?.message}
+                error={errors.partialMeshPerformance}
+                helperText={errors.partialMeshPerformance?.message}
               />
             </div>
           </>
