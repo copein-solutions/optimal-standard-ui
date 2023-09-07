@@ -1,10 +1,5 @@
 import * as React from "react";
-import {
-  Button,
-  IconButton,
-  Toolbar,
-  AppBar,
-} from "@mui/material";
+import { Button, IconButton, Toolbar, AppBar } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 
 import "./Header.css";
@@ -27,8 +22,7 @@ export const CustomHeader: React.FC<HeaderProps> = ({ onMenuOpen }) => {
     navigator(LOGIN);
   };
 
-return (
-    // <div className="app-bar">
+  return (
     <AppBar position="static">
       <Toolbar
         sx={{
@@ -48,7 +42,7 @@ return (
           <MenuIcon />
         </IconButton>
         <img
-          src="../images/CEAOSA_logo.png"
+          src="/images/CEAOSA_logo.png"
           alt="Logo CEAOSA"
           className="img-fluid image"
         />
@@ -57,6 +51,5 @@ return (
         </Button>
       </Toolbar>
     </AppBar>
-    // </div>
   );
 };

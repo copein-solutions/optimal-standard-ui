@@ -82,6 +82,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   const [laborCost, setLaborCost] = useState("");
   // MATERIAL BASE
   const [materialDataVisible, setMaterialDataVisible] = useState(false);
+
   const [selectedBaseMaterialDetail, setSelectedBaseMaterialDetail] =
     useState<BaseMaterial>(initMaterialObject);
   const [baseMaterialPrice, setBaseMaterialPrice] = useState("");
@@ -583,7 +584,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     setShowRestrictions(watchedRestriction === "si" ? true : false);
   }, [watchedRestriction]);
 
-  const calculateSystemTotalPrice = () => {
+  const calculateBaseMaterialTotalPrice = () => {
     const formValues = getValues();
 
     const price = getUnitPriceBaseMaterialSystem(
@@ -610,7 +611,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   ]);
   useEffect(() => {
     if (watchedFields) {
-      calculateSystemTotalPrice();
+      calculateBaseMaterialTotalPrice();
     }
   }, [watchedFields]);
 
@@ -942,6 +943,9 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             variant="outlined"
             fullWidth
             type="number"
+            inputProps={{
+              min: 0,
+            }}
             error={errors.totalConsumption}
             helperText={errors.totalConsumption?.message}
           />
@@ -970,6 +974,9 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             variant="outlined"
             fullWidth
             type="number"
+            inputProps={{
+              min: 0,
+            }}
             error={errors.layers}
             helperText={errors.layers?.message}
           />
@@ -1124,6 +1131,9 @@ export const SystemForm: React.FC<SystemFormProps> = ({
                 variant="outlined"
                 fullWidth
                 type="number"
+                inputProps={{
+                  min: 0,
+                }}
                 error={errors.systemParcialMeshCoefficient}
                 helperText={errors.systemParcialMeshCoefficient?.message}
               />
@@ -1224,6 +1234,9 @@ export const SystemForm: React.FC<SystemFormProps> = ({
                 variant="outlined"
                 fullWidth
                 type="number"
+                inputProps={{
+                  min: 0,
+                }}
                 rules={{ required: "Coeficiente requerido." }}
                 error={errors[`systemOthersPluginsMaterialCoefficient${index}`]}
                 helperText={
@@ -1362,6 +1375,9 @@ export const SystemForm: React.FC<SystemFormProps> = ({
               variant="outlined"
               fullWidth
               type="number"
+              inputProps={{
+                min: 0,
+              }}
               error={errors.materialAreaRestrictionValue}
               helperText={errors.materialAreaRestrictionValue?.message}
             />
