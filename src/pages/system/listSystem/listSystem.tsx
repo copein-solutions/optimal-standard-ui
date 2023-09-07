@@ -1,5 +1,13 @@
-import { useEffect } from "react";
-import { Button, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Typography,
+} from "@mui/material";
 import "./listSystem.css";
 import { getSystems } from "../../../services/ApiService";
 import { MainContainer } from "../../../components/mainContainer/MainContainer";
@@ -7,13 +15,19 @@ import { GridCustom } from "../../../components/grid2/Grid";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../redux/reducers/reducer";
 import { useNavigate } from "react-router-dom";
-import { ADMIN_ROL, COMMENTOR_ROL, SYSTEM_CREATE } from "../../../utils/constants";
+import {
+  ADMIN_ROL,
+  COMMENTOR_ROL,
+  SYSTEM_CREATE,
+} from "../../../utils/constants";
 import {
   columnGroupingModel,
   header,
 } from "../listSystemUtils/listSystemUtils";
 
 const ListSystem = () => {
+  const [filteredSystems, setFilteredSystems] = useState([]);
+
   const systems = useSelector((state: RootState) => state.systems);
 
   const dispatch = useDispatch();
@@ -76,9 +90,7 @@ const ListSystem = () => {
                   system.materialBaseName = material.material.product;
                   system.materialBaseUnitPrice = `${material.material.unitPrice.toFixed(
                     2
-                  )} $/${
-                    material.material.presentationUnit
-                  }`;
+                  )} $/${material.material.presentationUnit}`;
                   system.materialBaseType = material.material.type;
                   system.materialBaseComponent = material.material.component;
                   system.materialPotLife = material.material.motLife;
@@ -146,6 +158,7 @@ const ListSystem = () => {
           }
         );
         dispatch({ type: "SET_SYSTEM", payload: response.data });
+        setFilteredSystems(response.data);
       }
     }
     fetchData();
@@ -166,18 +179,54 @@ const ListSystem = () => {
     </div>
   );
 
+  const handleCategoryChange = (event: SelectChangeEvent<string>) => {
+    const category = event.target.value;
+    if (category === "ALL") {
+      setFilteredSystems(systems);
+    } else {
+      setFilteredSystems(
+        systems.filter((s: any) => s.systemCategory === category)
+      );
+    }
+  };
+
   return (
     <MainContainer cardTitle="Sistema">
       <div>
-        {colorExplanation}
-        {userRole === ADMIN_ROL && (
-          <Button variant="text" color="success" onClick={handleAddSystem}>
-            Agregar sistema
-          </Button>
-        )}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <FormControl size="small" className="mb-3">
+            <InputLabel id="select-label">Filtrar por categoria</InputLabel>
+            <Select
+              style={{ width: "420px" }}
+              onChange={handleCategoryChange}
+              labelId="select-label"
+              label="Filtrar por categoria"
+              defaultValue="ALL"
+            >
+              <MenuItem value="ALL">Todas las categorías</MenuItem>
+              <MenuItem value="OPTIMAL_STANDARD">Estándar óptimo</MenuItem>
+              <MenuItem value="ALTERNATIVE_OPTIMAL_STANDARD">
+                Estándar óptimo alternativo
+              </MenuItem>
+            </Select>
+          </FormControl>
+
+          {userRole === ADMIN_ROL && (
+            <Button variant="text" color="success" onClick={handleAddSystem}>
+              Agregar sistema
+            </Button>
+          )}
+          {colorExplanation}
+        </div>
         <GridCustom
           header={header}
-          body={systems}
+          body={filteredSystems}
           hasEdit={userRole === ADMIN_ROL}
           hasDelete={userRole === ADMIN_ROL}
           hasCategory={userRole === ADMIN_ROL}
