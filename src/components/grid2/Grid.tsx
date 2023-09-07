@@ -98,9 +98,7 @@ export const GridCustom: React.FC<GridProps> = ({
   const [toastMsg, setToastMsg] = useState("");
   const [toastType, setToastType] = useState<ToastType>("success");
   const [selectedOption, setSelectedOption] = useState("");
-
   const systems = useSelector((state: RootState) => state.systems);
-  const state = useSelector((state: RootState) => state);
 
   const onDelete = async () => {
     let response: any;
