@@ -184,9 +184,15 @@ const ListSystem = () => {
     if (category === "ALL") {
       setFilteredSystems(systems);
     } else {
-      setFilteredSystems(
-        systems.filter((s: any) => s.systemCategory === category)
-      );
+      if (category === "OPTIMAL_STANDARD") {
+        setFilteredSystems(
+          systems.filter((s: any) => s.systemCategory === category)
+        );
+      } else {
+        setFilteredSystems(
+          systems.filter((s: any) => s.systemCategory !== null)
+        );
+      }
     }
   };
 
@@ -212,7 +218,7 @@ const ListSystem = () => {
               <MenuItem value="ALL">Todas las categorías</MenuItem>
               <MenuItem value="OPTIMAL_STANDARD">Estándar óptimo</MenuItem>
               <MenuItem value="ALTERNATIVE_OPTIMAL_STANDARD">
-                Estándar óptimo alternativo
+                Estándar óptimo y óptimo alternativo
               </MenuItem>
             </Select>
           </FormControl>
