@@ -78,7 +78,7 @@ const ReadonlySystem = () => {
   ] = useState("");
   const [systemParcialMesh, setSystemParcialMesh] = useState(false);
   const [systemParcialMeshName, setSystemParcialMeshName] = useState("");
-  const [selectedParcialMeshLaborCost, setSelectedParcialMeshLaborCost] =
+  const [selectedPartialMeshLaborCost, setSelectedPartialMeshLaborCost] =
     useState("");
   // OTROS COMPLEMENTOS
   const [pluginMaterialDataVisible, setPluginMaterialDataVisible] =
@@ -108,7 +108,7 @@ const ReadonlySystem = () => {
     setSelectedPluginMaterialLaborCost2,
   ] = useState("");
   // VARIABLES GLOBALES
-  let laborCost = "";
+  const [laborCost, setLaborCost] = useState("");
 
   const [selectedPluginMaterialDetail1, setSelectedPluginMaterialDetail1] =
     useState<BaseMaterial>(initMaterialObject);
@@ -134,6 +134,12 @@ const ReadonlySystem = () => {
   useEffect(() => {
     // Carga los datos del JSON
     async function fetchData() {
+      const laborCostResponse = await getLaborCost();
+      if (laborCostResponse && laborCostResponse.data) {
+        setLaborCost(laborCostResponse.data);
+        // } else {
+        //   handleOpenToast("No se puede recuperar el costo laboral del back");
+      }
       const response = await getSystemByID(Number(id));
       if (response?.data.error || response === undefined) {
         alert(
@@ -144,12 +150,6 @@ const ReadonlySystem = () => {
       } else {
         setFormData(response.data);
       }
-      const laborCostResponse = await getLaborCost();
-      if (laborCostResponse && laborCostResponse.data) {
-        laborCost = laborCostResponse.data;
-        // } else {
-        //   handleOpenToast("No se puede recuperar el costo laboral del back");
-      }
     }
     fetchData();
   }, []);
@@ -158,11 +158,37 @@ const ReadonlySystem = () => {
     navigator(SYSTEM_LIST);
   };
 
+  useEffect(() => {
+    const price = getTotalLaborCost(
+      Number(baseMaterialLaborCost),
+      Number(selectedTotalMeshLaborCost),
+      Number(selectedPartialMeshLaborCost),
+      Number(selectedPluginMaterialLaborCost0),
+      Number(selectedPluginMaterialLaborCost1),
+      Number(selectedPluginMaterialLaborCost2)
+    );
+    setTotalLaborCost(price);
+  }, [
+    baseMaterialLaborCost,
+    selectedPartialMeshLaborCost,
+    selectedPluginMaterialLaborCost0,
+    selectedPluginMaterialLaborCost1,
+    selectedPluginMaterialLaborCost2,
+    selectedTotalMeshLaborCost,
+  ]);
+
+  useEffect(() => {
+    const price = baseMaterialTotalPrice + totalLaborCost;
+    setSystemTotalPrice(truncateDecimals(price, 2));
+  }, [baseMaterialTotalPrice, totalLaborCost]);
+
   // Pre cargo formulario en caso de ser update
   useEffect(() => {
     if (formData) {
       // console.log("formData", formData);
-      setBaseMaterialTotalPrice(truncateDecimals(Number(formData.totalPrice), 2));
+      setBaseMaterialTotalPrice(
+        truncateDecimals(Number(formData.totalPrice), 2)
+      );
       setApplicationAreaName(String(formData.applicationArea.name));
       const material = `${formData?.materials[0].material.product} - ${formData?.materials[0].material.brand}`;
       setMaterial(material);
@@ -236,7 +262,7 @@ const ReadonlySystem = () => {
           formatMaterialLaborCost(
             laborCost,
             m.performance,
-            setSelectedParcialMeshLaborCost
+            setSelectedPartialMeshLaborCost
           );
         } else if (m.typeOfUse === "PLUGIN_MATERIAL") {
           handleAddMaterial();
@@ -291,15 +317,6 @@ const ReadonlySystem = () => {
           pluginMaterialC++;
         }
       });
-      const price = getTotalLaborCost(
-        Number(baseMaterialLaborCost),
-        Number(selectedTotalMeshLaborCost),
-        Number(selectedParcialMeshLaborCost),
-        Number(selectedPluginMaterialLaborCost0),
-        Number(selectedPluginMaterialLaborCost1),
-        Number(selectedPluginMaterialLaborCost2)
-      );
-      setTotalLaborCost(price);
       dispatch({ type: "SET_COMMENTS", payload: formData.comments });
     }
   }, [setValue, formData]);
@@ -711,7 +728,7 @@ const ReadonlySystem = () => {
                         Costo mano de obra: $/m²
                       </Typography>
                       <Typography fontWeight="700" variant="body1">
-                        {selectedParcialMeshLaborCost}
+                        {selectedPartialMeshLaborCost}
                       </Typography>
                     </div>
                   </div>
