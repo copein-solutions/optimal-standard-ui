@@ -3,17 +3,17 @@
   "name": "Optimal Standard App",
   "icons": [
     {
-      "src": "CEAOSA_favicon.png",
+      "src": "favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "CEAOSA_favicon.png",
+      "src": "favicon.ico",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "CEAOSA_favicon.png",
+      "src": "favicon.ico",
       "type": "image/png",
       "sizes": "512x512"
     }

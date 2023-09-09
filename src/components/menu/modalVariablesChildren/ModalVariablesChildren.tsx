@@ -19,13 +19,13 @@ const ModalChildren: React.FC<ModalChildrenProps> = ({
   laborCostValue,
   handleDollarRateSubmit,
   handleLaborCostSubmit,
-  dollarRateTxt: dollarText,
-  laborCostTxt: laborCost,
+  dollarRateTxt,
+  laborCostTxt,
 }) => {
   return (
     <div className="modal-wrapper">
       <div className="mb-5 modal-inputs">
-        <Typography className="mb-4">{dollarText}</Typography>
+        <Typography className="mb-4">{dollarRateTxt}</Typography>
         <div>
           <TextField
             sx={{ width: "8rem" }}
@@ -46,7 +46,7 @@ const ModalChildren: React.FC<ModalChildrenProps> = ({
       </div>
       <Divider sx={{ width: "100%" }} />
       <div className="mt-5 modal-inputs">
-        <Typography className="mb-4">{laborCost}</Typography>
+        <Typography className="mb-4">{laborCostTxt}</Typography>
         <div>
           <TextField
             sx={{ width: "8rem" }}
@@ -57,6 +57,7 @@ const ModalChildren: React.FC<ModalChildrenProps> = ({
             inputProps={{
               min: 0,
             }}
+            helperText="* Valor hora"
             defaultValue={laborCostValue}
             onChange={handleLaborCost}
           />
