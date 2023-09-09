@@ -1,10 +1,11 @@
 import React, { ReactNode, useEffect, useLayoutEffect, useState } from "react";
-import { Divider, Button, Typography, InputAdornment } from "@mui/material";
+import { Divider, Button, Typography, InputAdornment, styled, TooltipProps, Tooltip, tooltipClasses } from "@mui/material";
 import CustomTextField from "../../../components/TextField";
 import CustomSelectField from "../../../components/customSelectField";
 import CustomDivider from "../../../components/divider";
 import MaterialData from "../../system/materialData/materialData";
 import Toast from "../../../components/toast";
+import InfoIcon from "@mui/icons-material/Info";
 
 import { useForm } from "react-hook-form";
 import "./systemForm.css";
@@ -648,7 +649,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   }, [totalMeshPerformanceWatched]);
 
   // Costo mano de obra malla parcial
-  const partialMeshPerformanceWatched = watch("parcialMeshPerformance");
+  const partialMeshPerformanceWatched = watch("partialMeshPerformance");
   useEffect(() => {
     formatMaterialLaborCost(
       laborCost,
@@ -696,7 +697,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   const watchedPerformanceFields = watch([
     "baseMaterialPerformance",
     "totalMeshPerformance",
-    "parcialMeshPerformance",
+    "partialMeshPerformance",
     "systemOthersPluginsPerformance0",
     "systemOthersPluginsPerformance1",
     "systemOthersPluginsPerformance2",
@@ -830,6 +831,30 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     }
   };
 
+  // #region TOOLTIP
+  const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))({
+    [`& .${tooltipClasses.tooltip}`]: {
+      maxWidth: 600,
+    },
+  });
+
+  const pluginMaterialPerformanceExplanation = (
+    <CustomWidthTooltip
+      title={
+        <span style={{ fontSize: "1rem", maxWidth: "600px" }}>
+          ACÁ VA A IR EL TEXTO PROPORCIONADO POR GONZALO
+        </span>
+      }
+      placement="bottom"
+    >
+      <InfoIcon />
+    </CustomWidthTooltip>
+  );
+  //#endregion
+
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {/* ------------- Campo de aplicación ------------- */}
@@ -862,7 +887,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         <div className="col-lg-2 col-sm-3 mb-3 d-flex">
           <CustomTextField
             name="systemTotalPrice"
-            className="readOnly"
+            className="readOnly total-cost"
             control={control}
             label="Costo materiales"
             value={baseMaterialTotalPrice}
@@ -884,7 +909,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         <div className="col-lg-2 col-sm-3 mb-3 d-flex">
           <CustomTextField
             name="systemTotalPrice"
-            className="readOnly"
+            className="readOnly total-cost"
             control={control}
             label="Costo mano de obra"
             value={totalLaborCost}
@@ -906,7 +931,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         <div className="col-lg-2 col-sm-3 mb-3 d-flex">
           <CustomTextField
             name="systemTotalPrice"
-            className="readOnly"
+            className="readOnly total-cost custom-color"
             control={control}
             label="Costo total"
             value={systemTotalPrice}
@@ -934,7 +959,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       <CustomDivider text="Aplicación" />
       {/* ------------- Consumo total ------------- */}
       <div className="row mt-3">
-        <div className="col-lg-2 col-sm-6">
+        <div className="col-lg-2 col-sm-2">
           <CustomTextField
             name="totalConsumption"
             control={control}
@@ -951,7 +976,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
           />
         </div>
         {/* ------------- Rendimiento (material base) ------------- */}
-        <div className="col-lg-2 col-sm-6">
+        <div className="col-lg-2 col-sm-2">
           <CustomTextField
             name="baseMaterialPerformance"
             control={control}
@@ -965,7 +990,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
           />
         </div>
         {/* ------------- Cantidad de manos ------------- */}
-        <div className="col-lg-2 col-sm-6">
+        <div className="col-lg-2 col-sm-2">
           <CustomTextField
             name="layers"
             control={control}
@@ -982,7 +1007,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
           />
         </div>
         {/* ------------- Modo de aplicación ------------- */}
-        <div className="col-lg-2 col-sm-6 mt-16">
+        <div className="col-lg-2 col-sm-3">
           <CustomSelectField
             name="applicationMode"
             control={control}
@@ -993,7 +1018,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
           />
         </div>
         {/* ------------- Curado ------------- */}
-        <div className="col-lg-2 col-sm-6 mt-16">
+        <div className="col-lg-2 col-sm-3">
           <CustomSelectField
             name="cured"
             control={control}
@@ -1006,17 +1031,17 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       </div>
       {/* ------------- Info bloque Aplicación------------- */}
       <div className="row mt-3">
-        <div className="col-lg-5 col-sm-4">
+        <div className="col-lg-4 col-sm-8">
           <div className="material-data-container">
             <div className="data-div ml-2">
-              <Typography fontWeight="500" mr={1} variant="body1">
-                Costo material: $/m²
+              <Typography mr={1} variant="body1">
+                Costo mat.: $/m²
               </Typography>
-              <Typography fontWeight="700" variant="body1">
+              <Typography mr={5} fontWeight="700" variant="body1">
                 {baseMaterialPrice}
               </Typography>
-              <Typography fontWeight="500" ml={5} mr={1} variant="body1">
-                Costo mano de obra: $/m²
+              <Typography mr={1} variant="body1">
+                Costo MO: $/m²
               </Typography>
               <Typography fontWeight="700" variant="body1">
                 {baseMaterialLaborCost}
@@ -1029,7 +1054,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       <CustomDivider text="Mallas 100%" />
       {/* ------------- Si / No ------------- */}
       <div className="row mt-3">
-        <div className="col-lg-2 col-sm-6">
+        <div className="col-lg-2 col-sm-2">
           <CustomSelectField
             name="systemMeshTotalPercent"
             control={control}
@@ -1042,7 +1067,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         {/* ------------- Nombre malla 100% ------------- */}
         {showMeshTotalPercentInput && (
           <>
-            <div className="col-lg-6 col-sm-6">
+            <div className="col-lg-6 col-sm-7">
               <CustomSelectField
                 name="systemMeshTotalPercentName"
                 control={control}
@@ -1054,7 +1079,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
               />
             </div>
             {/* ------------- Rendimiento malla 100% ------------- */}
-            <div className="col-lg-2 col-sm-6">
+            <div className="col-lg-2 col-sm-3">
               <CustomTextField
                 name="totalMeshPerformance"
                 control={control}
@@ -1073,19 +1098,19 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       {/* ------------- Info malla 100% seleccionada ------------- */}
       <div className="row mt-3">
         {totalMeshUnityPriceVisible && showMeshTotalPercentInput && (
-          <div className="col-lg-5 col-sm-4">
+          <div className="col-lg-4 col-sm-8">
             <div className="material-data-container">
               <div className="data-div ml-2">
-                <Typography fontWeight="500" mr={1} variant="body1">
-                  Costo material: $/m²
+                <Typography mr={1} variant="body1">
+                  Costo mat.: $/m²
                 </Typography>
                 <Typography fontWeight="700" variant="body1">
                   {selectedTotalMeshPrice}
                 </Typography>
-                <Typography fontWeight="500" ml={5} mr={1} variant="body1">
-                  Costo mano de obra: $/m²
+                <Typography ml={5} variant="body1">
+                  Costo MO: $/m²
                 </Typography>
-                <Typography fontWeight="700" variant="body1">
+                <Typography ml={1} fontWeight="700" variant="body1">
                   {selectedTotalMeshLaborCost}
                 </Typography>
               </div>
@@ -1097,7 +1122,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       <CustomDivider text="Malla parcial" />
       <div className="row mt-3">
         {/* ------------- Malla parcial si / no ------------- */}
-        <div className="col-lg-2 col-sm-6">
+        <div className="col-lg-2 col-sm-2">
           <CustomSelectField
             name="systemParcialMesh"
             control={control}
@@ -1122,7 +1147,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
               />
             </div>
             {/* ------------- Coeficiente por m² ------------- */}
-            <div className="col-lg-2 col-sm-2 mt-16">
+            <div className="col-lg-2 col-sm-2">
               <CustomTextField
                 name="systemParcialMeshCoefficient"
                 control={control}
@@ -1139,12 +1164,12 @@ export const SystemForm: React.FC<SystemFormProps> = ({
               />
             </div>
             {/* ------------- Rendimiento malla parcial ------------- */}
-            <div className="col-lg-2 col-sm-6">
+            <div className="col-lg-2 col-sm-2">
               <CustomTextField
                 name="partialMeshPerformance"
                 control={control}
                 rules={{ required: "Rendimiento requerido." }}
-                label="Rendimiento hrs/m²"
+                label="Rendimiento hrs/ml"
                 variant="outlined"
                 fullWidth
                 type="number"
@@ -1158,23 +1183,23 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       <div className="row mt-3">
         {/* ------------- Info malla parcial seleccionada ------------- */}
         {partialMeshUnityPriceVisible && showParcialMeshInputs && (
-          <div className="col-lg-6 col-sm-4 mt-16">
+          <div className="col-lg-6 col-sm-11 mt-16">
             <div className="material-data-container">
               <div className="data-div ml-2">
                 <Typography fontWeight="500" mr={1} variant="body1">
-                  Precio: $/ml
+                  Costo mat.: $/ml
                 </Typography>
                 <Typography fontWeight="700" variant="body1">
                   {selectedPartialMeshPrice}
                 </Typography>
                 <Typography fontWeight="500" ml={5} mr={1} variant="body1">
-                  Precio: $/m²
+                  Costo mat.: $/m²
                 </Typography>
                 <Typography fontWeight="700" variant="body1">
                   {selectedPartialMeshPricePerCoefficient}
                 </Typography>
                 <Typography fontWeight="500" ml={5} mr={1} variant="body1">
-                  Costo mano de obra: $/m²
+                  Costo MO: $/m²
                 </Typography>
                 <Typography fontWeight="700" variant="body1">
                   {selectedParcialMeshLaborCost}
@@ -1226,7 +1251,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
               />
             </div>
             {/* ------------- Coeficiente por m² (otros complementos) ------------- */}
-            <div className="col-lg-2 col-sm-2">
+            <div className="col-lg-2 col-sm-3">
               <CustomTextField
                 name={`systemOthersPluginsMaterialCoefficient${index}`}
                 control={control}
@@ -1246,7 +1271,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
               />
             </div>
             {/* ------------- Rendimiento (otros complementos) ------------- */}
-            <div className="col-lg-2 col-sm-6">
+            <div className="col-lg-2 col-sm-3">
               <CustomTextField
                 name={`systemOthersPluginsPerformance${index}`}
                 control={control}
@@ -1259,13 +1284,23 @@ export const SystemForm: React.FC<SystemFormProps> = ({
                 helperText={
                   errors[`systemOthersPluginsPerformance${index}`]?.message
                 }
+                InputProps={{
+                  readOnly: true,
+                  startAdornment: "$",
+                  endAdornment: (
+                    <InputAdornment sx={{ marginRight: "5px" }} position="end">
+                      {pluginMaterialPerformanceExplanation}
+                    </InputAdornment>
+                  ),
+                }}
               />
             </div>
-            <div className="col-lg-3 col-sm-4">
+            <div className="col-lg-3 col-sm-8 mt-16">
+              {/* ------------- Info (otros complementos) ------------- */}
               <div className="material-data-container">
                 <div className="data-div ml-2">
                   <Typography variant="body1" mr={1}>
-                    Costo material: $/m²
+                    Costo mat.: $/m²
                   </Typography>
                   <Typography fontWeight="700" variant="body1">
                     {index === 0
@@ -1277,7 +1312,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
                 </div>
                 <div className="data-div ml-2">
                   <Typography variant="body1" mr={1}>
-                    Costo mano de obra: $/m²
+                    Costo MO: $/m²
                   </Typography>
                   <Typography fontWeight="700" variant="body1">
                     {index === 0
@@ -1290,7 +1325,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
               </div>
             </div>
             {/* ------------- Descripción complemento (otros complementos) ------------- */}
-            <div className="col-lg-6 col-sm-6 mt-3">
+            <div className="col-lg-6 col-sm-12 mt-3">
               <CustomTextField
                 multiline
                 minRows={3}
@@ -1302,7 +1337,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
               />
             </div>
             {/* ------------- Descripción coef m² (otros complementos) ------------- */}
-            <div className="col-lg-6 col-sm-6 mt-3">
+            <div className="col-lg-6 col-sm-12 mt-3">
               <CustomTextField
                 multiline
                 minRows={3}
@@ -1322,6 +1357,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
       ))}
       <CustomDivider text="Sistema de capas" />
       <div className="row mt-3">
+        {/* ------------- Condiciones de base ------------- */}
         <div className="col-lg-12 col-sm-12">
           <CustomTextField
             name="baseConditions"
@@ -1336,6 +1372,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             helperText={errors.baseConditions?.message}
           />
         </div>
+        {/* ------------- Condiciones como soporte ------------- */}
         <div className="col-lg-12 col-sm-12 mt-3">
           <CustomTextField
             name="supportConditions"
@@ -1364,7 +1401,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
             options={SI_NO_NE}
           />
         </div>
-        {/* ------------- Campo restriction ------------- */}
+        {/* ------------- Por área m² ------------- */}
         {showRestrictions && (
           <div className="col-lg-3 col-sm-6">
             <CustomTextField
@@ -1384,11 +1421,12 @@ export const SystemForm: React.FC<SystemFormProps> = ({
           </div>
         )}
       </div>
+      {/* ------------- Otras restricciones ------------- */}
       <div className="row mt-3">
-        <div className="col-lg-12 col-sm-6">
+        <div className="col-lg-12 col-sm-12">
           <CustomTextField
             multiline
-            minRows={3}
+            minRows={2}
             name="materialAreaDescription"
             control={control}
             label="Otras restricciones"

@@ -9,10 +9,14 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
+
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import VerifiedIcon from "@mui/icons-material/Verified";
+import BeenhereIcon from "@mui/icons-material/Beenhere";
 import CommentIcon from "@mui/icons-material/Comment";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
 import { useNavigate } from "react-router-dom";
 import "./Grid.css";
 import CustomModal from "../modal/customModal";
@@ -35,8 +39,7 @@ import {
   DataGrid,
   GridToolbar,
 } from "@mui/x-data-grid";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
 import { RootState } from "../../redux/reducers/reducer";
 
 type Header = {
@@ -132,8 +135,8 @@ export const GridCustom: React.FC<GridProps> = ({
           width: "40px",
           minWidth: 0,
           marginRight: "20px",
+          color: "#d32f2fde"
         }}
-        color="error"
         onClick={() => openDeleteModal(id)}
       >
         <DeleteIcon fontSize="large" />
@@ -235,8 +238,8 @@ export const GridCustom: React.FC<GridProps> = ({
           width: "40px",
           minWidth: 0,
           marginRight: "20px",
+          color: "#1976d2c2"
         }}
-        color="success"
         onClick={() => onEdit(id)}
       >
         <EditIcon fontSize="large" color="primary" />
@@ -253,11 +256,11 @@ export const GridCustom: React.FC<GridProps> = ({
           width: "40px",
           minWidth: 0,
           marginRight: "20px",
+          color: "#505050",
         }}
-        color="success"
         onClick={() => openSetCategoryModal(system)}
       >
-        <VerifiedIcon fontSize="large" />
+        <BeenhereIcon fontSize="large" />
       </Button>
     </Tooltip>
   );
