@@ -24,7 +24,11 @@ export const fetchHeaders = () => {
 
 //#region USER
 export const login = async (data: any): Promise<ResponseApi> => {
-  return post("public/login", data);
+  return post("/public/login", data);
+};
+
+export const logout = async (): Promise<ResponseApi> => {
+  return post("/user/logout", {});
 };
 //#endregion
 
@@ -127,12 +131,6 @@ export const createSystemComment = async (
   data: any
 ): Promise<ResponseApi> => {
   return post(`/user/construction_system/${id}/comment`, data);
-};
-
-export const getSystemCommentAdmin = async (
-  id: number
-): Promise<ResponseApi> => {
-  return get(`/admin/construction_system/${id}/comment`);
 };
 
 export const getSystemComment = async (id: number): Promise<ResponseApi> => {
