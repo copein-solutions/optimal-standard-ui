@@ -102,6 +102,8 @@ export const GridCustom: React.FC<GridProps> = ({
   const [toastMsg, setToastMsg] = useState("");
   const [toastType, setToastType] = useState<ToastType>("success");
   const [selectedOption, setSelectedOption] = useState("");
+  const [lastClickTime, setLastClickTime] = useState(0);
+
   const systems = useSelector((state: RootState) => state.systems);
 
   const userRole = localStorage.getItem("userRole");
@@ -425,11 +427,6 @@ export const GridCustom: React.FC<GridProps> = ({
     }
   }
 
-  const onCellClick = (params: GridCellParams) => {
-    const systemId = params.row.id;
-    navigator(`/system/${systemId}/view`);
-  };
-
   function SortedDescendingIcon() {
     return <ExpandMoreIcon className="icon" />;
   }
@@ -437,6 +434,21 @@ export const GridCustom: React.FC<GridProps> = ({
   function SortedAscendingIcon() {
     return <ExpandLessIcon className="icon" />;
   }
+
+  const handleCellClick = (params: GridCellParams) => {
+    const currentTime = new Date().getTime();
+    const timeSinceLastClick = currentTime - lastClickTime;
+
+    if (timeSinceLastClick < 300) {
+      handleCellDoubleClick(params);
+    }
+    setLastClickTime(currentTime);
+  };
+
+  const handleCellDoubleClick = (params: GridCellParams) => {
+    const systemId = params.row.id;
+    navigator(`/system/${systemId}/view`);
+  };
 
   return (
     <div className="data-grid-wrapper">
@@ -453,7 +465,7 @@ export const GridCustom: React.FC<GridProps> = ({
         disableDensitySelector
         disableRowSelectionOnClick
         hideFooter
-        onCellDoubleClick={onCellClick}
+        onCellClick={handleCellClick}
         localeText={esES.components.MuiDataGrid.defaultProps.localeText}
         experimentalFeatures={{ columnGrouping: true }}
         columnGroupingModel={columnGroupingModel}

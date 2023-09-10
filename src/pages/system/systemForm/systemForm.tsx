@@ -1,5 +1,14 @@
 import React, { ReactNode, useEffect, useLayoutEffect, useState } from "react";
-import { Divider, Button, Typography, InputAdornment, styled, TooltipProps, Tooltip, tooltipClasses } from "@mui/material";
+import {
+  Divider,
+  Button,
+  Typography,
+  InputAdornment,
+  styled,
+  TooltipProps,
+  Tooltip,
+  tooltipClasses,
+} from "@mui/material";
 import CustomTextField from "../../../components/TextField";
 import CustomSelectField from "../../../components/customSelectField";
 import CustomDivider from "../../../components/divider";
@@ -338,6 +347,15 @@ export const SystemForm: React.FC<SystemFormProps> = ({
 
   useEffect(() => {
     async function fetchData() {
+      // Obtengo el costo laboral del back
+      const laborCostResponse = await getLaborCost();
+      if (laborCostResponse && laborCostResponse.data) {
+        const laborCost = laborCostResponse.data;
+        setLaborCost(laborCost);
+      } else {
+        handleOpenToast("No se puede recuperar el costo laboral del back");
+      }
+
       // Obtengo campos de aplicación del back
       const applicationAreasResponse = await getApplicationArea();
       if (applicationAreasResponse && applicationAreasResponse.data) {
@@ -367,15 +385,6 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         setGlobalMaterials(backendMaterials);
       } else {
         handleOpenToast("No se pueden recuperar materiales del back");
-      }
-
-      // Obtengo el costo laboral del back
-      const laborCostResponse = await getLaborCost();
-      if (laborCostResponse && laborCostResponse.data) {
-        const laborCost = laborCostResponse.data;
-        setLaborCost(laborCost);
-      } else {
-        handleOpenToast("No se puede recuperar el costo laboral del back");
       }
     }
 
@@ -854,7 +863,6 @@ export const SystemForm: React.FC<SystemFormProps> = ({
   );
   //#endregion
 
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {/* ------------- Campo de aplicación ------------- */}
@@ -1285,7 +1293,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
                   errors[`systemOthersPluginsPerformance${index}`]?.message
                 }
                 InputProps={{
-                  readOnly: true,
+                  // readOnly: true,
                   startAdornment: "$",
                   endAdornment: (
                     <InputAdornment sx={{ marginRight: "5px" }} position="end">

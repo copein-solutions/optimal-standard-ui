@@ -93,7 +93,7 @@ const ListSystem = () => {
                   )} $/${material.material.presentationUnit}`;
                   system.materialBaseType = material.material.type;
                   system.materialBaseComponent = material.material.component;
-                  system.materialPotLife = material.material.motLife;
+                  system.materialPotLife = material.material.potLife;
                   system.materialMinApplicableTemp =
                     material.material.minApplicableTemp;
                 } else if (material.typeOfUse === "TOTAL_MESH") {
@@ -188,9 +188,15 @@ const ListSystem = () => {
     if (category === "ALL") {
       setFilteredSystems(systems);
     } else {
-      setFilteredSystems(
-        systems.filter((s: any) => s.systemCategory === category)
-      );
+      if (category === "OPTIMAL_STANDARD") {
+        setFilteredSystems(
+          systems.filter((s: any) => s.systemCategory === category)
+        );
+      } else {
+        setFilteredSystems(
+          systems.filter((s: any) => s.systemCategory !== null)
+        );
+      }
     }
   };
 
@@ -204,10 +210,10 @@ const ListSystem = () => {
             label="Filtrar por categoria"
             defaultValue="ALL"
           >
-            <MenuItem value="ALL">Todas las categorías</MenuItem>
+            <MenuItem value="ALL">Mostrar todos</MenuItem>
             <MenuItem value="OPTIMAL_STANDARD">Estándar óptimo</MenuItem>
             <MenuItem value="ALTERNATIVE_OPTIMAL_STANDARD">
-              Estándar óptimo alternativo
+              Estándar óptimo y óptimo alternativo
             </MenuItem>
           </Select>
         </FormControl>
