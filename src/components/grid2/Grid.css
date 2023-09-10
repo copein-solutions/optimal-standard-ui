@@ -23,3 +23,7 @@
 .alternative-optimal-standard-color:hover {
   background-color: rgb(247, 165, 70) !important;
 }
+
+.MuiDataGrid-columnHeaders {
+  position: sticky;
+}

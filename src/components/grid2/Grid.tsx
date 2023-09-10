@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Button,
   FormControl,
@@ -41,6 +41,7 @@ import {
 } from "@mui/x-data-grid";
 
 import { RootState } from "../../redux/reducers/reducer";
+import { READONLY_ROL } from "../../utils/constants";
 
 type Header = {
   name: string;
@@ -103,6 +104,8 @@ export const GridCustom: React.FC<GridProps> = ({
   const [selectedOption, setSelectedOption] = useState("");
   const systems = useSelector((state: RootState) => state.systems);
 
+  const userRole = localStorage.getItem("userRole");
+
   const onDelete = async () => {
     let response: any;
     if (navigateTo === "material") {
@@ -135,7 +138,7 @@ export const GridCustom: React.FC<GridProps> = ({
           width: "40px",
           minWidth: 0,
           marginRight: "20px",
-          color: "#d32f2fde"
+          color: "#d32f2fde",
         }}
         onClick={() => openDeleteModal(id)}
       >
@@ -238,7 +241,7 @@ export const GridCustom: React.FC<GridProps> = ({
           width: "40px",
           minWidth: 0,
           marginRight: "20px",
-          color: "#1976d2c2"
+          color: "#1976d2c2",
         }}
         onClick={() => onEdit(id)}
       >
@@ -409,15 +412,17 @@ export const GridCustom: React.FC<GridProps> = ({
       description: col.description,
     })) || [];
 
-  if (hasEdit || hasDelete || hasComment || hasCategory || hasViewComment) {
-    columns.push({
-      field: "actions",
-      headerName: "",
-      width: 200,
-      sortable: false,
-      filterable: false,
-      renderCell: (params) => params.value,
-    });
+  if (userRole !== READONLY_ROL) {
+    if (hasEdit || hasDelete || hasComment || hasCategory || hasViewComment) {
+      columns.push({
+        field: "actions",
+        headerName: "",
+        width: 200,
+        sortable: false,
+        filterable: false,
+        renderCell: (params) => params.value,
+      });
+    }
   }
 
   const onCellClick = (params: GridCellParams) => {

@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/reducers/reducer";
 import MainContainer from "../../../components/mainContainer";
 import { ADMIN_ROL } from "../../../utils/constants";
+import "./listSystemComments.css";
 
 type ListSystemCommentsProps = {
   /** id de sistema, para cargar todos sus comentarios. */
@@ -69,8 +70,8 @@ const ListSystemComments: React.FC<ListSystemCommentsProps> = ({ id }) => {
 
   const colorExplanation = (
     <div className="color-explanation mb-3">
-      <Typography>Pendiente</Typography>
-      <div className="alternative-optimal-standard"></div>
+      <Typography>Pendiente de aprobación</Typography>
+      <div className="pending"></div>
     </div>
   );
 

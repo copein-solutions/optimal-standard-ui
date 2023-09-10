@@ -71,9 +71,11 @@ const ListMaterial = () => {
   return (
     <MainContainer cardTitle="Listado de material">
       {userRole === ADMIN_ROL && (
-        <Button variant="text" color="success" onClick={handleOpenForm}>
-          Agregar material
-        </Button>
+        <div className="add-material-button">
+          <Button variant="text" color="success" onClick={handleOpenForm}>
+            Agregar material
+          </Button>
+        </div>
       )}
       <GridCustom
         header={header}
