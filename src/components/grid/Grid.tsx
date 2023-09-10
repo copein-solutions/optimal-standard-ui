@@ -67,9 +67,8 @@ export const GridCustom: React.FC<GridProps> = ({
   const [commentValue, setCommentValue] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
   const [modalWithChildrenOpen, setModalWithChildrenOpen] = useState(false);
-  const [systemCommentItemId, setSystemCommentItemId] = useState<number | null>(
-    null
-  );
+  const [systemCommentItemId, setSystemCommentItemId] =
+    useState<number | null>(null);
 
   const navigator = useNavigate();
 
@@ -189,19 +188,21 @@ export const GridCustom: React.FC<GridProps> = ({
   };
 
   const editButton = (comment: any) => (
-    <Button
-      sx={{
-        borderRadius: "50%",
-        height: "40px",
-        width: "40px",
-        minWidth: 0,
-      }}
-      color="success"
-      variant="text"
-      onClick={() => onEdit(comment)}
-    >
-      <EditIcon />
-    </Button>
+    <Tooltip title="Editar comentario" placement="top">
+      <Button
+        sx={{
+          borderRadius: "50%",
+          height: "40px",
+          width: "40px",
+          minWidth: 0,
+        }}
+        color="success"
+        variant="text"
+        onClick={() => onEdit(comment)}
+      >
+        <EditIcon />
+      </Button>
+    </Tooltip>
   );
 
   const handleConfirmCategorization = async () => {
@@ -242,7 +243,7 @@ export const GridCustom: React.FC<GridProps> = ({
   };
 
   const statusButton = (id: number) => (
-    <Tooltip title="Autorizar comentario" placement="top">
+    <Tooltip title="Aprobar comentario" placement="top">
       <Button
         sx={{
           borderRadius: "50%",

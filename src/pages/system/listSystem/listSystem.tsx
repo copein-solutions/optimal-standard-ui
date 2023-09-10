@@ -76,7 +76,7 @@ const ListSystem = () => {
             system.id = system.id;
             system.applicationAreaName = system.applicationArea?.name;
             system.cured = system.cured ? "Si" : "No";
-            system.totalPrice = `${system.totalPrice.toFixed(2)} $/m2`;
+            system.totalPrice = `${system.totalPrice.toFixed(2)} $/m²`;
             let components: number = 0;
             system.materials.map(
               (material: {
@@ -171,11 +171,15 @@ const ListSystem = () => {
   const userRole = localStorage.getItem("userRole");
 
   const colorExplanation = (
-    <div className="color-explanation">
-      <Typography>Estándar óptimo</Typography>
-      <div className="optimal-standard"></div>
-      <Typography>Estándar óptimo alternativo</Typography>
-      <div className="alternative-optimal-standard"></div>
+    <div className="color-explanation-wrapper d-flex">
+      <div className="color-explanation">
+        <Typography>Estándar óptimo</Typography>
+        <div className="optimal-standard"></div>
+      </div>
+      <div className="color-explanation ml-2">
+        <Typography>Estándar óptimo alternativo</Typography>
+        <div className="alternative-optimal-standard"></div>
+      </div>
     </div>
   );
 
@@ -198,50 +202,42 @@ const ListSystem = () => {
 
   return (
     <MainContainer cardTitle="Sistema">
-      <div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <FormControl size="small" className="mb-3">
-            <InputLabel id="select-label">Filtrar por categoria</InputLabel>
-            <Select
-              style={{ width: "420px" }}
-              onChange={handleCategoryChange}
-              labelId="select-label"
-              label="Filtrar por categoria"
-              defaultValue="ALL"
-            >
-              <MenuItem value="ALL">Mostrar todos</MenuItem>
-              <MenuItem value="OPTIMAL_STANDARD">Estándar óptimo</MenuItem>
-              <MenuItem value="ALTERNATIVE_OPTIMAL_STANDARD">
-                Estándar óptimo y óptimo alternativo
-              </MenuItem>
-            </Select>
-          </FormControl>
+      <div className="header-wrapper">
+        <FormControl size="small" className="mb-3 category-filter">
+          <InputLabel id="select-label">Filtrar por categoria</InputLabel>
+          <Select
+            onChange={handleCategoryChange}
+            label="Filtrar por categoria"
+            defaultValue="ALL"
+          >
+            <MenuItem value="ALL">Mostrar todos</MenuItem>
+            <MenuItem value="OPTIMAL_STANDARD">Estándar óptimo</MenuItem>
+            <MenuItem value="ALTERNATIVE_OPTIMAL_STANDARD">
+              Estándar óptimo y óptimo alternativo
+            </MenuItem>
+          </Select>
+        </FormControl>
 
-          {userRole === ADMIN_ROL && (
+        {userRole === ADMIN_ROL && (
+          <div className="add-system-button">
             <Button variant="text" color="success" onClick={handleAddSystem}>
               Agregar sistema
             </Button>
-          )}
-          {colorExplanation}
-        </div>
-        <GridCustom
-          header={header}
-          body={filteredSystems}
-          hasEdit={userRole === ADMIN_ROL}
-          hasDelete={userRole === ADMIN_ROL}
-          hasCategory={userRole === ADMIN_ROL}
-          hasComment={userRole === COMMENTOR_ROL}
-          hasViewComment
-          navigateTo="system"
-          columnGroupingModel={columnGroupingModel}
-        />
+          </div>
+        )}
+        {colorExplanation}
       </div>
+      <GridCustom
+        header={header}
+        body={filteredSystems}
+        hasEdit={userRole === ADMIN_ROL}
+        hasDelete={userRole === ADMIN_ROL}
+        hasCategory={userRole === ADMIN_ROL}
+        hasComment={userRole === COMMENTOR_ROL}
+        hasViewComment
+        navigateTo="system"
+        columnGroupingModel={columnGroupingModel}
+      />
     </MainContainer>
   );
 };

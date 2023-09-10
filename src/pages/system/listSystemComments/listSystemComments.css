@@ -1,0 +1,7 @@
+.pending {
+    background-color: rgba(247, 234, 55, 0.322);
+    border: 0.5px solid black;
+    margin-left: 5px;
+    height: 20px;
+    width: 40px;
+}

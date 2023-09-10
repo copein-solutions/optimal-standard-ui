@@ -62,7 +62,6 @@ export const columnGroupingModel: GridColumnGroupingModel = [
 ];
 
 export const header = [
-  // { name: "", value: "systemCategory", width: 0 },
   { name: "Id sistema", value: "id", width: 80 },
   { name: "Campo de aplicación", value: "applicationAreaName", width: 450 },
   { name: "Precio", value: "totalPrice", width: 150 },
@@ -99,7 +98,7 @@ export const header = [
     value: "materialPartialMeshUnitPrice",
     width: 150,
   },
-  { name: "Coef. por m2", value: "materialPartialMeshCoef", width: 150 },
+  { name: "Coef. por m²", value: "materialPartialMeshCoef", width: 150 },
   // Material complementario 1
   {
     name: "Complemento del sistema",
@@ -108,7 +107,7 @@ export const header = [
   },
   { name: "Descripción", value: "materialPlugin1Description", width: 150 },
   { name: "Precio unitario", value: "materialPlugin1UnitPrice", width: 150 },
-  { name: "Coef. por m2", value: "materialPlugin1Coef", width: 150 },
+  { name: "Coef. por m²", value: "materialPlugin1Coef", width: 150 },
   // Material complementario 2
   {
     name: "Complemento del sistema 2",
@@ -117,7 +116,7 @@ export const header = [
   },
   { name: "Descripción", value: "materialPlugin2Description", width: 150 },
   { name: "Precio unitario", value: "materialPlugin2UnitPrice", width: 150 },
-  { name: "Coef. por m2", value: "materialPlugin2Coef", width: 150 },
+  { name: "Coef. por m²", value: "materialPlugin2Coef", width: 150 },
   // Material complementario 3
   {
     name: "Complemento del sistema 3",
@@ -126,9 +125,9 @@ export const header = [
   },
   { name: "Descripción", value: "materialPlugin3Description", width: 150 },
   { name: "Precio unitario", value: "materialPlugin3UnitPrice", width: 150 },
-  { name: "Coef. por m2", value: "materialPlugin3Coef", width: 150 },
+  { name: "Coef. por m²", value: "materialPlugin3Coef", width: 150 },
   // Restricciones
-  { name: "Por área m2", value: "materialAreaRestrictions", width: 225 },
+  { name: "Por área m²", value: "materialAreaRestrictions", width: 225 },
   { name: "Vida útil (hrs)", value: "materialPotLife", width: 225 },
   {
     name: "Temp. mínima de aplicación (°C)",
@@ -136,7 +135,7 @@ export const header = [
     width: 225,
   },
   { name: "Otras", value: "materialAreaDescription", width: 225 },
-  // Sistema de capaz
+  // Sistema de capas
   { name: "Condiciones de base", value: "baseConditions", width: 225 },
   { name: "Condiciones de soporte", value: "supportConditions", width: 225 },
 ];

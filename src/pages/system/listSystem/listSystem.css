@@ -6,7 +6,7 @@
 
 .optimal-standard {
   border: 0.5px solid black;
-  margin: 0 5px;
+  margin-left: 5px;
   height: 20px;
   width: 40px;
   background-color: rgb(26 145 2 / 50%);
@@ -18,4 +18,26 @@
   height: 20px;
   width: 40px;
   background-color: rgb(255 149 0 / 60%);
+}
+
+.header-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.category-filter > div {
+  min-width: 350px;
+}
+
+@media only screen and (max-width: 768px) {
+  .add-system-button > button {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 1070px) {
+  .color-explanation-wrapper {
+    flex-direction: column;
+  }
 }
