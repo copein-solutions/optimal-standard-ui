@@ -8,6 +8,8 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { LOGIN } from "../../utils/constants";
 
+import { logout } from "../../services/ApiService";
+
 type HeaderProps = {
   onMenuOpen: () => void;
 };
@@ -16,9 +18,10 @@ export const CustomHeader: React.FC<HeaderProps> = ({ onMenuOpen }) => {
   const dispatch = useDispatch();
   const navigator = useNavigate();
 
-  const logout = () => {
+  const executeLogout = () => {
+    logout();    
+    dispatch({ type: "LOGOUT" });
     localStorage.clear();
-    dispatch({ type: "LOGIN" });
     navigator(LOGIN);
   };
 
@@ -46,7 +49,7 @@ export const CustomHeader: React.FC<HeaderProps> = ({ onMenuOpen }) => {
           alt="Logo CEAOSA"
           className="img-fluid image"
         />
-        <Button onClick={logout} color="inherit">
+        <Button onClick={executeLogout} color="inherit">
           Cerrar sesión
         </Button>
       </Toolbar>
