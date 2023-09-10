@@ -93,7 +93,7 @@ const ListSystem = () => {
                   )} $/${material.material.presentationUnit}`;
                   system.materialBaseType = material.material.type;
                   system.materialBaseComponent = material.material.component;
-                  system.materialPotLife = material.material.motLife;
+                  system.materialPotLife = material.material.potLife;
                   system.materialMinApplicableTemp =
                     material.material.minApplicableTemp;
                 } else if (material.typeOfUse === "TOTAL_MESH") {
