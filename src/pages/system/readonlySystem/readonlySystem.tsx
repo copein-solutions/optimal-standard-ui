@@ -128,7 +128,7 @@ const ReadonlySystem = () => {
 
   function capitalizeFirstLetter(inputString: string): string {
     if (inputString.length === 0) {
-      return inputString; // Devuelve el string original si está vacío.
+      return inputString;
     }
 
     const firstLetter = inputString.substring(0, 1).toUpperCase();
@@ -143,8 +143,6 @@ const ReadonlySystem = () => {
       const laborCostResponse = await getLaborCost();
       if (laborCostResponse && laborCostResponse.data) {
         setLaborCost(laborCostResponse.data);
-        // } else {
-        //   handleOpenToast("No se puede recuperar el costo laboral del back");
       }
       const response = await getSystemByID(Number(id));
       if (response?.data.error || response === undefined) {
@@ -188,10 +186,8 @@ const ReadonlySystem = () => {
     setSystemTotalPrice(truncateDecimals(price, 2));
   }, [baseMaterialTotalPrice, totalLaborCost]);
 
-  // Pre cargo formulario en caso de ser update
   useEffect(() => {
     if (formData) {
-      // console.log("formData", formData);
       setBaseMaterialTotalPrice(
         truncateDecimals(Number(formData.totalPrice), 2)
       );
@@ -369,7 +365,6 @@ const ReadonlySystem = () => {
     }
   }
 
-  // Evento de botón agregar - otros complementos
   const handleAddMaterial = () => {
     setMaterialCount((prevCount) => prevCount + 1);
   };
@@ -386,7 +381,6 @@ const ReadonlySystem = () => {
     return <MaterialData material={materialData} />;
   }
 
-  // Precio por m² de malla parcial
   const systemParcialMeshCoefficientValue = watch(
     "systemParcialMeshCoefficient"
   );
@@ -421,7 +415,7 @@ const ReadonlySystem = () => {
       </div>
       {/* ------------- Material base ------------- */}
       <div className="row mb-3">
-        <div className="col-lg-5 col-sm-6">
+        <div className="col-lg-5 col-sm-7">
           <TextField
             size="small"
             className="readOnly"
@@ -438,7 +432,7 @@ const ReadonlySystem = () => {
           />
         </div>
         {/* ------------- Costo materiales ------------- */}
-        <div className="col-lg-2 col-sm-3 mb-3 d-flex">
+        <div className="col-lg-2 col-sm-4 col-5 mb-3 d-flex mt-xs-16">
           <CustomTextField
             name="systemTotalPrice"
             className="readOnly total-cost"
@@ -460,7 +454,7 @@ const ReadonlySystem = () => {
           />
         </div>
         {/* ------------- Costo mano de obra ------------- */}
-        <div className="col-lg-2 col-sm-3 mb-3 d-flex">
+        <div className="col-lg-2 col-sm-4 col-5 mb-3 mt-xs-16 d-flex">
           <CustomTextField
             name="systemTotalPrice"
             className="readOnly total-cost"
@@ -482,7 +476,7 @@ const ReadonlySystem = () => {
           />
         </div>
         {/* ------------- Costo total ------------- */}
-        <div className="col-lg-2 col-sm-3 mb-3 d-flex">
+        <div className="col-lg-2 col-sm-4 mb-3 col-5 mt-xs-16">
           <CustomTextField
             name="systemTotalPrice"
             className="readOnly total-cost custom-color"
@@ -509,9 +503,9 @@ const ReadonlySystem = () => {
         <MaterialData material={selectedBaseMaterialDetail} />
       </div>
       <CustomDivider text="Aplicación" />
-      {/* ------------- Consumo total ------------- */}
       <div className="row mt-3">
-        <div className="col-lg-2 col-sm-6">
+      {/* ------------- Consumo total ------------- */}
+        <div className="col-lg-2 col-sm-3 col-5">
           <CustomTextField
             name="totalConsumption"
             control={control}
@@ -526,7 +520,7 @@ const ReadonlySystem = () => {
           />
         </div>
         {/* ------------- Rendimiento (material base) ------------- */}
-        <div className="col-lg-2 col-sm-6">
+        <div className="col-lg-2 col-sm-3 col-5">
           <CustomTextField
             name="baseMaterialPerformance"
             control={control}
@@ -542,7 +536,7 @@ const ReadonlySystem = () => {
           />
         </div>
         {/* ------------- Cantidad de manos ------------- */}
-        <div className="col-lg-2 col-sm-6">
+        <div className="col-lg-2 col-sm-3 col-5 mt-xs-16">
           <CustomTextField
             name="layers"
             control={control}
@@ -558,7 +552,7 @@ const ReadonlySystem = () => {
           />
         </div>
         {/* ------------- Modo de aplicación ------------- */}
-        <div className="col-lg-2 col-sm-6 mt-16">
+        <div className="col-lg-2 col-sm-3 col-5 mt-xs-16">
           <TextField
             size="small"
             className="readOnly"
@@ -575,7 +569,7 @@ const ReadonlySystem = () => {
           />
         </div>
         {/* ------------- Curado ------------- */}
-        <div className="col-lg-2 col-sm-6 mt-16">
+        <div className="col-lg-2 col-sm-3 mt-16 col-5 mt-xs-16">
           <TextField
             size="small"
             className="readOnly"
@@ -594,7 +588,7 @@ const ReadonlySystem = () => {
       </div>
       {/* ------------- Info bloque Aplicación------------- */}
       <div className="row mt-3">
-        <div className="col-lg-4 col-sm-8">
+        <div className="col-lg-4 col-sm-10">
           <div className="material-data-container">
             <div className="data-div ml-2">
               <Typography mr={1} variant="body1">
@@ -603,6 +597,8 @@ const ReadonlySystem = () => {
               <Typography mr={5} fontWeight="700" variant="body1">
                 {baseMaterialPrice}
               </Typography>
+            </div>
+            <div className="data-div ml-2">
               <Typography mr={1} variant="body1">
                 Costo MO: $/m²
               </Typography>
@@ -615,9 +611,9 @@ const ReadonlySystem = () => {
       </div>
       {/* ------------- Mallas 100% ------------- */}
       <CustomDivider text="Mallas 100%" />
-      {/* ------------- Si / No ------------- */}
       <div className="row mt-3">
-        <div className="col-lg-2 col-sm-6">
+      {/* ------------- Si / No ------------- */}
+        <div className="col-lg-2 col-sm-3 col-3">
           <TextField
             size="small"
             className="readOnly"
@@ -636,7 +632,7 @@ const ReadonlySystem = () => {
         {/* ------------- Nombre malla 100% ------------- */}
         {showMeshTotalPercentInput && (
           <>
-            <div className="col-lg-6 col-sm-6">
+            <div className="col-lg-6 col-sm-6 col-9">
               <TextField
                 value={systemMeshTotalPercentName}
                 size="small"
@@ -653,7 +649,7 @@ const ReadonlySystem = () => {
               />
             </div>
             {/* ------------- Rendimiento malla 100% ------------- */}
-            <div className="col-lg-2 col-sm-3">
+            <div className="col-lg-2 col-sm-3 col-5 mt-xs-16">
               <CustomTextField
                 name="totalMeshPerformance"
                 control={control}
@@ -672,20 +668,20 @@ const ReadonlySystem = () => {
           </>
         )}
       </div>
-      {/* ------------- Info malla 100% seleccionada ------------- */}
       <div className="row mt-3">
-        <div className="col-lg-4 col-sm-4">
+      {/* ------------- Info malla 100% seleccionada ------------- */}
+        <div className="col-lg-4 col-sm-10">
           <div className="material-data-container">
             <div className="data-div ml-2">
               <Typography mr={1} variant="body1">
                 Costo mat.: $/m²
               </Typography>
-              <Typography fontWeight="700" variant="body1">
+              <Typography fontWeight="700" mr={5} variant="body1">
                 {selectedTotalMeshPrice}
               </Typography>
-              <Typography ml={5} variant="body1">
-                Costo MO: $/m²
-              </Typography>
+            </div>
+            <div className="data-div ml-2">
+              <Typography variant="body1">Costo MO: $/m²</Typography>
               <Typography ml={1} fontWeight="700" variant="body1">
                 {selectedTotalMeshLaborCost}
               </Typography>
@@ -697,7 +693,7 @@ const ReadonlySystem = () => {
       <CustomDivider text="Malla parcial" />
       <div className="row mt-3">
         {/* ------------- Malla parcial si / no ------------- */}
-        <div className="col-lg-2 col-sm-6">
+        <div className="col-lg-2 col-sm-3 col-3">
           <TextField
             name="systemParcialMesh"
             size="small"
@@ -717,7 +713,7 @@ const ReadonlySystem = () => {
         {/* ------------- Nombre malla parcial ------------- */}
         {systemParcialMesh && (
           <>
-            <div className="col-lg-4 col-sm-6">
+            <div className="col-lg-4 col-sm-6 col-9">
               <TextField
                 name="systemParcialMesh"
                 size="small"
@@ -735,7 +731,7 @@ const ReadonlySystem = () => {
               />
             </div>
             {/* ------------- Coeficiente por m² ------------- */}
-            <div className="col-lg-2 col-sm-2 mt-16">
+            <div className="col-lg-2 col-sm-3 col-5 mt-xs-16">
               <CustomTextField
                 name="systemParcialMeshCoefficient"
                 control={control}
@@ -750,7 +746,7 @@ const ReadonlySystem = () => {
               />
             </div>
             {/* ------------- Rendimiento malla parcial ------------- */}
-            <div className="col-lg-2 col-sm-6">
+            <div className="col-lg-2 col-sm-3 mt-16 col-5 mt-xs-16">
               <CustomTextField
                 name="partialMeshPerformance"
                 control={control}
@@ -771,22 +767,26 @@ const ReadonlySystem = () => {
       {/* ------------- Info malla parcial seleccionada ------------- */}
       {systemParcialMesh && (
         <div className="row mt-3">
-          <div className="col-lg-5 col-sm-11 mt-16">
-            <div className="material-data-container">
+          <div className="col-lg-7 col-sm-12 mt-16">
+            <div className="material-data-container mobile-no-margin">
               <div className="data-div ml-2">
                 <Typography fontWeight="500" mr={1} variant="body1">
                   Costo mat.: $/ml
                 </Typography>
-                <Typography fontWeight="700" variant="body1">
+                <Typography fontWeight="700" mr={5} variant="body1">
                   {selectedPartialMeshPrice}
                 </Typography>
-                <Typography fontWeight="500" ml={5} mr={1} variant="body1">
+              </div>
+              <div className="data-div ml-2">
+                <Typography fontWeight="500" mr={1} variant="body1">
                   Costo mat.: $/m²
                 </Typography>
-                <Typography fontWeight="700" variant="body1">
+                <Typography fontWeight="700" mr={5} variant="body1">
                   {selectedPartialMeshPricePerCoefficient}
                 </Typography>
-                <Typography fontWeight="500" ml={5} mr={1} variant="body1">
+              </div>
+              <div className="data-div ml-2">
+                <Typography fontWeight="500" mr={1} variant="body1">
                   Costo MO: $/m²
                 </Typography>
                 <Typography fontWeight="700" variant="body1">
@@ -821,8 +821,8 @@ const ReadonlySystem = () => {
       {Array.from({ length: materialCount }).map((_, index) => (
         <div key={index}>
           <div className="row mt-3">
-            <div className="col-lg-5 col-sm-6">
-              {/* ------------- Materiales (otros complementos) ------------- */}
+            {/* ------------- Materiales (otros complementos) ------------- */}
+            <div className="col-lg-5 col-sm-9">
               <CustomTextField
                 name={`systemOthersPluginsMaterials${index}`}
                 control={control}
@@ -836,7 +836,7 @@ const ReadonlySystem = () => {
               />
             </div>
             {/* ------------- Coeficiente por m² (otros complementos) ------------- */}
-            <div className="col-lg-2 col-sm-2">
+            <div className="col-lg-2 col-sm-3 col-5 mt-xs-16">
               <CustomTextField
                 name={`systemOthersPluginsMaterialCoefficient${index}`}
                 control={control}
@@ -851,7 +851,7 @@ const ReadonlySystem = () => {
               />
             </div>
             {/* ------------- Rendimiento (otros complementos) ------------- */}
-            <div className="col-lg-2 col-sm-6">
+            <div className="col-lg-2 col-sm-3 mt-16 col-5 mt-xs-16">
               <CustomTextField
                 name={`systemOthersPluginsPerformance${index}`}
                 control={control}
@@ -862,7 +862,6 @@ const ReadonlySystem = () => {
                 className="readOnly"
                 InputProps={{
                   readOnly: true,
-                  startAdornment: "$",
                   endAdornment: (
                     <InputAdornment sx={{ marginRight: "5px" }} position="end">
                       {pluginMaterialPerformanceExplanation}
@@ -871,8 +870,8 @@ const ReadonlySystem = () => {
                 }}
               />
             </div>
+            {/* ------------- Info (otros complementos) ------------- */}
             <div className="col-lg-3 col-sm-8 mt-16">
-              {/* ------------- Info (otros complementos) ------------- */}
               <div className="material-data-container">
                 <div className="data-div ml-2">
                   <Typography variant="body1" mr={1}>
