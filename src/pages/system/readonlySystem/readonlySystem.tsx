@@ -657,11 +657,9 @@ const ReadonlySystem = () => {
                 variant="outlined"
                 fullWidth
                 type="number"
+                className = "readOnly"
                 InputProps={{
                   readOnly: true,
-                }}
-                InputLabelProps={{
-                  className: "readOnly",
                 }}
               />
             </div>
