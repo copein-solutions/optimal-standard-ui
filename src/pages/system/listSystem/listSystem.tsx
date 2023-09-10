@@ -215,7 +215,7 @@ const ListSystem = () => {
               label="Filtrar por categoria"
               defaultValue="ALL"
             >
-              <MenuItem value="ALL">Todas las categorías</MenuItem>
+              <MenuItem value="ALL">Mostrar todos</MenuItem>
               <MenuItem value="OPTIMAL_STANDARD">Estándar óptimo</MenuItem>
               <MenuItem value="ALTERNATIVE_OPTIMAL_STANDARD">
                 Estándar óptimo y óptimo alternativo
