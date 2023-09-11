@@ -37,8 +37,11 @@ import {
   esES,
   GridCellParams,
   DataGrid,
-  GridToolbar,
+  GridToolbarColumnsButton,
+  GridToolbarFilterButton,
+  GridToolbarContainer,
 } from "@mui/x-data-grid";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
 import { RootState } from "../../redux/reducers/reducer";
 import { READONLY_ROL } from "../../utils/constants";
@@ -450,6 +453,26 @@ export const GridCustom: React.FC<GridProps> = ({
     navigator(`/system/${systemId}/view`);
   };
 
+  function CustomToolbar() {
+    return (
+      <GridToolbarContainer>
+        <GridToolbarColumnsButton />
+        <GridToolbarFilterButton />
+        <Button
+          size={"small"}
+          startIcon={<FileDownloadIcon />}
+          onClick={() => handleExport()}
+        >
+          Exportar
+        </Button>
+      </GridToolbarContainer>
+    );
+  }
+
+  const handleExport = () => {
+    alert('exportar no implementado');
+  };
+
   return (
     <div className="data-grid-wrapper">
       <DataGrid
@@ -457,7 +480,7 @@ export const GridCustom: React.FC<GridProps> = ({
         rows={formatRows}
         columns={columns}
         slots={{
-          toolbar: GridToolbar,
+          toolbar: CustomToolbar,
           columnSortedDescendingIcon: SortedDescendingIcon,
           columnSortedAscendingIcon: SortedAscendingIcon,
         }}
