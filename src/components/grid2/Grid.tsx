@@ -26,6 +26,7 @@ import {
   deleteApplicationArea,
   deleteMaterial,
   deleteSystem,
+  getXlsxFileById,
   setSystemCategory,
 } from "../../services/ApiService";
 import { useDispatch, useSelector } from "react-redux";
@@ -470,7 +471,10 @@ export const GridCustom: React.FC<GridProps> = ({
   }
 
   const handleExport = () => {
-    alert('exportar no implementado');
+    async function fetch() {
+      window.open(await getXlsxFileById(), '_blank');
+    }
+    fetch();
   };
 
   return (

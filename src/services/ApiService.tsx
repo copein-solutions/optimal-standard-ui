@@ -68,6 +68,10 @@ export const getMaterialFileById = (id: number) => {
   return `${API_BASE_URL}/public/file/load?file_id=${id}`;
 };
 
+export const getXlsxFileById = () => {
+  return `${API_BASE_URL}/public/generate_report`;
+};
+
 //#endregion
 
 // #region CAMPO DE APLICACIÓN
