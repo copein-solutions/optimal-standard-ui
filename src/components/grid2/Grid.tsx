@@ -159,10 +159,10 @@ export const GridCustom: React.FC<GridProps> = ({
     };
     if (commentItemId) {
       let response: any = await createSystemComment(commentItemId, data);
-      if (response.status !== 200) {
-        handleOpenToast("Algo salió mal al enviar tu comentario.", "error");
-      } else {
+      if (response?.status === 200) {
         handleOpenToast("Comentario registrado con éxito.", "success");
+      } else {
+        handleOpenToast("Algo salió mal al enviar tu comentario.", "error");
       }
     }
     setCommentValue("");
@@ -293,12 +293,7 @@ export const GridCustom: React.FC<GridProps> = ({
 
     if (systemItemId) {
       const response: any = await setSystemCategory(systemItemId, type);
-      if (response.status !== 200) {
-        handleOpenToast(
-          "Algo salió mal al definir el estándar óptimo.",
-          "error"
-        );
-      } else {
+      if (response?.status === 200) {
         if (selectedOption === "OPTIMAL_STANDARD") {
           dispatch({ type: "SET_OPTIMAL_STANDARD", payload: systemItemId });
           handleOpenToast("Nuevo estándar optimo definido.", "success");
@@ -317,6 +312,11 @@ export const GridCustom: React.FC<GridProps> = ({
           dispatch({ type: "SET_REMOVE", payload: systemItemId });
           handleOpenToast("Se quitó la categorización del sistema.", "success");
         }
+      } else {
+        handleOpenToast(
+          "Algo salió mal al definir el estándar óptimo.",
+          "error"
+        );
       }
     }
     setSelectedOption("");
@@ -472,7 +472,7 @@ export const GridCustom: React.FC<GridProps> = ({
 
   const handleExport = () => {
     async function fetch() {
-      window.open(await getXlsxFileById(), '_blank');
+      window.open(await getXlsxFileById(), "_blank");
     }
     fetch();
   };

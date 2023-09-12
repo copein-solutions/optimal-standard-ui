@@ -84,14 +84,14 @@ export const GridCustom: React.FC<GridProps> = ({
   };
 
   function callDispatch(type: string, response: any) {
-    if (response.status !== 200) {
+    if (response?.status === 200) {
+      handleOpenToast("Elemento eliminado con éxito", "success");
+      dispatch({ type: type, payload: deleteItemId });
+    } else {
       handleOpenToast(
         "No se puede eliminar el elemento ya que forma parte de un sistema",
         "error"
       );
-    } else {
-      handleOpenToast("Elemento eliminado con éxito", "success");
-      dispatch({ type: type, payload: deleteItemId });
     }
   }
 
@@ -145,13 +145,13 @@ export const GridCustom: React.FC<GridProps> = ({
       };
       let response: any = await updateSystemComment(systemId, data);
 
-      if (response.status !== 200) {
-        let message = "Algo salió mal al enviar tu comentario.";
-        if (response.data.message) message = response.data.message;
-        handleOpenToast(message, "error");
-      } else {
+      if (response?.status === 200) {
         handleOpenToast("Comentario registrado con éxito.", "success");
         window.location.reload();
+      } else {
+        let message = "Algo salió mal al enviar tu comentario.";
+        if (response?.data?.message) message = response.data.message;
+        handleOpenToast(message, "error");
       }
     }
     setCommentValue("");
