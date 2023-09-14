@@ -1444,8 +1444,8 @@ export const SystemForm: React.FC<SystemFormProps> = ({
         </div>
       </div>
       {/* ------------- Comentarios sobre el sistema ------------- */}
-      {isUpdateForm && <CustomDivider text="Comentarios" />}
-      {isUpdateForm && <ListSystemComments id={data?.id} />}
+      {/* {isUpdateForm && <CustomDivider text="Comentarios" />}
+      {isUpdateForm && <ListSystemComments id={data?.id} />} */}
       {/* ------------- Botones formulario ------------- */}
       <div className="card-footer text-body-secondary align-right">
         <Button onClick={handleCancel} variant="text">
