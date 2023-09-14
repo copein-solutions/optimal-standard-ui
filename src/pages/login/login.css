@@ -31,12 +31,11 @@
 
 @media only screen and (max-width: 575px) {
   .login-box {
-    transform: translate(0%, 35%);
     width: 100%;
   }
 }
 
-@media screen and (orientation: landscape) {
+@media screen and (max-width: 991px) and (orientation: landscape) {
   .login-box {
     transform: translate(0%, 5%);
   }
