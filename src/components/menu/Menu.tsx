@@ -157,14 +157,25 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
   const openVariablesModal = async () => {
     let dollarRateResponse = await getQuotationDollar();
     let laborCostResponse = await getLaborCost();
+    let errMsg = "";
 
-    if (dollarRateResponse.data) {
+    if (dollarRateResponse?.data) {
       setDollarRateDataBase(dollarRateResponse.data);
+    } else {
+      errMsg = "Error al obtener el valor de la variable global";
     }
-    if (laborCostResponse.data) {
+    if (laborCostResponse?.data) {
       setLaborCostDataBase(laborCostResponse.data);
+    } else {
+      errMsg = "Error al obtener el valor de la variable global";
     }
-    setOpenModal(true);
+    if (errMsg !== "") {
+      setToastMsg(errMsg);
+      setToastType("error");
+      setShowToast(true);
+    } else {
+      setOpenModal(true);
+    }
   };
 
   const onCloseModal = () => {
