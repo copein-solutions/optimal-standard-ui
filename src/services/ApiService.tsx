@@ -64,8 +64,8 @@ export const deleteMaterial = async (
   return remove(`/admin/material/${id}`);
 };
 
-export const getMaterialFileById = (id: number) => {
-  return `${API_BASE_URL}/public/file/load?file_id=${id}`;
+export const getMaterialFileById = async (id: number): Promise<ResponseApi> => {
+  return get(`/admin/file/load?file_id=${id}`);
 };
 
 export const getXlsxFile = () => {
@@ -200,7 +200,13 @@ const post = async (url: string, data: any): Promise<ResponseApi> => {
 
 const get = async (url: string): Promise<ResponseApi> => {
   try {
-    return await api.get(url, fetchHeaders());
+    let obj = fetchHeaders();
+    if(url.includes('/file/load')) {
+      obj.responseType = 'arraybuffer';
+    } else {
+      delete obj.responseType;
+    }    
+    return await api.get(url, obj);
   } catch (error: any) {
     return error.response;
   }
