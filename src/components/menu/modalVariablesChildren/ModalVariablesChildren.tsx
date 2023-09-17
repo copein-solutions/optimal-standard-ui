@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextField, Button, Divider, Typography } from "@mui/material";
+import { TextField, Button, Divider, Typography, InputAdornment } from "@mui/material";
 
 type ModalChildrenProps = {
   handleDollarRate: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -38,6 +38,13 @@ const ModalChildren: React.FC<ModalChildrenProps> = ({
             }}
             defaultValue={dollarRateValue}
             onChange={handleDollarRate}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Typography>$</Typography>
+                </InputAdornment>
+              ),
+            }}
           />
           <Button className="modal-buttons" onClick={handleDollarRateSubmit}>
             Enviar
@@ -60,6 +67,13 @@ const ModalChildren: React.FC<ModalChildrenProps> = ({
             helperText="* Valor hora"
             defaultValue={laborCostValue}
             onChange={handleLaborCost}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Typography>$</Typography>
+                </InputAdornment>
+              ),
+            }}
           />
           <Button className="modal-buttons" onClick={handleLaborCostSubmit}>
             Enviar

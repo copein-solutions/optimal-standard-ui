@@ -25,6 +25,7 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import ModalChildren from "./modalVariablesChildren";
 import Toast, { ToastType } from "../../components/toast/toast";
 import { useDispatch } from "react-redux";
+import useIsMobile from "../../utils/hooks";
 import "./Menu.css";
 
 import {
@@ -51,6 +52,7 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
   const [toastMsg, setToastMsg] = useState("");
 
   const dispatch = useDispatch();
+  const isMobile = useIsMobile();
 
   const handleCloseToast = () => {
     setShowToast(false);
@@ -65,7 +67,7 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
   ];
 
   if (userRole === ADMIN_ROL) {
-    menuOptions.push(
+    let additionalOptions = [
       {
         name: "Agregar sistema",
         icon: <ArrowRightIcon />,
@@ -90,8 +92,21 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
         name: "Agregar campo de aplicación",
         icon: <ArrowRightIcon />,
         path: APPLICATION_AREA_CREATE,
-      }
-    );
+      },
+    ];
+
+    if (isMobile) {
+      const noMobilePaths = [
+        SYSTEM_CREATE,
+        MATERIAL_CREATE,
+        APPLICATION_AREA_CREATE,
+      ];
+      additionalOptions = additionalOptions.filter(
+        (option) => !noMobilePaths.includes(option.path)
+      );
+    }
+
+    menuOptions.push(...additionalOptions);
   } else {
     menuOptions.push(
       {
@@ -226,7 +241,6 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
 
   const modalChildren = (
     <ModalChildren
-      // TODO: ver si ponemos alguna descripción de que pasará cuando se modifiquen estas variables
       handleDollarRate={handleDollarRate}
       handleLaborCost={handleLaborCost}
       dollarRateValue={dollarRateDataBase}

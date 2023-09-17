@@ -29,7 +29,7 @@ export const MainContainer: React.FC<MainContainerProps> = ({
       <PageWrapper />
       <div className="card">
         <h1 className="card-title">{cardTitle}</h1>
-        <div className="card-body">{children}</div>
+        <div className="card-body overflow-auto">{children}</div>
         {hasFooterButons && (
           <div className="card-footer text-body-secondary align-right">
             <Button onClick={onCancel} variant="text">

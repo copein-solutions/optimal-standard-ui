@@ -64,7 +64,11 @@ const ApplicationAreaForm: React.FC<ApplicationAreaFormProps> = ({
       }
       setShowToast(true);
       setToastType("success");
-      setToastMsg("Campo de aplicación dado de alta");
+      setToastMsg(
+        isUpdateForm
+          ? "Campo de aplicación editado con éxito"
+          : "Campo de aplicación dado de alta"
+      );
       setTimeout(() => {
         navigator(APPLICATION_AREA_LIST);
       }, 2000);
@@ -102,6 +106,8 @@ const ApplicationAreaForm: React.FC<ApplicationAreaFormProps> = ({
             control={control}
             label="Consideraciones"
             variant="outlined"
+            multiline
+            minRows={3}
             fullWidth
           />
         </div>
