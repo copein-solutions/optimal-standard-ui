@@ -109,17 +109,10 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
 
   const handleFileClick = async (file: FilePondFile) => {
     try {
-      // const response = await getMaterialFileById(Number(file.serverId));
-      // return response.data;
-      // Crea una URL de objeto Blob
-      // const blob = new Blob([response.data], { type: response.headers['content-type'] });
-      // const blobUrl = URL.createObjectURL(blob);
-
-      // const blob = new Blob([response.data], { type: 'application/pdf' });
-      // const url = window.URL.createObjectURL(blob);
-
-      // Abre la URL de Blob en una nueva pestaña
-      window.open(getMaterialFileById(getFileId(file)), "_blank");
+      let response = await getMaterialFileById(getFileId(file))
+      const blob = new Blob([ response.data ], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, "_blank");
     } catch (error) {
       console.error("Error al obtener el archivo:", error);
     }
@@ -475,7 +468,7 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
             acceptedFileTypes={["application/pdf"]}
             labelIdle='Arrastrar y soltar o <span class="filepond--label-action">Explorar</span>'
             server={{
-              url: API_BASE_URL + "/file",
+              url: API_BASE_URL + "/admin/file",
               process: {
                 url: `/upload${isUpdateForm ? `?material_id=${data?.id}` : ""}`,
                 headers: headers,

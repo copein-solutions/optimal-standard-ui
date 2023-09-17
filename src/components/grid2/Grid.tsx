@@ -476,7 +476,15 @@ export const GridCustom: React.FC<GridProps> = ({
 
   const handleExport = () => {
     async function fetch() {
-      window.open(await getXlsxFile(), "_blank");
+      var a = document.createElement("a");
+      let response = await getXlsxFile();
+      const blob = new Blob([ response.data ], { type: 'application/vnd.ms-excel' });
+      const url = window.URL.createObjectURL(blob);
+      a.href = url;
+      a.download = 'report.xlsx';
+      a.click();
+      window.URL.revokeObjectURL(url);
+      window.open(url, "_blank");
     }
     fetch();
   };
