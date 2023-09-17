@@ -111,7 +111,7 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
     try {
       let response = await getMaterialFileById(getFileId(file))
       const blob = new Blob([ response.data ], { type: 'application/pdf' });
-      const url = window.URL.createObjectURL(blob);      
+      const url = window.URL.createObjectURL(blob);
       window.open(url, "_blank");
     } catch (error) {
       console.error("Error al obtener el archivo:", error);
