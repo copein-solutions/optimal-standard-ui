@@ -429,12 +429,10 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
             <CustomTextField
               name="potLife"
               control={control}
-              // rules={{ required: "Vida útil requerido." }}
               label="Vida útil (hrs)"
+              type="number"
               variant="outlined"
               fullWidth
-              // error={errors.potLife}
-              // helperText={errors.potLife?.message}
             />
           </div>
           {/* ------------- Temperatura mínima de aplicación ------------- */}
@@ -442,12 +440,10 @@ const MaterialForm: React.FC<MaterialFromProps> = ({ data, isUpdateForm }) => {
             <CustomTextField
               name="minApplicableTemp"
               control={control}
-              // rules={{ required: "temperatura mínima de aplicación requerida." }}
               label="Temp mín de aplicación (°C)"
               variant="outlined"
+              type="number"
               fullWidth
-              // error={errors.minApplicableTemp}
-              // helperText={errors.minApplicableTemp?.message}
             />
           </div>
         </div>

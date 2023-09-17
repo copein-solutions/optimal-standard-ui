@@ -4,7 +4,7 @@ import "./addApplicationArea.css";
 
 const AddApplicationArea = () => {
   return (
-    <MainContainer cardTitle="Alta de campo de aplicación">
+    <MainContainer cardTitle="Alta campo de aplicación">
       <ApplicationAreaForm isUpdateForm={ false }/>
     </MainContainer>
   );

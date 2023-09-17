@@ -20,6 +20,8 @@ const ListMaterial = () => {
   const header = [
     { name: "Producto", value: "product" },
     { name: "Precio Unitario", value: "unitPrice" },
+    { name: "Cantidad presentación", value: "presentationQuantity" },
+    { name: "Precio", value: "presentationPrice" },
     { name: "Marca", value: "brand" },
     { name: "Tipo", value: "type" },
     { name: "Composición", value: "component" },

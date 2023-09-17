@@ -41,6 +41,7 @@ import {
   GridToolbarColumnsButton,
   GridToolbarFilterButton,
   GridToolbarContainer,
+  GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
@@ -456,17 +457,20 @@ export const GridCustom: React.FC<GridProps> = ({
 
   function CustomToolbar() {
     return (
-      <GridToolbarContainer>
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <Button
-          size={"small"}
-          startIcon={<FileDownloadIcon />}
-          onClick={() => handleExport()}
-        >
-          Exportar
-        </Button>
-      </GridToolbarContainer>
+      <div className="d-flex justify-content-between m-2">
+        <GridToolbarContainer>
+          <GridToolbarColumnsButton />
+          <GridToolbarFilterButton />
+          <Button
+            size={"small"}
+            startIcon={<FileDownloadIcon />}
+            onClick={() => handleExport()}
+          >
+            Exportar
+          </Button>
+        </GridToolbarContainer>
+        <GridToolbarQuickFilter />
+      </div>
     );
   }
 

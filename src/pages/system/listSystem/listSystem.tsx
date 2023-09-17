@@ -194,7 +194,11 @@ const ListSystem = () => {
         );
       } else {
         setFilteredSystems(
-          systems.filter((s: any) => s.systemCategory !== null)
+          systems.filter(
+            (s: any) =>
+              s.systemCategory === "OPTIMAL_STANDARD" ||
+              s.systemCategory === "ALTERNATIVE_OPTIMAL_STANDARD"
+          )
         );
       }
     }

@@ -96,19 +96,21 @@ export const GridCustom: React.FC<GridProps> = ({
   }
 
   const deleteButton = (id: number) => (
-    <Button
-      sx={{
-        borderRadius: "50%",
-        height: "40px",
-        width: "40px",
-        minWidth: 0,
-      }}
-      color="error"
-      variant="text"
-      onClick={() => openDeleteModal(id)} // Abre el modal al hacer clic en el botón de eliminar
-    >
-      <DeleteIcon />
-    </Button>
+    <Tooltip title="Eliminar" placement="top">
+      <Button
+        sx={{
+          borderRadius: "50%",
+          height: "40px",
+          width: "40px",
+          minWidth: 0,
+        }}
+        color="error"
+        variant="text"
+        onClick={() => openDeleteModal(id)} // Abre el modal al hacer clic en el botón de eliminar
+      >
+        <DeleteIcon />
+      </Button>
+    </Tooltip>
   );
 
   const onEdit = (data: any) => {
@@ -188,7 +190,7 @@ export const GridCustom: React.FC<GridProps> = ({
   };
 
   const editButton = (comment: any) => (
-    <Tooltip title="Editar comentario" placement="top">
+    <Tooltip title="Editar" placement="top">
       <Button
         sx={{
           borderRadius: "50%",
