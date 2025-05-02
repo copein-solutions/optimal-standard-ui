@@ -853,7 +853,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
     <CustomWidthTooltip
       title={
         <span style={{ fontSize: "1rem", maxWidth: "600px" }}>
-          ACÁ VA A IR EL TEXTO PROPORCIONADO POR GONZALO
+          TEXTO EXPLICATIVO
         </span>
       }
       placement="bottom"
@@ -1294,7 +1294,7 @@ export const SystemForm: React.FC<SystemFormProps> = ({
                 }
                 InputProps={{
                   // readOnly: true,
-                  startAdornment: "$",
+                  startAdornment: "",
                   endAdornment: (
                     <InputAdornment sx={{ marginRight: "5px" }} position="end">
                       {pluginMaterialPerformanceExplanation}
