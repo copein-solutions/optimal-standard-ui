@@ -179,7 +179,7 @@ export const CustomMenu: React.FC<MenuProps> = ({ isOpen, setOpen }) => {
     } else {
       errMsg = "Error al obtener el valor de la variable global";
     }
-    if (laborCostResponse?.data) {
+    if (laborCostResponse?.data >= 0) {
       setLaborCostDataBase(laborCostResponse.data);
     } else {
       errMsg = "Error al obtener el valor de la variable global";
